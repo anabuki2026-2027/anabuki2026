@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5eb909404df0c48426585c81bf227363",
+    "content-hash": "ea274a4327a64da314ca9cf1ba25f9f3",
     "packages": [
         {
             "name": "cakephp/cakephp",
@@ -6145,11 +6145,11 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.2"
+        "php": ">=8.2.35"
     },
     "platform-dev": {},
     "platform-overrides": {
-        "php": "8.2.12"
+        "php": "8.2.35"
     },
     "plugin-api-version": "2.9.0"
 }
