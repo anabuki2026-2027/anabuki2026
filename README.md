@@ -51,6 +51,7 @@
 | **ブランチ** | 自分専用の作業コース。他の人の作業とぶつからない | 自分用のコピーで練習する |
 | **プルリクエスト（PR）** | 「自分の変更を本番に入れてください」とお願いすること | 先生に提出してチェックしてもらう |
 | **main（メイン）** | 完成版を置く大事なブランチ。直接さわらない | 提出済みの清書 |
+| **チームの main** | `team-b/main` のように、チームごとにある「チームの完成版」 | チームで集めた下書き |
 
 このチームでは Git を **Git Bash（ギットバッシュ）** という黒い画面で、コマンド（命令文）を入力して操作します。
 コマンドはこのページからコピーして貼り付ければ大丈夫です。
@@ -262,6 +263,39 @@ bin/cake server
 
 ## 6. 毎日の作業の流れ
 
+### ブランチのしくみ
+
+このチームでは、ブランチを **3 段** に分けて使います。
+
+![ブランチ構成](docs/images/branch-structure.png)
+
+図の名前は、実際には次のブランチ名になります。
+
+| 図の名前 | 実際のブランチ名 | 何のブランチ？ |
+| --- | --- | --- |
+| main | `main` | 完成版（A チームだけがマージする） |
+| teamA | `team-a/main` | A チームが全チームの作業を集めてチェックする場所 |
+| teamB main 〜 teamG main | `team-b/main` 〜 `team-g/main` | 各チームの完成版（そのチームのリーダー・副リーダーがマージする） |
+| member-1、member-2 … | `team-b/tanaka-users-model` など | メンバー 1 人 1 人の作業ブランチ |
+
+作業は、下から上へ順番に上がっていきます。
+
+```text
+① メンバー     ：自分の作業ブランチ → チームの main にプルリクエスト
+                    （チームのリーダー・副リーダーがチェックしてマージ）
+② リーダー     ：1 つの機能ができたら、チームの main → team-a/main にプルリクエスト
+                    （A チームがチェックしてマージ）
+③ A チーム     ：team-a/main → main にマージ
+④ リーダー     ：main に入った最新版を、チームの main に取り込む（→ 他のチームの作業がもらえる）
+```
+
+このページの `team-b` の部分は、**自分のチーム**（`team-a` 〜 `team-g`、小文字）に読みかえてください。
+
+> リーダー・副リーダーの作業（②・④）は、[チーム別ガイド](docs/teams/README.md#リーダー副リーダーの仕事) を見てください。
+> ここから下は、**メンバー全員**の毎日の作業です。
+
+---
+
 作業するときは、**毎回この順番** で進めます。
 
 ```
@@ -276,26 +310,29 @@ cd /c/xampp/htdocs/anabuki2026
 
 ### ① 最新版をもらう（プル）
 
+**自分のチームの main** に移動して、最新版をもらいます。
+
 ```bash
-git switch main
+git fetch
+git switch team-b/main
 git pull
 ```
 
 **作業を始める前に必ずやります。** 他の人の変更を取り込んでおかないと、あとでぶつかります。
 
-> プルしたあとに、管理チームから「`composer install` してね」「`bin/cake migrations migrate` してね」と言われたら、そのコマンドも実行してください。
+> プルしたあとに、管理チーム（A チーム）やリーダーから「`composer install` してね」「`bin/cake migrations migrate` してね」と言われたら、そのコマンドも実行してください。
 
 ### ② ブランチを作る（自分専用の作業コース）
 
 ```bash
-git switch -c feature/tanaka-top-page
+git switch -c team-b/tanaka-users-model
 ```
 
-- `feature/tanaka-top-page` の部分は **自分の作業に合わせて変えます**。
-  決まり：`feature/名前-作業内容`（英語の小文字とハイフンで）
+- `team-b/tanaka-users-model` の部分は **自分のチームと作業に合わせて変えます**。
+  決まり：`team-チーム/名前-作業内容`（英語の小文字とハイフンで）
 - 今どのブランチにいるかは `git branch` で確認できます（`*` が付いているのが今のブランチ）。
 
-> **main のまま作業しないでください。** 必ず自分のブランチを作ってから作業します。
+> **main やチームの main のまま作業しないでください。** 必ず自分のブランチを作ってから作業します。
 
 ### ③ 作業する
 
@@ -324,36 +361,60 @@ git commit -m "トップページのヘッダーを作成"
 ### ⑤ プッシュ（GitHub に送る）
 
 ```bash
-git push -u origin feature/tanaka-top-page
+git push -u origin team-b/tanaka-users-model
 ```
 
-`feature/tanaka-top-page` の部分は、②で作った **自分のブランチ名** にします。
+`team-b/tanaka-users-model` の部分は、②で作った **自分のブランチ名** にします。
 （2 回目からは `git push` だけで大丈夫です）
 
 ### ⑥ プルリクエスト（チェックをお願いする）
 
 1. ブラウザで GitHub のリポジトリを開きます。
 2. 黄色い帯の **「Compare & pull request」** を押します。
-3. 何をしたかを書いて **「Create pull request」** を押します。
-4. リーダーが確認して OK なら、main に入ります（これを「マージ」と言います）。
+3. **【いちばん大事】画面の上にある `base: main` を押して、自分のチームの main（例：`team-b/main`）に変えます。**
+
+   ```text
+   base: team-b/main  ←  compare: team-b/tanaka-users-model
+   ```
+
+   > `base` が `main` のままだと、チェックを飛ばして完成版に入れようとしてしまいます。
+   > まちがえたら、プルリクエストの画面の右上「Edit」から `base` を直せます。
+
+4. 何をしたかを書いて **「Create pull request」** を押します。
+5. チームのリーダー・副リーダーが確認して OK なら、チームの main に入ります（これを「マージ」と言います）。
 
 ### マージされたら
 
 次の作業は、また **① からスタート** です（新しいブランチを作ります）。
 
+### 他のチームの作業をもらうには
+
+他のチームの作業は、**main → チームの main** の順番で届きます。
+リーダーから「チームの main を更新したよ」と連絡が来たら、① の `git pull` をすると、他のチームの作業も入ってきます。
+
+作業の途中で、自分のブランチにも取り込みたいときは、自分のブランチにいる状態で次を実行します。
+
+```bash
+git fetch
+git merge origin/team-b/main
+```
+
+> `CONFLICT` と出たら、自分で直そうとせずに、リーダーか A チームに相談してください。
+
 ### コマンドまとめ（慣れてきたらこれだけ見ればOK）
 
 ```bash
 cd /c/xampp/htdocs/anabuki2026
-git switch main
+git fetch
+git switch team-チーム/main
 git pull
-git switch -c feature/名前-作業内容
+git switch -c team-チーム/名前-作業内容
 # …作業する…
 git status
 git add .
 git commit -m "何をしたか"
-git push -u origin feature/名前-作業内容
-# → GitHub でプルリクエスト
+git push -u origin team-チーム/名前-作業内容
+# → GitHub でプルリクエスト（base を team-チーム/main にする！）
 ```
 
 ---
@@ -398,7 +459,8 @@ anabuki2026/
 
 | ダメなこと | 理由 |
 |---|---|
-| ❌ main ブランチで直接作業する | みんなの完成版が壊れます。必ず自分のブランチで |
+| ❌ main ブランチやチームの main で直接作業する | みんなの完成版が壊れます。必ず自分のブランチで |
+| ❌ プルリクエストの `base` を `main` のまま出す | チームと A チームのチェックを飛ばしてしまいます。必ずチームの main に |
 | ❌ `git pull` せずに作業を始める | 他の人の変更とぶつかります |
 | ❌ `git push --force` を使う | 他の人の作業が消えることがあります |
 | ❌ `vendor/` の中を編集する | `composer install` のたびに元に戻ります |
