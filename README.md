@@ -362,29 +362,35 @@ git push -u origin feature/名前-作業内容
 
 ```
 anabuki2026/
-├── templates/        ← 画面の HTML（View 担当）
+├── templates/        ← 画面の HTML（C チーム）
 ├── webroot/
-│   ├── css/          ← 見た目（CSS）
+│   ├── css/          ← 見た目（CSS）（E チーム）
 │   ├── js/           ← 動き（JavaScript）
-│   └── img/          ← 画像
+│   └── img/          ← 画像（E チーム）
 ├── src/
-│   ├── Controller/   ← 画面とデータのつなぎ役（Controller 担当）
-│   └── Model/        ← データベースのやりとり（Model 担当）
-├── config/           ← 設定（基本は管理チームだけ）
+│   ├── Controller/   ← 画面とデータのつなぎ役（D チーム）
+│   └── Model/        ← データベースのやりとり（B チーム）
+├── config/           ← 設定（基本は A チームだけ）
 ├── vendor/           ← 自動でダウンロードされた部品（触らない）
 ├── composer.json     ← 部品のリスト（管理チームだけ）
 └── README.md         ← このファイル
 ```
 
-| 担当 | 主に触るところ |
-|---|---|
-| View 担当 | `templates/`、`webroot/css/`、`webroot/js/`、`webroot/img/` |
-| Controller 担当 | `src/Controller/` |
-| Model 担当 | `src/Model/` |
-| 管理チーム | `config/`、`composer.json`、`composer.lock` |
+| チーム | 担当 | 主に触るところ |
+|---|---|---|
+| A | 全体の統括・管理（管理チーム） | `config/`、`composer.json`、`composer.lock`、`.github/` |
+| B | Model | `src/Model/` |
+| C | View | `templates/`、`src/View/` |
+| D | Controller | `src/Controller/` |
+| E | デザイン | `webroot/css/`、`webroot/img/`、`webroot/font/` |
+| F | DB | `config/Migrations/`、`config/Seeds/` |
+| G | テスト | `tests/` |
+
+> **自分のチームの作業のしかたは [チーム別ガイド](docs/teams/README.md) を見てください。**
+> 1 つ 1 つのファイルが何をしているかは [docs/FILES.md](docs/FILES.md) にまとめてあります。
 
 > 画面に出すデータやフォームの送信は Controller とつながっています。
-> View 担当の人も、困ったら Controller 担当の人と相談しましょう。
+> C チーム（View）の人も、困ったら D チーム（Controller）の人と相談しましょう。
 
 ---
 
