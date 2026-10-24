@@ -30,12 +30,12 @@ F チームが作ったデータベースの表を、アプリから読んだり
 
 ### 1. F チームが表を作るのを待つ
 
-F チームが作った表は、**main に入って、B のリーダーが `team-b/main` に取り込んだあと**に届きます。
+F チームが作った表は、**main に入って、B のリーダーが `teamB/main` に取り込んだあと**に届きます。
 リーダーから「取り込んだよ」と連絡が来たら、最新版をもらって、自分のパソコンにも表を作ります。
 
 ```bash
 git fetch
-git switch team-b/main
+git switch teamB/main
 git pull
 bin/cake migrations migrate
 ```

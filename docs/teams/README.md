@@ -81,40 +81,43 @@ CakePHP は「名前の付け方」でファイル同士をつなげています
 ![ブランチ構成](../images/branch-structure.png)
 
 矢印は「ブランチを作る向き」です。作業をまとめるとき（マージ）は、反対に**下から上へ**プルリクエストを出します。
-図の「teamA」は `team-a/main`、「teamB main」は `team-b/main`、「member-1」はメンバーの作業ブランチ（例：`team-b/tanaka-users-model`）のことです。
+図の「teamA」は `teamA/main`、「teamB main」は `teamB/main`、「member-1」はメンバーの作業ブランチ（例：`teamB/tanaka-users-model`）のことです。
 
 | ブランチ | だれがマージする？ | どこからプルリクエストが来る？ |
 | --- | --- | --- |
-| `main` | A チーム | `team-a/main` |
-| `team-a/main` | A チーム | 各チームの main（リーダー・副リーダーが出す）と、A チームのメンバーの作業ブランチ |
-| `team-b/main` 〜 `team-g/main` | そのチームのリーダー・副リーダー | そのチームのメンバーの作業ブランチ |
+| `main` | A チーム | `teamA/main` |
+| `teamA/main` | A チーム | 各チームの main（リーダー・副リーダーが出す）と、A チームのメンバーの作業ブランチ |
+| `teamB/main` 〜 `teamG/main` | そのチームのリーダー・副リーダー | そのチームのメンバーの作業ブランチ |
 
 ### ブランチ名の決まり
 
-`team-チーム/名前-作業内容`（英語の小文字とハイフン）で付けます。
+`teamX/名前-作業内容` で付けます。X はチームの**大文字** 1 文字、名前と作業内容は英語の小文字とハイフンです。
 
 | チーム | チームの main | メンバーの作業ブランチの例 |
 | --- | --- | --- |
-| A | `team-a/main` | `team-a/tanaka-update-readme` |
-| B | `team-b/main` | `team-b/suzuki-users-model` |
-| C | `team-c/main` | `team-c/sato-users-add-page` |
-| D | `team-d/main` | `team-d/takahashi-users-controller` |
-| E | `team-e/main` | `team-e/ito-top-page-design` |
-| F | `team-f/main` | `team-f/watanabe-create-users-table` |
-| G | `team-g/main` | `team-g/yamamoto-users-test` |
+| A | `teamA/main` | `teamA/tanaka-update-readme` |
+| B | `teamB/main` | `teamB/suzuki-users-model` |
+| C | `teamC/main` | `teamC/sato-users-add-page` |
+| D | `teamD/main` | `teamD/takahashi-users-controller` |
+| E | `teamE/main` | `teamE/ito-top-page-design` |
+| F | `teamF/main` | `teamF/watanabe-create-users-table` |
+| G | `teamG/main` | `teamG/yamamoto-users-test` |
 
-> ⚠️ `team-b` という名前だけのブランチは作らないでください。
-> Git のしくみで、`team-b` があると `team-b/main` や `team-b/○○` が作れなくなります。
+> ⚠️ `teamB` という名前だけのブランチは作らないでください。
+> Git のしくみで、`teamB` があると `teamB/main` や `teamB/○○` が作れなくなります。
+>
+> ⚠️ チームの文字は**大文字**です（`teamb` ではなく `teamB`）。
+> Windows はファイルの名前の大文字・小文字を区別しないので、`teamb/○○` と `teamB/○○` がまざると、Git がおかしな動きをします。
 
 ### 他のチームの作業はいつ届く？
 
 他のチームの作業は、**main に入ってから**届きます。
 
 ```text
-F チームの作業 → team-f/main → team-a/main → main → team-b/main → B チームのメンバー
+F チームの作業 → teamF/main → teamA/main → main → teamB/main → B チームのメンバー
 ```
 
-たとえば B チームは、F チームの表が main に入って、B のリーダーが team-b/main に取り込んだあとで使えるようになります。
+たとえば B チームは、F チームの表が main に入って、B のリーダーが teamB/main に取り込んだあとで使えるようになります。
 **急いでほかのチームの作業がほしいときは、A チームに相談**してください。
 
 ---
@@ -125,10 +128,10 @@ F チームの作業 → team-f/main → team-a/main → main → team-b/main �
 
 ### 1. メンバーのプルリクエストをチェックしてマージする
 
-メンバーから、チームの main（例：`team-b/main`）あてにプルリクエストが届きます。
+メンバーから、チームの main（例：`teamB/main`）あてにプルリクエストが届きます。
 GitHub でプルリクエストを開いて、次を確認します。
 
-- [ ] `base` が**チームの main**（例：`team-b/main`）になっている（`main` になっていたら、右上の「Edit」で直す）
+- [ ] `base` が**チームの main**（例：`teamB/main`）になっている（`main` になっていたら、右上の「Edit」で直す）
 - [ ] 画面下の自動チェック（CI）が **緑のチェック** になっている
 - [ ] 「Files changed」に、**自分のチームの担当ではないファイル**が入っていない
 - [ ] `vendor/`、`tmp/`、`logs/`、`config/app_local.php` が入っていない
@@ -145,13 +148,13 @@ GitHub でプルリクエストを開いて、次を確認します。
 2. 次のように選びます。
 
    ```text
-   base: team-a/main  ←  compare: team-b/main
+   base: teamA/main  ←  compare: teamB/main
    ```
 
 3. タイトルに「何の機能か」、説明に「何ができるようになったか」「ほかのチームに伝えたいこと」を書いて、**「Create pull request」** を押します。
-4. A チームがチェックして、OK なら team-a/main にマージされます。
+4. A チームがチェックして、OK なら teamA/main にマージされます。
 
-> ⚠️ チームの main そのもの（`team-b/main`）は、マージしたあとも**消さないで**ください。
+> ⚠️ チームの main そのもの（`teamB/main`）は、マージしたあとも**消さないで**ください。
 > GitHub に「Delete branch」ボタンが出ても押さないでください（メンバーの作業ブランチは消してOK）。
 
 ### 3. main の最新版をチームの main に取り込む
@@ -162,7 +165,7 @@ A チームから「main を更新したよ」と連絡が来たら、ほかの�
 2. 次のように選びます（いつもと**逆向き**です）。
 
    ```text
-   base: team-b/main  ←  compare: main
+   base: teamB/main  ←  compare: main
    ```
 
 3. **「Create pull request」** → **「Merge pull request」** を押します。

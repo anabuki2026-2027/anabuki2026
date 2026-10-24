@@ -5,7 +5,7 @@
 ## ひとことで
 
 **プロジェクト全体の「司令塔」です。**
-どの機能を作るかを決め、チームどうしの名前やルールをそろえ、各チームから届いた作業を `team-a/main` に集めてチェックし、main に入れます。
+どの機能を作るかを決め、チームどうしの名前やルールをそろえ、各チームから届いた作業を `teamA/main` に集めてチェックし、main に入れます。
 アプリ全体の設定ファイルも A チームが管理します。
 
 ---
@@ -14,13 +14,13 @@
 
 1. **作る機能を決めて、各チームに割りふる**
 2. **名前の一覧を作って共有する**（表の名前・URL・画面の名前など。[名前の決まり](README.md#全チーム共通名前の決まり)を参照）
-3. **各チームのリーダー・副リーダーから届いたプルリクエストをチェックして、`team-a/main` にマージする**
-4. **`team-a/main` で全体がちゃんと動くか確かめて、main にマージする**
+3. **各チームのリーダー・副リーダーから届いたプルリクエストをチェックして、`teamA/main` にマージする**
+4. **`teamA/main` で全体がちゃんと動くか確かめて、main にマージする**
 5. **リーダー・副リーダーに連絡する**（「main を更新したので取り込んでね」「`bin/cake migrations migrate` してね」など）
 6. **設定ファイルを管理する**
 7. **困っている人を助ける**（わからないことは最終的に A チームに集まります）
 
-A チームのメンバー自身の作業も、ほかのチームと同じように `team-a/○○` のブランチを作って、`team-a/main` にプルリクエストを出します。
+A チームのメンバー自身の作業も、ほかのチームと同じように `teamA/○○` のブランチを作って、`teamA/main` にプルリクエストを出します。
 
 ---
 
@@ -63,20 +63,29 @@ Git Bash で次を実行します。
 cd /c/xampp/htdocs/anabuki2026
 git switch main
 git pull
-git push origin main:team-a/main
-git push origin main:team-b/main
-git push origin main:team-c/main
-git push origin main:team-d/main
-git push origin main:team-e/main
-git push origin main:team-f/main
-git push origin main:team-g/main
+bash scripts/create_branches.sh
 ```
 
-`git push origin main:team-b/main` は、「今の main と同じ中身で、GitHub に `team-b/main` を作る」という意味です。
+「作成予定」に 7 つ並んでいることを確認してから、`y` を押します。
+すでにあるブランチは飛ばすので、もう一度実行しても大丈夫です。
+
+スクリプトを使わずに、1 つずつ作ることもできます。
+
+```bash
+git push origin main:teamA/main
+git push origin main:teamB/main
+git push origin main:teamC/main
+git push origin main:teamD/main
+git push origin main:teamE/main
+git push origin main:teamF/main
+git push origin main:teamG/main
+```
+
+`git push origin main:teamB/main` は、「今の main と同じ中身で、GitHub に `teamB/main` を作る」という意味です。
 GitHub の「branches」の画面で、7 つできていることを確認してください。
 
 > **できればやっておくとよいこと**
-> GitHub の「Settings」→「Rules」（または「Branches」）で、`main` と `team-*/main` に
+> GitHub の「Settings」→「Rules」（または「Branches」）で、`main` と `team*/main` に
 > 「プルリクエストを通さないとマージできない」「消せない」というルールを付けておくと、まちがいを防げます。
 > （GitHub のプランによっては使えないことがあります）
 
@@ -96,10 +105,10 @@ GitHub の「branches」の画面で、7 つできていることを確認して
 
 ### 各チームからのプルリクエストをチェックするとき
 
-各チームのリーダー・副リーダーから、`team-a/main` あてにプルリクエストが届きます（`base: team-a/main ← compare: team-b/main` の形）。
+各チームのリーダー・副リーダーから、`teamA/main` あてにプルリクエストが届きます（`base: teamA/main ← compare: teamB/main` の形）。
 GitHub でプルリクエストを開いて、次を確認します。
 
-- [ ] `base` が `team-a/main` になっている（`main` になっていたら、右上の「Edit」で直す）
+- [ ] `base` が `teamA/main` になっている（`main` になっていたら、右上の「Edit」で直す）
 - [ ] 画面下の自動チェック（CI）が **緑のチェック** になっている
 - [ ] 「Files changed」に、**そのチームの担当ではないファイル**が入っていない
 - [ ] `vendor/`、`tmp/`、`logs/`、`config/app_local.php` が入っていない
@@ -109,25 +118,25 @@ GitHub でプルリクエストを開いて、次を確認します。
 問題なければ **「Merge pull request」** を押します。
 直してほしいところがあれば、そのファイルの行にコメントを書いて返します。
 
-> ⚠️ マージしたあとに「Delete branch」ボタンが出ても、**チームの main（`team-b/main` など）は消さないで**ください。
+> ⚠️ マージしたあとに「Delete branch」ボタンが出ても、**チームの main（`teamB/main` など）は消さないで**ください。
 
 ### マージする順番
 
-チームどうしはつながっているので、基本は次の順番で `team-a/main` にマージします。
+チームどうしはつながっているので、基本は次の順番で `teamA/main` にマージします。
 
 ```text
 F（表を作る）→ B（Model）→ D（Controller）→ C（View）・E（デザイン）→ G（テスト）
 ```
 
-### team-a/main を main に入れるとき
+### teamA/main を main に入れるとき
 
-ある程度の機能がそろったら、`team-a/main` を main に入れます。
+ある程度の機能がそろったら、`teamA/main` を main に入れます。
 
-1. 自分のパソコンで `team-a/main` を動かして、**全部の機能がつながって動くか**を確かめます。
+1. 自分のパソコンで `teamA/main` を動かして、**全部の機能がつながって動くか**を確かめます。
 
    ```bash
    git fetch
-   git switch team-a/main
+   git switch teamA/main
    git pull
    composer install
    bin/cake migrations migrate
@@ -138,7 +147,7 @@ F（表を作る）→ B（Model）→ D（Controller）→ C（View）・E（�
 2. GitHub で **「Pull requests」→「New pull request」** を押して、次のように選びます。
 
    ```text
-   base: main  ←  compare: team-a/main
+   base: main  ←  compare: teamA/main
    ```
 
 3. **「Create pull request」** → 自動チェック（CI）が緑になったら **「Merge pull request」** を押します。
@@ -156,7 +165,7 @@ main を更新したら、**全チームのリーダー・副リーダーに**�
 | `config/Migrations/` の中のファイル | `bin/cake migrations migrate` |
 | `config/Seeds/` の中のファイル | `bin/cake seeds run` |
 
-`team-a/main` も、main を更新したあとは main と同じ中身になっているので、取り込みは不要です。
+`teamA/main` も、main を更新したあとは main と同じ中身になっているので、取り込みは不要です。
 
 ---
 

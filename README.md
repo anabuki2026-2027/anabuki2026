@@ -51,7 +51,7 @@
 | **ブランチ** | 自分専用の作業コース。他の人の作業とぶつからない | 自分用のコピーで練習する |
 | **プルリクエスト（PR）** | 「自分の変更を本番に入れてください」とお願いすること | 先生に提出してチェックしてもらう |
 | **main（メイン）** | 完成版を置く大事なブランチ。直接さわらない | 提出済みの清書 |
-| **チームの main** | `team-b/main` のように、チームごとにある「チームの完成版」 | チームで集めた下書き |
+| **チームの main** | `teamB/main` のように、チームごとにある「チームの完成版」 | チームで集めた下書き |
 
 このチームでは Git を **Git Bash（ギットバッシュ）** という黒い画面で、コマンド（命令文）を入力して操作します。
 コマンドはこのページからコピーして貼り付ければ大丈夫です。
@@ -318,22 +318,22 @@ bin/cake server
 | 図の名前 | 実際のブランチ名 | 何のブランチ？ |
 | --- | --- | --- |
 | main | `main` | 完成版（A チームだけがマージする） |
-| teamA | `team-a/main` | A チームが全チームの作業を集めてチェックする場所 |
-| teamB main 〜 teamG main | `team-b/main` 〜 `team-g/main` | 各チームの完成版（そのチームのリーダー・副リーダーがマージする） |
-| member-1、member-2 … | `team-b/tanaka-users-model` など | メンバー 1 人 1 人の作業ブランチ |
+| teamA | `teamA/main` | A チームが全チームの作業を集めてチェックする場所 |
+| teamB main 〜 teamG main | `teamB/main` 〜 `teamG/main` | 各チームの完成版（そのチームのリーダー・副リーダーがマージする） |
+| member-1、member-2 … | `teamB/tanaka-users-model` など | メンバー 1 人 1 人の作業ブランチ |
 
 作業は、下から上へ順番に上がっていきます。
 
 ```text
 ① メンバー     ：自分の作業ブランチ → チームの main にプルリクエスト
                     （チームのリーダー・副リーダーがチェックしてマージ）
-② リーダー     ：1 つの機能ができたら、チームの main → team-a/main にプルリクエスト
+② リーダー     ：1 つの機能ができたら、チームの main → teamA/main にプルリクエスト
                     （A チームがチェックしてマージ）
-③ A チーム     ：team-a/main → main にマージ
+③ A チーム     ：teamA/main → main にマージ
 ④ リーダー     ：main に入った最新版を、チームの main に取り込む（→ 他のチームの作業がもらえる）
 ```
 
-このページの `team-b` の部分は、**自分のチーム**（`team-a` 〜 `team-g`、小文字）に読みかえてください。
+このページの `teamB` の部分は、**自分のチーム**（`teamA` 〜 `teamG`。**チームの文字は大文字**）に読みかえてください。
 
 > リーダー・副リーダーの作業（②・④）は、[チーム別ガイド](docs/teams/README.md#リーダー副リーダーの仕事) を見てください。
 > ここから下は、**メンバー全員**の毎日の作業です。
@@ -358,7 +358,7 @@ cd /c/xampp/htdocs/anabuki2026
 
 ```bash
 git fetch
-git switch team-b/main
+git switch teamB/main
 git pull
 ```
 
@@ -369,11 +369,11 @@ git pull
 ### ② ブランチを作る（自分専用の作業コース）
 
 ```bash
-git switch -c team-b/tanaka-users-model
+git switch -c teamB/tanaka-users-model
 ```
 
-- `team-b/tanaka-users-model` の部分は **自分のチームと作業に合わせて変えます**。
-  決まり：`team-チーム/名前-作業内容`（英語の小文字とハイフンで）
+- `teamB/tanaka-users-model` の部分は **自分のチームと作業に合わせて変えます**。
+  決まり：`teamX/名前-作業内容`（X は自分のチームの大文字 1 文字。名前と作業内容は英語の小文字とハイフンで）
 - 今どのブランチにいるかは `git branch` で確認できます（`*` が付いているのが今のブランチ）。
 
 > **main やチームの main のまま作業しないでください。** 必ず自分のブランチを作ってから作業します。
@@ -409,20 +409,20 @@ git commit -m "トップページのヘッダーを作成"
 ### ⑤ プッシュ（GitHub に送る）
 
 ```bash
-git push -u origin team-b/tanaka-users-model
+git push -u origin teamB/tanaka-users-model
 ```
 
-`team-b/tanaka-users-model` の部分は、②で作った **自分のブランチ名** にします。
+`teamB/tanaka-users-model` の部分は、②で作った **自分のブランチ名** にします。
 （2 回目からは `git push` だけで大丈夫です）
 
 ### ⑥ プルリクエスト（チェックをお願いする）
 
 1. ブラウザで GitHub のリポジトリを開きます。
 2. 黄色い帯の **「Compare & pull request」** を押します。
-3. **【いちばん大事】画面の上にある `base: main` を押して、自分のチームの main（例：`team-b/main`）に変えます。**
+3. **【いちばん大事】画面の上にある `base: main` を押して、自分のチームの main（例：`teamB/main`）に変えます。**
 
    ```text
-   base: team-b/main  ←  compare: team-b/tanaka-users-model
+   base: teamB/main  ←  compare: teamB/tanaka-users-model
    ```
 
    > `base` が `main` のままだと、チェックを飛ばして完成版に入れようとしてしまいます。
@@ -444,7 +444,7 @@ git push -u origin team-b/tanaka-users-model
 
 ```bash
 git fetch
-git merge origin/team-b/main
+git merge origin/teamB/main
 ```
 
 > `CONFLICT` と出たら、自分で直そうとせずに、リーダーか A チームに相談してください。
@@ -454,15 +454,15 @@ git merge origin/team-b/main
 ```bash
 cd /c/xampp/htdocs/anabuki2026
 git fetch
-git switch team-チーム/main
+git switch teamX/main
 git pull
-git switch -c team-チーム/名前-作業内容
+git switch -c teamX/名前-作業内容
 # …作業する…
 git status
 git add .
 git commit -m "何をしたか"
-git push -u origin team-チーム/名前-作業内容
-# → GitHub でプルリクエスト（base を team-チーム/main にする！）
+git push -u origin teamX/名前-作業内容
+# → GitHub でプルリクエスト（base を teamX/main にする！ X は自分のチームの大文字）
 ```
 
 ---

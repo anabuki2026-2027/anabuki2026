@@ -181,6 +181,7 @@ A チームは、この流れ全体を見守り、設定やルールを管理し
 | `phpstan.neon` | 「プログラムにミスがないか」を、動かす前にチェックする道具の設定。 | A |
 | `psalm.xml` | `phpstan.neon` と同じ種類の、ミスを探す道具の設定。 | A |
 | `phpunit.xml.dist` | 自動チェック（テスト）の設定。 | G |
+| `scripts/create_branches.sh` | 各チームの main（`teamA/main` 〜 `teamG/main`）を、GitHub にまとめて作るスクリプト。最初に 1 回だけ A チームが使う。 | A |
 
 ---
 

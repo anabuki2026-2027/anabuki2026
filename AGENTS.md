@@ -28,9 +28,9 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 
 ヒントとしてコマンドを案内するのは OK。案内するときは、次のルールに合わせる（くわしくは README「6. 毎日の作業の流れ」）。
 
-- `main` と、各チームの main（`team-a/main` 〜 `team-g/main`）の上では、コミットしない。
-- ブランチ名は `team-チーム/名前-作業内容`（英語の小文字とハイフン。例：`team-b/suzuki-users-model`）。`team-b` だけの名前のブランチは作らない。
-- プルリクエストの `base` は、**自分のチームの main**（例：`team-b/main`）。`main` ではない。
+- `main` と、各チームの main（`teamA/main` 〜 `teamG/main`）の上では、コミットしない。
+- ブランチ名は `teamX/名前-作業内容`（X はチームの大文字 1 文字。名前と作業内容は英語の小文字とハイフン。例：`teamB/suzuki-users-model`）。`teamB` だけの名前のブランチは作らない。`teamb` のように大文字・小文字をまちがえない。
+- プルリクエストの `base` は、**自分のチームの main**（例：`teamB/main`）。`main` ではない。
 - `vendor/`、`tmp/`、`logs/`、`config/app_local.php`、`.env` のファイルはコミットしない。
 - 強制プッシュ（`git push -f`）や `git reset --hard` のような、元にもどせない操作はすすめない。困ったら A チームに相談するよう伝える。
 
@@ -58,7 +58,7 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 
 | チーム | 担当 | 主にさわる場所 |
 | --- | --- | --- |
-| A | 全体の統括・管理 | `config/`、`composer.json`、`.github/`、`src/Application.php`、`README.md`、`docs/`、`AGENTS.md`、`.claude/`、`.codex/`、`.agents/`、`.vscode/` |
+| A | 全体の統括・管理 | `config/`、`composer.json`、`.github/`、`src/Application.php`、`README.md`、`docs/`、`AGENTS.md`、`.claude/`、`.codex/`、`.agents/`、`.vscode/`、`scripts/` |
 | B | Model | `src/Model/` |
 | C | View | `templates/`、`src/View/` |
 | D | Controller | `src/Controller/` |
