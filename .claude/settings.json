@@ -1,0 +1,55 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer check)",
+      "Bash(composer test)",
+      "Bash(composer test *)",
+      "Bash(composer cs-check)",
+      "Bash(composer cs-check *)",
+      "Bash(php -v)",
+      "Bash(php -l *)",
+      "Bash(composer --version)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(//**/.env)",
+      "Read(//**/.env.*)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(//**/.env)",
+      "Edit(//**/.env.*)",
+      "Bash(* .env*)",
+      "Bash(*/.env*)",
+      "PowerShell(* .env*)",
+      "PowerShell(*/.env*)",
+      "PowerShell(*\\.env*)",
+      "Read(./config/app_local.php)",
+      "Edit(./config/app_local.php)",
+      "Bash(git)",
+      "Bash(git *)",
+      "Bash(gh)",
+      "Bash(gh *)",
+      "PowerShell(git)",
+      "PowerShell(git *)",
+      "PowerShell(gh)",
+      "PowerShell(gh *)",
+      "Edit(./.git/**)",
+      "Edit(./vendor/**)",
+      "Edit(./composer.lock)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/xampp/php/php.exe \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard.php\""
+          }
+        ]
+      }
+    ]
+  }
+}

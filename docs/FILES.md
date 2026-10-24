@@ -167,6 +167,16 @@ A チームは、この流れ全体を見守り、設定やルールを管理し
 | `.vscode/settings.json` | このフォルダを開いた人全員に効く VS Code の設定。字下げや改行をそろえたり、`templates` フォルダの `.php` にもちゃんとコードの色が付くようにしている。 | A |
 | `.vscode/extensions.json` | 「入れてください」とおすすめする VS Code の拡張機能のリスト。 | A |
 | `.vscode/tasks.json` | テストや書き方チェックなどのコマンドを、VS Code のメニュー（「ターミナル」→「タスクの実行...」）から実行できるようにするファイル。 | A |
+| `AGENTS.md` | AI（Claude Code・Codex）が、このフォルダで作業するときに最初に読む説明書。`.env` を絶対に見ない・git の操作は人が行う、というルールや、チームの担当が書いてある。 | A |
+| `.agents/skills/` | AI に覚えさせた「決まった作業の手順」。Claude Code と Codex で共通。`setup-check` は準備のチェック、`pr-check` はプルリクエストの前のチェック。 | A |
+| `.claude/CLAUDE.md` | Claude Code 用の説明書。`AGENTS.md` を読みこんで、Claude Code だけの話を足している。 | A |
+| `.claude/settings.json` | Claude Code に「してよいこと・してはいけないこと」を教える設定。`.env` などのパスワードの入ったファイルを読ませない、git のコマンドを動かさせない、など。 | A |
+| `.claude/hooks/guard.php` | AI が道具を使う直前に毎回動く見張り役。`.env` の中身を見ようとしたり、git のコマンドを動かそうとしたら止める。Claude Code と Codex の両方から使う。 | A |
+| `.claude/skills/` | Claude Code で `/setup-check`、`/pr-check` と打って呼び出すための入口。手順の中身は `.agents/skills/` にある。 | A |
+| `.claude/settings.local.json` | Claude Code の、自分のパソコンだけの設定。GitHub には送られない。 | 全員 |
+| `.codex/config.toml` | Codex（CLI・VS Code の拡張機能）の設定。見張り役がすり抜けられないようにしている。 | A |
+| `.codex/hooks.json` | Codex が道具を使う直前に、見張り役（`.claude/hooks/guard.php`）を動かす設定。 | A |
+| `.codex/rules/guard.rules` | Codex に「git と gh のコマンドは実行してはいけない」と教えるルール。 | A |
 | `phpcs.xml` | 「コードの書き方がルールどおりか」をチェックする道具の設定。 | A |
 | `phpstan.neon` | 「プログラムにミスがないか」を、動かす前にチェックする道具の設定。 | A |
 | `psalm.xml` | `phpstan.neon` と同じ種類の、ミスを探す道具の設定。 | A |

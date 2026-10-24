@@ -37,6 +37,7 @@ nbproject/*
 !.vscode/settings.json
 !.vscode/extensions.json
 !.vscode/tasks.json
+.claude/settings.local.json
 .nova
 .sass-cache/
 /node_modules/*

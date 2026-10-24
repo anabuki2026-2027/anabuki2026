@@ -42,6 +42,11 @@ A チームのメンバー自身の作業も、ほかのチームと同じよう
 | `.gitignore` | GitHub に送らないファイルの一覧。 |
 | `phpcs.xml`、`phpstan.neon`、`psalm.xml` | コードのチェック道具の設定。 |
 | `.github/` | GitHub の自動チェック（CI）や、Issue・プルリクエストの見本。 |
+| `.vscode/` | 全員に効く VS Code の設定・おすすめ拡張機能・タスク。 |
+| `AGENTS.md` | AI（Claude Code・Codex）の説明書。チームのルールが変わったら、ここも更新する。 |
+| `.agents/` | AI の決まった作業の手順（スキル）。Claude Code と Codex で共通。 |
+| `.claude/` | Claude Code の設定と、見張り役（`hooks/guard.php`）。 |
+| `.codex/` | Codex の設定・見張り役の呼び出し・禁止のルール。 |
 
 ---
 

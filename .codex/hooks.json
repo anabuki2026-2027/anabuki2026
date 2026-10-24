@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "php .claude/hooks/guard.php",
+            "commandWindows": "C:\\xampp\\php\\php.exe C:\\xampp\\htdocs\\anabuki2026\\.claude\\hooks\\guard.php",
+            "timeout": 10,
+            "statusMessage": "見張り役（guard.php）が確認しています"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+# 【このファイルは？】
+# このフォルダで Codex（CLI・VS Code の拡張機能）を使う人全員に効く、Codex の設定。
+# 見張り役（.codex/hooks.json → .claude/hooks/guard.php）がすり抜けられないようにしている。
+# Codex でこのフォルダを「信頼する（trust）」と選ぶまでは効かない。
+#
+# 【担当】A チーム
+# 【くわしく】docs/FILES.md
+
+[features]
+# 道具を使う直前に見張り役を動かす（.codex/hooks.json）
+hooks = true
+# 開きっぱなしのターミナルに文字を送りこむ方法は、見張り役を通らないので使わせない
+unified_exec = false

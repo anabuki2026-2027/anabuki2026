@@ -1,0 +1,23 @@
+# 【このファイルは？】
+# Codex に「このコマンドは実行してはいけない」と教えるルール。
+# git の操作は必ず人が行うルールなので、git と gh のコマンドは、見るだけのものも含めてすべて禁止している。
+# （.env の中身を見ることも禁止だが、それは見張り役の .claude/hooks/guard.php で止めている）
+#
+# 【担当】A チーム
+# 【くわしく】docs/FILES.md
+
+prefix_rule(
+    pattern = [["git", "git.exe", "gh", "gh.exe"]],
+    decision = "forbidden",
+    justification = "git の操作は必ず人が行うルールです（AGENTS.md）。コマンドは実行せずに、Git Bash で実行するコマンドを案内してください。",
+    match = [
+        "git status",
+        "git push origin main",
+        "git.exe log",
+        "gh pr create",
+    ],
+    not_match = [
+        "composer check",
+        "php bin/cake.php server",
+    ],
+)
