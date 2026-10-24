@@ -1,4 +1,12 @@
 <?php
+/*
+ * 【このファイルは？】
+ * 失敗したときのメッセージ（例：「保存できませんでした」）の見た目。
+ *
+ * 【担当】C・E チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * @var \App\View\AppView $this
  * @var array $params

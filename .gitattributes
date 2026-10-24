@@ -1,14 +1,15 @@
-# Define the line ending behavior of the different file extensions
-# Set default behavior, in case users don't have core.autocrlf set.
+# 【このファイルは？】
+# Git への細かい指示（改行のしかた、画像をどうあつかうか など）。
+#
+# 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+# 【くわしく】docs/FILES.md
+
 * text text=auto eol=lf
 
-# Declare files that will always have CRLF line endings on checkout.
 *.bat eol=crlf
 
-# Declare files that will always have LF line endings on checkout.
 *.pem eol=lf
 
-# Denote all files that are truly binary and should not be modified.
 *.png binary
 *.jpg binary
 *.jpeg binary

@@ -1,3 +1,10 @@
+# 【このファイルは？】
+# 使っている部品（ライブラリ）に新しいバージョンが出たら、
+# GitHub が自動で「更新しませんか？」とプルリクエストを作ってくれる設定。
+#
+# 【担当】A チーム
+# 【くわしく】docs/FILES.md
+
 version: 2
 updates:
 - package-ecosystem: composer

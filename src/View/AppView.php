@@ -1,6 +1,15 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * すべての画面の「親」。
+ * 全部の画面で使いたい便利な道具（Helper）があれば、ここで読み込む。
+ *
+ * 【担当】C チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,22 +26,9 @@ namespace App\View;
 
 use Cake\View\View;
 
-/**
- * Application View
- *
- * Your application's default view class
- *
- * @link https://book.cakephp.org/5/en/views.html#the-app-view
- */
 class AppView extends View
 {
     /**
-     * Initialization hook method.
-     *
-     * Use this method to add common initialization code like adding helpers.
-     *
-     * e.g. `$this->addHelper('Html');`
-     *
      * @return void
      */
     public function initialize(): void

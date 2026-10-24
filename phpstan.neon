@@ -1,3 +1,9 @@
+# 【このファイルは？】
+# 「プログラムにミスがないか」を、動かす前にチェックする道具（PHPStan）の設定。
+#
+# 【担当】A チーム
+# 【くわしく】docs/FILES.md
+
 parameters:
 	level: 8
 	treatPhpDocTypesAsCertain: false

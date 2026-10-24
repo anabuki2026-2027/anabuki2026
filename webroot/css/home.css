@@ -1,4 +1,10 @@
-/* Home page styles */
+/*
+ * 【このファイルは？】
+ * 今のトップページ（templates/Pages/home.php）専用の見た目。
+ *
+ * 【担当】なし（見るだけ。変えたいときは A チームに相談）
+ * 【くわしく】docs/FILES.md
+ */
 @font-face {
     font-family: 'cakefont';
     src: url('../font/cakedingbats-webfont.eot');

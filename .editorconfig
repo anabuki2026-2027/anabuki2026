@@ -1,5 +1,9 @@
-; This file is for unifying the coding style for different editors and IDEs.
-; More information at https://editorconfig.org
+; 【このファイルは？】
+; VS Code などのエディタに「字下げはスペース 4 つ」「改行は LF」などの
+; 書き方のルールを教えるファイル。
+;
+; 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+; 【くわしく】docs/FILES.md
 
 root = true
 

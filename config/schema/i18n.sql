@@ -1,3 +1,9 @@
+# 【このファイルは？】
+# 翻訳機能を使うときに必要な、データベースの表の設計図。今は使っていない。
+#
+# 【担当】なし（見るだけ。変えたいときは A チームに相談）
+# 【くわしく】docs/FILES.md
+
 # Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
 #
 # Licensed under The MIT License

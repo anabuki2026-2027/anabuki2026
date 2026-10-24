@@ -1,4 +1,5 @@
--- Test database schema.
+-- 【このファイルは？】
+-- チェック用のデータベースの表を書く場所。今は使っていない（表は Migrations で作るため）。
 --
--- If you are not using CakePHP migrations you can put
--- your application's schema in this file and use it in tests.
+-- 【担当】なし（見るだけ。変えたいときは A チームに相談）
+-- 【くわしく】docs/FILES.md

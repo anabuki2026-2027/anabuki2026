@@ -1,4 +1,13 @@
 <?php
+/*
+ * 【このファイルは？】
+ * ふつうのページの「外わく」（上のメニューなど、どのページでも同じ部分）。
+ * 各ページの中身は、この外わくの中にはめこまれて表示される。CSS の読み込みもここでしている。
+ *
+ * 【担当】C・E チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)

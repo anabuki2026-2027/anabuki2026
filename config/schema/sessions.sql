@@ -1,3 +1,9 @@
+# 【このファイルは？】
+# ログイン状態をデータベースに保存するときに必要な、表の設計図。今は使っていない。
+#
+# 【担当】なし（見るだけ。変えたいときは A チームに相談）
+# 【くわしく】docs/FILES.md
+
 # Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
 #
 # Licensed under The MIT License

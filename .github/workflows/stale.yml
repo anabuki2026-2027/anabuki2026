@@ -1,3 +1,9 @@
+# 【このファイルは？】
+# 長いあいだ放置されている Issue やプルリクエストに印を付けて、自動で閉じる設定。
+#
+# 【担当】A チーム
+# 【くわしく】docs/FILES.md
+
 name: Mark stale issues and pull requests
 
 on:
@@ -11,8 +17,8 @@ jobs:
   stale:
 
     permissions:
-      issues: write  # for actions/stale to close stale issues
-      pull-requests: write  # for actions/stale to close stale PRs
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     
     steps:

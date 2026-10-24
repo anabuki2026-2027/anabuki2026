@@ -1,4 +1,13 @@
 <?php
+/*
+ * 【このファイルは？】
+ * 今のトップページ（CakePHP の最初の画面）。データベースにつながっているかなどを確認できる。
+ * あとで自分たちのトップページに作りかえる。
+ *
+ * 【担当】C チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -27,7 +36,6 @@ $checkConnection = function (string $name) {
     $connected = false;
     try {
         ConnectionManager::get($name)->getDriver()->connect();
-        // No exception means success
         $connected = true;
     } catch (Exception $connectionError) {
         $error = $connectionError->getMessage();

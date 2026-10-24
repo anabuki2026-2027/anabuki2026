@@ -1,6 +1,10 @@
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: 【このファイルは？】
+:: bin/cake の Windows のコマンドプロンプト版。
 ::
-:: Cake is a Windows batch script for invoking CakePHP shell commands
+:: 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+:: 【くわしく】docs/FILES.md
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::
 :: CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
 :: Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)

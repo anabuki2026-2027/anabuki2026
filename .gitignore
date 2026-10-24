@@ -1,52 +1,41 @@
-# CakePHP specific files #
-##########################
+# 【このファイルは？】
+# 「GitHub に送らないファイル」のリスト。
+# パスワードが入った config/app_local.php や、自動で作られる vendor/・tmp/・logs/ などを守る。
+#
+# 【担当】A チーム
+# 【くわしく】docs/FILES.md
+
 /config/app_local.php
 /config/.env
 /logs/*
 /tmp/*
 /vendor/*
 
-# OS generated files #
-######################
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-# Icon must end with two \r
-Icon
+Icon
 ehthumbs.db
 Thumbs.db
 .directory
 
-# Tool specific files #
-#######################
-# PHPUnit
 .phpunit.cache
 tests.sqlite
-# vim
 *~
 *.swp
 *.swo
-# sublime text & textmate
 *.sublime-*
 *.stTheme.cache
 *.tmlanguage.cache
 *.tmPreferences.cache
-# Eclipse
 .settings/*
-# JetBrains, aka PHPStorm, IntelliJ IDEA
 .idea/*
-# NetBeans
 nbproject/*
-# Visual Studio Code
 .vscode
-# nova
 .nova
-# Sass preprocessor
 .sass-cache/
-# node
 /node_modules/*
-# yarn
 yarn-debug.log
 yarn-error.log

@@ -1,6 +1,15 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * PagesController の自動チェック（テスト）。
+ * トップページが表示されるか、ないページでちゃんとエラーになるか、などを確かめる。
+ *
+ * 【担当】G チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -21,16 +30,11 @@ use Cake\TestSuite\Constraint\Response\StatusCode;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
-/**
- * PagesControllerTest class
- */
 class PagesControllerTest extends TestCase
 {
     use IntegrationTestTrait;
 
     /**
-     * testDisplay method
-     *
      * @return void
      */
     public function testDisplay()
@@ -43,8 +47,6 @@ class PagesControllerTest extends TestCase
     }
 
     /**
-     * Test that missing template renders 404 page in production
-     *
      * @return void
      */
     public function testMissingTemplate()
@@ -57,8 +59,6 @@ class PagesControllerTest extends TestCase
     }
 
     /**
-     * Test that missing template in debug mode renders missing_template error page
-     *
      * @return void
      */
     public function testMissingTemplateInDebug()
@@ -73,8 +73,6 @@ class PagesControllerTest extends TestCase
     }
 
     /**
-     * Test directory traversal protection
-     *
      * @return void
      */
     public function testDirectoryTraversalProtection()
@@ -85,8 +83,6 @@ class PagesControllerTest extends TestCase
     }
 
     /**
-     * Test that CSRF protection is applied to page rendering.
-     *
      * @return void
      */
     public function testCsrfAppliedError()
@@ -98,8 +94,6 @@ class PagesControllerTest extends TestCase
     }
 
     /**
-     * Test that CSRF protection is applied to page rendering.
-     *
      * @return void
      */
     public function testCsrfAppliedOk()

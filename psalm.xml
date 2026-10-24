@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
+<!--
+    【このファイルは？】
+    phpstan.neon と同じ種類の、ミスを探す道具（Psalm）の設定。
+
+    【担当】A チーム
+    【くわしく】docs/FILES.md
+-->
 <psalm
     errorLevel="2"
     resolveFromConfigFile="true"

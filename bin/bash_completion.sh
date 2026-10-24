@@ -1,8 +1,9 @@
+# 【このファイルは？】
+# Git Bash でコマンドを途中まで打って Tab キーを押すと、
+# 残りを自動で入力してくれる機能。
 #
-# Bash completion file for CakePHP console.
-# Copy this file to a file named `cake` under `/etc/bash_completion.d/`.
-# For more info check https://book.cakephp.org/5/en/console-commands/completion.html#how-to-enable-bash-autocompletion-for-the-cakephp-console
-#
+# 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+# 【くわしく】docs/FILES.md
 
 _cake()
 {

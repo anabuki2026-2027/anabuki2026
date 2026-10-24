@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
+<!--
+    【このファイルは？】
+    「コードの書き方がルールどおりか」をチェックする道具（PHP_CodeSniffer）の設定。
+
+    【担当】A チーム
+    【くわしく】docs/FILES.md
+-->
 <ruleset name="App">
     <rule ref="CakePHP"/>
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint">

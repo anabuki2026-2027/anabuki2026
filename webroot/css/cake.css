@@ -1,12 +1,16 @@
-/* Milligram overrides */
+/*
+ * 【このファイルは？】
+ * CakePHP に最初から付いている見た目（色、メッセージの見た目など）。
+ *
+ * 【担当】なし（見るだけ。変えたいときは A チームに相談）
+ * 【くわしく】docs/FILES.md
+ */
 :root {
-    /* The following are official CakePHP colors */
     --color-cakephp-red: #d33c43;
     --color-cakephp-gray: #404041;
     --color-cakephp-blue: #2f85ae;
     --color-cakephp-lightblue: #34bdd7;
 
-    /* These are additional colors */
     --color-lightgray: #606c76;
     --color-white: #fff;
 
@@ -80,7 +84,6 @@ th a,
     color: var(--color-links-active);
 }
 
-/* Utility */
 .table-responsive {
     display: block;
     width: 100%;
@@ -88,12 +91,10 @@ th a,
     -webkit-overflow-scrolling: touch;
 }
 
-/* Main */
 .content {
     padding: 2rem;
     background: var(--color-white);
     border-radius: 0.4rem;
-    /* Thanks Stripe */
     box-shadow: 0 7px 14px 0 rgba(60, 66, 87, 0.1),
         0 3px 6px 0 rgba(0, 0, 0, 0.07);
 }
@@ -111,7 +112,6 @@ th {
     white-space: nowrap;
 }
 
-/* Nav bar */
 .top-nav {
     display: flex;
     align-items: center;
@@ -139,7 +139,6 @@ th {
     padding: 0.5rem 0;
 }
 
-/* View action */
 .view.content .text {
     margin-top: 1.2rem;
 }
@@ -147,7 +146,6 @@ th {
     margin-top: 2rem;
 }
 
-/* Flash messages */
 .message {
     padding: .5rem 1rem;
     background: var(--color-message-info-bg);
@@ -178,7 +176,6 @@ th {
     border-color: var(--color-message-error-border);
 }
 
-/* Forms */
 .input {
     margin-bottom: 1.5rem;
 }
@@ -208,7 +205,6 @@ input[type='color'] {
     color: var(--color-message-error-text);
 }
 
-/* Paginator */
 .paginator {
     text-align: right;
 }
@@ -264,7 +260,6 @@ input[type='color'] {
     content: " \2191";
 }
 
-/* Error in non debug mode */
 .error-container {
     align-items: center;
     display: flex;
@@ -274,7 +269,6 @@ input[type='color'] {
 }
 
 @media screen and (max-width: 640px) {
-    /* Fix milligram not having a responsive column system */
     .row .column[class*='column-'] {
         flex: 0 0 100%;
         max-width: 100%

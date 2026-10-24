@@ -1,6 +1,14 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * ページ全体を読み直さずに、一部分だけを入れかえるとき（Ajax）に使う画面の土台。
+ *
+ * 【担当】なし（見るだけ。変えたいときは A チームに相談）
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,25 +24,14 @@ declare(strict_types=1);
  */
 namespace App\View;
 
-/**
- * A view class that is used for AJAX responses.
- * Currently only switches the default layout and sets the response type -
- * which just maps to text/html by default.
- */
 class AjaxView extends AppView
 {
     /**
-     * The name of the layout file to render the view inside of. The name
-     * specified is the filename of the layout in /templates/Layout without
-     * the .php extension.
-     *
      * @var string
      */
     protected string $layout = 'ajax';
 
     /**
-     * Initialization hook method.
-     *
      * @return void
      */
     public function initialize(): void

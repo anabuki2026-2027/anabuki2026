@@ -1,6 +1,15 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * 最初の準備（composer install）のときに 1 回だけ自動で動く。
+ * app_local.php や、必要なフォルダを作ってくれる。
+ *
+ * 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -26,15 +35,9 @@ use Composer\IO\IOInterface;
 use Composer\Script\Event;
 use Exception;
 
-/**
- * Provides installation hooks for when this application is installed through
- * composer. Customize this class to suit your needs.
- */
 class Installer
 {
     /**
-     * An array of directories to be made writable
-     *
      * @var list<string>
      */
     public const WRITABLE_DIRS = [
@@ -49,10 +52,8 @@ class Installer
     ];
 
     /**
-     * Does some routine installation tasks so people don't have to.
-     *
-     * @param \Composer\Script\Event $event The composer event object.
-     * @throws \Exception Exception raised by validator.
+     * @param \Composer\Script\Event $event
+     * @throws \Exception
      * @return void
      */
     public static function postInstall(Event $event): void
@@ -73,10 +74,8 @@ class Installer
     }
 
     /**
-     * Create config/app_local.php file if it does not exist.
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
+     * @param string $dir
+     * @param \Composer\IO\IOInterface $io
      * @return void
      */
     public static function createAppLocalConfig(string $dir, IOInterface $io): void
@@ -90,10 +89,8 @@ class Installer
     }
 
     /**
-     * Create the `logs` and `tmp` directories.
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
+     * @param string $dir
+     * @param \Composer\IO\IOInterface $io
      * @return void
      */
     public static function createWritableDirectories(string $dir, IOInterface $io): void
@@ -108,17 +105,12 @@ class Installer
     }
 
     /**
-     * Set globally writable permissions on the "tmp" and "logs" directory.
-     *
-     * This is not the most secure default, but it gets people up and running quickly.
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
+     * @param string $dir
+     * @param \Composer\IO\IOInterface $io
      * @return void
      */
     public static function setFolderPermissions(string $dir, IOInterface $io): void
     {
-        // ask if the permissions should be changed
         if ($io->isInteractive()) {
             $validator = function (string $arg): string {
                 if (in_array($arg, ['Y', 'y', 'N', 'n'])) {
@@ -138,7 +130,6 @@ class Installer
             }
         }
 
-        // Change the permissions on a path and output the results.
         $changePerms = function (string $path) use ($io): void {
             $currentPerms = fileperms($path) & 0777;
             $worldWritable = $currentPerms | 0007;
@@ -174,10 +165,8 @@ class Installer
     }
 
     /**
-     * Set the security.salt value in the application's config file.
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
+     * @param string $dir
+     * @param \Composer\IO\IOInterface $io
      * @return void
      */
     public static function setSecuritySalt(string $dir, IOInterface $io): void
@@ -187,12 +176,10 @@ class Installer
     }
 
     /**
-     * Set the security.salt value in a given file
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @param string $newKey key to set in the file
-     * @param string $file A path to a file relative to the application's root
+     * @param string $dir
+     * @param \Composer\IO\IOInterface $io
+     * @param string $newKey
+     * @param string $file
      * @return void
      */
     public static function setSecuritySaltInFile(string $dir, IOInterface $io, string $newKey, string $file): void
@@ -223,12 +210,10 @@ class Installer
     }
 
     /**
-     * Set the APP_NAME value in a given file
-     *
-     * @param string $dir The application's root directory.
-     * @param \Composer\IO\IOInterface $io IO interface to write to console.
-     * @param string $appName app name to set in the file
-     * @param string $file A path to a file relative to the application's root
+     * @param string $dir
+     * @param \Composer\IO\IOInterface $io
+     * @param string $appName
+     * @param string $file
      * @return void
      */
     public static function setAppNameInFile(string $dir, IOInterface $io, string $appName, string $file): void

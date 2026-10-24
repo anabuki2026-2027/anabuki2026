@@ -1,8 +1,9 @@
-# Uncomment the following to prevent the httpoxy vulnerability
-# See: https://httpoxy.org/
-#<IfModule mod_headers.c>
-#    RequestHeader unset Proxy
-#</IfModule>
+# 【このファイルは？】
+# XAMPP（Apache）への指示書。
+# このフォルダに来た人を、全員 webroot フォルダへ案内する。
+#
+# 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+# 【くわしく】docs/FILES.md
 
 <IfModule mod_rewrite.c>
     RewriteEngine on

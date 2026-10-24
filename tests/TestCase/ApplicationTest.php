@@ -1,6 +1,14 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * src/Application.php がちゃんと動くかの自動チェック（テスト）。
+ *
+ * 【担当】G チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -26,16 +34,11 @@ use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
-/**
- * ApplicationTest class
- */
 class ApplicationTest extends TestCase
 {
     use IntegrationTestTrait;
 
     /**
-     * Test bootstrap in production.
-     *
      * @return void
      */
     public function testBootstrap()
@@ -51,8 +54,6 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * Test bootstrap add DebugKit plugin in debug mode.
-     *
      * @return void
      */
     public function testBootstrapInDebug()
@@ -66,8 +67,6 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * testMiddleware
-     *
      * @return void
      */
     public function testMiddleware()

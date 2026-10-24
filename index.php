@@ -1,4 +1,13 @@
 <?php
+/*
+ * 【このファイルは？】
+ * まちがって一番上の場所が開かれたときに、
+ * 本当の玄関（webroot/index.php）へ案内するファイル。
+ *
+ * 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)

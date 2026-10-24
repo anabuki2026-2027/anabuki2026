@@ -1,3 +1,10 @@
+# 【このファイルは？】
+# XAMPP（Apache）への指示書。
+# /users/add のような URL でも、ちゃんと玄関（index.php）に案内する。
+#
+# 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+# 【くわしく】docs/FILES.md
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f

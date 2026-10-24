@@ -1,4 +1,12 @@
 <?php
+/*
+ * 【このファイルは？】
+ * Ajax 用の外わく。外わくなしで、ページの中身だけを出す。
+ *
+ * 【担当】なし（見るだけ。変えたいときは A チームに相談）
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)

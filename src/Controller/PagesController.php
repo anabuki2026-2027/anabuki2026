@@ -1,6 +1,15 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * templates/Pages/ にある画面を、そのまま表示するだけの Controller。
+ * トップページを出しているのはこれ。
+ *
+ * 【担当】D チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -22,26 +31,14 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\View\Exception\MissingTemplateException;
 
-/**
- * Static content controller
- *
- * This controller will render views from templates/Pages/
- *
- * @link https://book.cakephp.org/5/en/controllers/pages-controller.html
- */
 class PagesController extends AppController
 {
     /**
-     * Displays a view
-     *
-     * @param string ...$path Path segments.
+     * @param string ...$path
      * @return \Cake\Http\Response|null
-     * @throws \Cake\Http\Exception\ForbiddenException When a directory traversal attempt.
-     * @throws \Cake\View\Exception\MissingTemplateException When the view file could not
-     *   be found and in debug mode.
-     * @throws \Cake\Http\Exception\NotFoundException When the view file could not
-     *   be found and not in debug mode.
-     * @throws \Cake\View\Exception\MissingTemplateException In debug mode.
+     * @throws \Cake\Http\Exception\ForbiddenException
+     * @throws \Cake\View\Exception\MissingTemplateException
+     * @throws \Cake\Http\Exception\NotFoundException
      */
     public function display(string ...$path): ?Response
     {

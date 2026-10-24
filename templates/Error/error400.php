@@ -1,4 +1,12 @@
 <?php
+/*
+ * 【このファイルは？】
+ * 「ページが見つかりません」などのエラー画面（400 番台のエラー）。
+ *
+ * 【担当】C チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * @var \App\View\AppView $this
  * @var string $message

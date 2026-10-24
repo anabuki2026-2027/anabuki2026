@@ -1,4 +1,12 @@
 <?php
+/*
+ * 【このファイルは？】
+ * 見た目つき（HTML）メールの本文の見本。
+ *
+ * 【担当】C チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)

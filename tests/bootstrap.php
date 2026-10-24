@@ -1,6 +1,14 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * 自動チェック（テスト）を始める前の準備。チェック用のデータベースを用意する。
+ *
+ * 【担当】G チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -20,12 +28,6 @@ use Cake\Core\Configure;
 use Cake\TestSuite\ConnectionHelper;
 use Migrations\TestSuite\Migrator;
 
-/**
- * Test runner bootstrap.
- *
- * Add additional configuration/setup your application needs when running
- * unit tests in this file.
- */
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 require dirname(__DIR__) . '/config/bootstrap.php';
@@ -34,27 +36,10 @@ if (empty($_SERVER['HTTP_HOST']) && !Configure::read('App.fullBaseUrl')) {
     Configure::write('App.fullBaseUrl', 'http://localhost');
 }
 
-// Fixate now to avoid one-second-leap-issues
 Chronos::setTestNow(Chronos::now());
 
-// Fixate sessionid early on, as php7.2+
-// does not allow the sessionid to be set after stdout
-// has been written to.
 session_id('cli');
 
-// Connection aliasing needs to happen before migrations are run.
-// Otherwise, table objects inside migrations would use the default datasource
 ConnectionHelper::addTestAliases();
-
-// Use migrations to build test database schema.
-//
-// Will rebuild the database if the migration state differs
-// from the migration history in files.
-//
-// If you are not using CakePHP's migrations you can
-// hook into your migration tool of choice here or
-// load schema from a SQL dump file with
-// use Cake\TestSuite\Fixture\SchemaLoader;
-// (new SchemaLoader())->loadSqlFiles('./tests/schema.sql', 'test');
 
 (new Migrator())->run();

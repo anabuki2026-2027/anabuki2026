@@ -1,6 +1,15 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * 本番で公開したときに、ニセのアドレスからのアクセスをはじく「警備員」。
+ * 開発中は何もしない。
+ *
+ * 【担当】A チーム
+ * 【くわしく】docs/FILES.md
+ */
+
 namespace App\Middleware;
 
 use Cake\Core\Configure;
@@ -11,23 +20,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-/**
- * Middleware to validate Host header and prevent Host Header Injection attacks.
- *
- * In production, this middleware ensures that App.fullBaseUrl is configured
- * and validates incoming Host headers against it. This prevents attackers
- * from manipulating password reset links and other security-critical URLs.
- *
- * @see https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/17-Testing_for_Host_Header_Injection
- */
 class HostHeaderMiddleware implements MiddlewareInterface
 {
     /**
-     * Process the request and validate the Host header.
-     *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
-     * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
-     * @return \Psr\Http\Message\ResponseInterface A response.
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param \Psr\Http\Server\RequestHandlerInterface $handler
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

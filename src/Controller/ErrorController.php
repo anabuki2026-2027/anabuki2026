@@ -1,6 +1,14 @@
 <?php
 declare(strict_types=1);
 
+/*
+ * 【このファイルは？】
+ * 「ページが見つかりません」などのエラーが起きたときに出番になる Controller。
+ *
+ * 【担当】なし（見るだけ。変えたいときは A チームに相談）
+ * 【くわしく】docs/FILES.md
+ */
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -18,27 +26,17 @@ namespace App\Controller;
 
 use Cake\Event\EventInterface;
 
-/**
- * Error Handling Controller
- *
- * Controller used by ExceptionRenderer to render error responses.
- */
 class ErrorController extends AppController
 {
     /**
-     * Initialization hook method.
-     *
      * @return void
      */
     public function initialize(): void
     {
-        // Only add parent::initialize() if you are confident your `AppController` is safe.
     }
 
     /**
-     * beforeFilter callback.
-     *
-     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
      * @return void
      */
     public function beforeFilter(EventInterface $event): void
@@ -46,9 +44,7 @@ class ErrorController extends AppController
     }
 
     /**
-     * beforeRender callback.
-     *
-     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
      * @return void
      */
     public function beforeRender(EventInterface $event): void
@@ -59,9 +55,7 @@ class ErrorController extends AppController
     }
 
     /**
-     * afterFilter callback.
-     *
-     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
+     * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event
      * @return void
      */
     public function afterFilter(EventInterface $event): void

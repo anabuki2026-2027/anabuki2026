@@ -1,7 +1,12 @@
 #!/usr/bin/env sh
-################################################################################
+# 【このファイルは？】
+# Git Bash で `bin/cake ○○` と打つと、CakePHP に命令できる。その入り口のファイル。
+# 中で bin/cake.php を呼び出している。
 #
-# Cake is a shell script for invoking CakePHP shell commands
+# 【担当】なし（編集しない。自動で作られたり、上書きされたりするため）
+# 【くわしく】docs/FILES.md
+
+################################################################################
 #
 # CakePHP(tm) :  Rapid Development Framework (https://cakephp.org)
 # Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,7 +22,6 @@
 #
 ################################################################################
 
-# Canonicalize by following every symlink of the given name recursively
 canonicalize() {
     NAME="$1"
     if [ -f "$NAME" ]
@@ -33,7 +37,6 @@ canonicalize() {
     echo "$NAME"
 }
 
-# Find a CLI version of PHP
 findCliPhp() {
     for TESTEXEC in php php-cli /usr/local/bin/php
     do
@@ -48,7 +51,6 @@ findCliPhp() {
     echo "php";
 }
 
-# If current path is a symlink, resolve to real path
 realname="$0"
 if [ -L "$realname" ] 
 then
@@ -58,8 +60,6 @@ fi
 CONSOLE=$(dirname -- "$(canonicalize "$realname")")
 APP=$(dirname "$CONSOLE")
 
-# If your CLI PHP is somewhere that this doesn't find, you can define a PHP environment
-# variable with the correct path in it.
 if [ -z "$PHP" ]
 then
     PHP=$(findCliPhp)
