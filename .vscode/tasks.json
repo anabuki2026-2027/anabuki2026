@@ -1,0 +1,46 @@
+// 【このファイルは？】
+// よく使うコマンドを、VS Code のメニューから実行できるようにするファイル。
+// メニューの「ターミナル」→「タスクの実行...」から選ぶ。
+//
+// 【担当】A チーム
+// 【くわしく】docs/FILES.md
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "アプリを起動する（bin/cake server）",
+            "type": "shell",
+            "command": "php bin/cake.php server",
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "プルリクエストの前にまとめてチェック（composer check）",
+            "type": "shell",
+            "command": "composer check",
+            "problemMatcher": []
+        },
+        {
+            "label": "テストする（composer test）",
+            "type": "shell",
+            "command": "composer test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "書き方をチェックする（composer cs-check）",
+            "type": "shell",
+            "command": "composer cs-check",
+            "problemMatcher": []
+        },
+        {
+            "label": "書き方を自動で直す（composer cs-fix）",
+            "type": "shell",
+            "command": "composer cs-fix",
+            "problemMatcher": []
+        }
+    ]
+}

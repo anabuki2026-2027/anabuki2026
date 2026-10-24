@@ -1,0 +1,22 @@
+// 【このファイルは？】
+// このフォルダを VS Code で開いたときに「入れてください」とおすすめする拡張機能のリスト。
+// 右下に出るお知らせの「インストール」を押すと、まとめて入る。
+//
+// 【担当】A チーム
+// 【くわしく】docs/FILES.md
+{
+    "recommendations": [
+        // VS Code を日本語にする
+        "ms-ceintl.vscode-language-pack-ja",
+        // PHP の入力の手助け（関数の候補を出す、ミスに波線を引く など）
+        "bmewburn.vscode-intelephense-client",
+        // .editorconfig の書き方ルールを VS Code に伝える
+        "editorconfig.editorconfig",
+        // ブランチやコミットの流れを図で見る
+        "mhutchie.git-graph"
+    ],
+    "unwantedRecommendations": [
+        // templates フォルダの .php を Django のファイルとして扱ってしまうため
+        "batisteo.vscode-django"
+    ]
+}

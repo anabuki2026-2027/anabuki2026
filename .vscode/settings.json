@@ -1,0 +1,71 @@
+// 【このファイルは？】
+// このフォルダを VS Code で開いた人全員に効く、VS Code の設定。
+// 全員の書き方（字下げ・改行など）をそろえたり、PHP のミスをすぐ見つけられるようにしている。
+// 個人の VS Code の設定より、こちらが優先される。
+//
+// 【担当】A チーム
+// 【くわしく】docs/FILES.md
+{
+    // 拡張機能「Django」などが templates フォルダの .php を PHP 以外のファイルとして扱い、
+    // コードに色が付かなくなるのを防ぐ
+    "files.associations": {
+        "*.php": "php"
+    },
+
+    // 書き方をそろえる（.editorconfig と同じ内容。拡張機能がなくても効くように、ここにも書く）
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "files.eol": "\n",
+    "files.encoding": "utf8",
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "[yaml]": {
+        "editor.tabSize": 2
+    },
+    "[neon]": {
+        "editor.insertSpaces": false
+    },
+
+    // 1 行の長さの目安（書き方チェックは 120 文字をこえると注意する）
+    "editor.rulers": [120],
+
+    // PHP のミスを、打っているそばから見つける（XAMPP の PHP を使う）
+    "php.validate.executablePath": "C:\\xampp\\php\\php.exe",
+    "php.validate.run": "onType",
+
+    // 拡張機能「PHP Intelephense」の設定（このアプリと同じ PHP のバージョンで考えてもらう）
+    "php.suggest.basic": false,
+    "intelephense.environment.phpVersion": "8.2.35",
+    "intelephense.environment.documentRoot": "webroot",
+
+    // 検索（Ctrl + Shift + F）に、自動で作られるファイルを出さない
+    "search.exclude": {
+        "**/vendor": true,
+        "**/tmp": true,
+        "**/logs": true,
+        "**/*.min.css": true
+    },
+    "files.watcherExclude": {
+        "**/vendor/**": true,
+        "**/tmp/**": true,
+        "**/logs/**": true
+    },
+
+    // 拡張機能「Code Spell Checker」を入れている人向け。このアプリでよく出る言葉をまちがい扱いしない
+    "cSpell.words": [
+        "anabuki",
+        "anabukiit",
+        "cakephp",
+        "codesniffer",
+        "dotenv",
+        "htdocs",
+        "phpcbf",
+        "phpcs",
+        "phpstan",
+        "phpunit",
+        "utf8mb4",
+        "xampp"
+    ]
+}

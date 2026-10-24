@@ -33,7 +33,10 @@ tests.sqlite
 .settings/*
 .idea/*
 nbproject/*
-.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
 .nova
 .sass-cache/
 /node_modules/*
