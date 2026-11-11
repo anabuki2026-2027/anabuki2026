@@ -40,7 +40,10 @@ use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
 
 /**
- * @extends \Cake\Http\BaseApplication<\App\Application>
+ * Application setup class.
+ *
+ * This defines the bootstrapping logic and middleware layers you
+ * want to use in your application.
  */
 class Application extends BaseApplication
 {

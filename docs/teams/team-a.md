@@ -84,10 +84,56 @@ git push origin main:teamG/main
 `git push origin main:teamB/main` は、「今の main と同じ中身で、GitHub に `teamB/main` を作る」という意味です。
 GitHub の「branches」の画面で、7 つできていることを確認してください。
 
-> **できればやっておくとよいこと**
-> GitHub の「Settings」→「Rules」（または「Branches」）で、`main` と `team*/main` に
-> 「プルリクエストを通さないとマージできない」「消せない」というルールを付けておくと、まちがいを防げます。
-> （GitHub のプランによっては使えないことがあります）
+### ブランチを守る設定（Rules）
+
+GitHub の **Settings → Rules → Rulesets** で、ブランチに「してはいけないこと」を決めています。
+設定は GitHub が守らせるので、だれかがまちがえても止めてくれます。
+変えるときは、この表も一緒に直してください。
+
+#### main を守るルールセット
+
+| 項目 | 設定 |
+| --- | --- |
+| 対象（Target branches） | `main` |
+| Restrict updates | ✅（bypass list の人しか `main` を変えられない。プルリクエストのマージも同じ） |
+| Restrict deletions | ✅ |
+| Require a pull request before merging | ✅（Required approvals は `0`、マージの方法は **Merge だけ**） |
+| Block force pushes | ✅ |
+| Require status checks to pass | 最初のプルリクエストで CI が動いたあとに足す（`testsuite` と `Coding Standard & Static Analysis`） |
+| Bypass list | **Organization admin**（＝ Organization の Owner。A チームのメンバー） |
+
+#### チームの main を守るルールセット
+
+| 項目 | 設定 |
+| --- | --- |
+| 対象（Target branches） | `team*/main`（`teamA/main` 〜 `teamG/main`） |
+| Restrict updates | ❌（オンにすると、各チームのリーダーがマージできなくなる） |
+| Restrict deletions | ✅ |
+| Require a pull request before merging | ✅（マージの方法は **Merge だけ**） |
+| Block force pushes | ✅ |
+| Bypass list | なし |
+
+#### オンにしてはいけない設定
+
+| 項目 | 理由 |
+| --- | --- |
+| Require linear history | マージコミットが禁止になり、「チームの main → teamA/main → main」の流れが使えなくなる |
+| マージの方法の Squash・Rebase | 同じ変更が別のコミットになり、main をチームの main に取り込みなおすたびに、コンフリクトが起きやすくなる |
+| Require signed commits | 全員がコミットの署名の設定をしないといけなくなる |
+
+#### Organization の Team と権限
+
+| Team | メンバー | 権限 |
+| --- | --- | --- |
+| `teamA`（親） | A チーム | A チームのメンバーは、1 人ずつ Organization の **Owner** にしている |
+| `teamB` 〜 `teamG`（`teamA` の子） | 各チーム | 親の `teamA` の、リポジトリへの権限を受け継ぐ |
+
+> ⚠️ 子の Team は、**親の Team に付けたリポジトリの権限を受け継ぎます**。
+> `teamA` のリポジトリの権限（Settings → Collaborators and teams）は **Write** のままにしてください。
+> Admin にすると、B〜G の全員も Admin になり、ルールセットを消したり変えたりできてしまいます。
+> Owner は 1 人ずつに付く役割なので、子の Team には受け継がれません。
+>
+> `@teamA` でメンションすると、子の Team の B〜G の全員にも通知が届きます。
 
 ### 新しい機能を始めるとき
 
