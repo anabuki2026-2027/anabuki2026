@@ -18,7 +18,8 @@
 $navCurrent = $this->fetch('navCurrent');
 
 // ナビの項目（名前と順番は設計書 COM-004 のとおり）。
-// URL は仮。D チーム（config/routes.php は A チーム）と決まったら、ここだけを書きかえる。
+// URL は仮。D チーム（config/routes.php は A チーム）と決まったら書きかえる。
+// スマートフォン用下部ナビ（templates/element/bottom_nav.php）にも同じ URL があるので、両方をそろえる。
 $navItems = [
     'search' => ['label' => 'お店を探す', 'url' => '/search'],
     'map' => ['label' => '地図で探す', 'url' => '/map'],
@@ -47,6 +48,25 @@ if ($isLoggedIn && isset($identity['nickname'])) {
 ?>
 <a class="skip-link" href="#main-content">本文へ移動</a>
 <header class="site-header">
+    <!--
+        スマートフォン用メニューを開くボタン（COM-008）。モックのとおり、ロゴの左に置く。
+        開く・閉じるの JavaScript は E チームが作る。
+        目印：開くボタンは data-menu-open、閉じるボタンは data-menu-close、メニュー本体は id="site-menu"
+        アイコン（三本線）は E チームが site-header__menu-icon に CSS で付ける。
+        「メニュー」の文字は、見た目で隠しても読み上げには残す（隠し方は E チームと相談）。
+    -->
+    <button
+        type="button"
+        class="site-header__menu-button"
+        aria-haspopup="dialog"
+        aria-controls="site-menu"
+        aria-expanded="false"
+        data-menu-open
+    >
+        <span class="site-header__menu-icon" aria-hidden="true"></span>
+        <span class="site-header__menu-label">メニュー</span>
+    </button>
+
     <div class="site-header__brand">
         <a class="site-header__logo" href="<?= $this->Url->build('/') ?>" aria-label="イヌノコト トップページへ">
             <!-- 正式なロゴが決まるまでは、文字のロゴを仮に使う（COM-001 No.3） -->
@@ -98,21 +118,17 @@ if ($isLoggedIn && isset($identity['nickname'])) {
     </div>
 
     <!--
-        スマートフォン用メニュー（COM-008）。開く・閉じるの JavaScript は E チームが作る。
-        目印：開くボタンは data-menu-open、閉じるボタンは data-menu-close、メニュー本体は id="site-menu"
+        スマートフォン用メニューの本体（COM-008）。中身はメインナビ、文字サイズ、アカウント表示。
+        <dialog> を showModal() で開くと、背後の操作の無効化・Escape キーで閉じる・
+        閉じたときに開くボタンへフォーカスを戻す、をブラウザーが行う（C チーム決定事項 4）。
+        背景を押して閉じる・スクロールを止める・aria-expanded の切り替えは E チームの JavaScript と CSS で行う。
     -->
-    <button
-        type="button"
-        class="site-header__menu-button"
-        aria-haspopup="dialog"
-        aria-controls="site-menu"
-        aria-expanded="false"
-        data-menu-open
-    >メニュー</button>
-
     <dialog class="site-menu" id="site-menu" aria-label="メニュー">
         <div class="site-menu__inner">
-            <button type="button" class="site-menu__close" data-menu-close>閉じる</button>
+            <!-- method="dialog" のフォームなので、JavaScript がなくても、このボタンでメニューを閉じられる -->
+            <form method="dialog" class="site-menu__close-form">
+                <button type="submit" class="site-menu__close" data-menu-close>閉じる</button>
+            </form>
 
             <nav class="site-menu__nav" aria-label="メニューの中のメインメニュー">
                 <ul class="site-menu__nav-list">

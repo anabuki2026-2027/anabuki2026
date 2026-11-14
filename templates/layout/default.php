@@ -52,5 +52,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </main>
     <footer>
     </footer>
+    <?= $this->element('bottom_nav') ?>
 </body>
 </html>
