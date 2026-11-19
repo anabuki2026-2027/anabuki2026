@@ -10,9 +10,9 @@ README の「✅ ここまでできたかチェック」と同じ内容。
 
 ## 1. コマンドで確かめる
 
-次の 2 つは、AI が実行する。
+次の 2 つは、AI が実行する（git ではないので、PowerShell で動かす）。
 
-```bash
+```powershell
 php -v
 composer --version
 ```

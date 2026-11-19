@@ -92,7 +92,7 @@ CSS の中で画像を使うときは、`css` フォルダから見た場所を�
 
 ### 5. 表示を確認する
 
-```bash
+```powershell
 bin/cake server
 ```
 
