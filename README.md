@@ -275,10 +275,13 @@ composer install
 3. `'Datasources'` → `'default'` の中を、次のように書きかえて保存します（`Ctrl + S`）。
 
 ```php
+'host' => '127.0.0.1',
 'username' => 'root',
 'password' => '',
 'database' => 'anabukiit_app',
 ```
+
+> `'host'` は `localhost` ではなく **`127.0.0.1`** にします。MySQL は自分のパソコン（`127.0.0.1`）からだけつながる設定にしているので、`localhost` のままだと画面を開くたびに 2 秒ほど遅くなります。
 
 > `config/app_local.php` は **自分のパソコン専用** の設定ファイルです。GitHub には送られません（そういう設定になっています）。
 
