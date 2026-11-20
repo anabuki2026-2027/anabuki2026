@@ -52,5 +52,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </main>
     <?= $this->element('footer') ?>
     <?= $this->element('bottom_nav') ?>
+    <?php
+    // 各画面のモーダル（templates/element/modal.php）を、<main> の外にまとめて出す（MODAL-001）。
+    // 各画面のファイルで $this->append('modals', $this->element('modal', [...])) のように足す。
+    ?>
+    <?= $this->fetch('modals') ?>
 </body>
 </html>
