@@ -121,4 +121,5 @@ $this->reset('noticeModalBody');
     'title' => $title,
     'body' => $noticeBody,
     'actions' => $this->element('modal_actions'),
+    'kind' => 'view',
 ]) ?>

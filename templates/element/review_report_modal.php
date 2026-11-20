@@ -175,7 +175,7 @@ $this->reset('reviewReportModalBody');
 /*
  * 口コミ通報モーダル（MODAL-004）。入力用なので、閉じ方は C チーム決定事項 4 のとおり。
  *   未入力：背景を押す・Escape キー・キャンセルで閉じる（RLS-014）
- *   入力あり：背景を押しても閉じない。Escape キー・キャンセルでは破棄の確認を出す（#463 で作る）
+ *   入力あり：背景を押しても閉じない。Escape キー・キャンセルでは破棄の確認を出す（modal.php の kind input）
  *   送信中：閉じない（modal_actions.php の data-modal-submit）
  * 口コミの件数だけ出力されるので、説明はページに出ない PHP のコメントに書いている。
  *
@@ -198,4 +198,7 @@ $this->reset('reviewReportModalBody');
             ['label' => '通報する', 'variant' => 'primary', 'form' => $formId, 'processingLabel' => '送信中…'],
         ],
     ]),
+    'kind' => 'input',
+    // 普通のフォームで送り、エラーで同じ画面に戻ったときは、開いた状態にして入力とエラーを見せる（MODAL-006「失敗時」）
+    'autoOpen' => $formMessage !== '' || $fieldErrors['reason'] !== [] || $fieldErrors['comment'] !== [],
 ]) ?>

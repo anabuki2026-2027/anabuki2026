@@ -77,7 +77,8 @@
  *   失敗：D チームが同じ画面を表示し、values・errors・message を渡す。このモーダルが開いた状態になり、
  *         入力とエラーが表示される（MODAL-005「エラー時」）。
  * ・取り消しにくい操作（差し戻し、非表示、利用停止など）のボタンは variant を danger にする（MODAL-002）。
- * ・入力後に閉じるときの破棄の確認（MODAL-005「未保存変更」）は、入力用のモーダル全部に共通なので、#463 で作る。
+ * ・入力欄があるときは入力用（kind input）になり、入力後に閉じようとすると破棄の確認を出す（MODAL-005「未保存変更」）。
+ *   入力欄がないとき（削除の確認など）は確認用（kind confirm）になり、背景を押しても閉じない。
  */
 
 $modalId = isset($id) && is_string($id) ? $id : '';
@@ -290,4 +291,5 @@ $this->reset('adminModalBody');
     ]),
     'class' => 'admin-modal',
     'autoOpen' => $hasError,
+    'kind' => $normalizedFields !== [] ? 'input' : 'confirm',
 ]) ?>
