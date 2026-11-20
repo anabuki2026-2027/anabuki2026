@@ -166,11 +166,17 @@ foreach ($buttonList as $button) {
     $actionButtons[] = $button;
 }
 
-// 入力エラーやメッセージがあるときは、ページを開いたときにこのモーダルを開いた状態にする。
-$hasError = $formMessage !== '';
+// 最初にエラーがある項目。開いたときに、ここへフォーカスを移す（MODAL-007「初期フォーカス」）。
+$firstErrorField = null;
 foreach ($normalizedFields as $field) {
-    $hasError = $hasError || $field['errors'] !== [];
+    if ($field['errors'] !== []) {
+        $firstErrorField = $field['name'];
+        break;
+    }
 }
+
+// 入力エラーやメッセージがあるときは、ページを開いたときにこのモーダルを開いた状態にする。
+$hasError = $formMessage !== '' || $firstErrorField !== null;
 
 // エラーの文字を、エラー表示の場所の中身にする（2 つ以上あるときは改行で区切る）。
 $errorText = fn(array $messages): string => implode('<br>', array_map('h', $messages));
@@ -230,6 +236,9 @@ $errorText = fn(array $messages): string => implode('<br>', array_map('h', $mess
                     <?= $this->Form->radio($field['name'], $field['options'], [
                         'value' => $field['value'],
                         'required' => $field['required'],
+                        'aria-invalid' => $field['errors'] !== [] ? 'true' : null,
+                        // すべての選択肢に付くが、ブラウザーは最初の 1 つにフォーカスを移す
+                        'autofocus' => $field['name'] === $firstErrorField ? true : null,
                     ]) ?>
                     <p class="admin-modal__error" id="<?= h($errorId) ?>"><?= $errorText($field['errors']) ?></p>
                 </fieldset>
@@ -246,6 +255,7 @@ $errorText = fn(array $messages): string => implode('<br>', array_map('h', $mess
                         'required' => $field['required'],
                         'aria-describedby' => $describedBy,
                         'aria-invalid' => $field['errors'] !== [] ? 'true' : null,
+                        'autofocus' => $field['name'] === $firstErrorField ? true : null,
                     ];
                     if ($field['type'] === 'select') {
                         echo $this->Form->select($field['name'], $field['options'], $attributes + [
@@ -292,4 +302,6 @@ $this->reset('adminModalBody');
     'class' => 'admin-modal',
     'autoOpen' => $hasError,
     'kind' => $normalizedFields !== [] ? 'input' : 'confirm',
+    // 項目のエラーがあれば、その項目（autofocus）へ。なければ種類ごとの決まり（input は見出し、confirm はキャンセル）
+    'initialFocus' => $firstErrorField !== null ? 'first' : null,
 ]) ?>

@@ -90,6 +90,15 @@ foreach (['reason', 'comment'] as $field) {
     $fieldErrors[$field] = array_values(array_filter($list, fn($item): bool => is_string($item) && $item !== ''));
 }
 
+// 最初にエラーがある項目。開いたときに、ここへフォーカスを移す（MODAL-007「初期フォーカス」）。
+$firstErrorField = null;
+foreach ($fieldErrors as $field => $messages) {
+    if ($messages !== []) {
+        $firstErrorField = $field;
+        break;
+    }
+}
+
 // id。ページに通報モーダルがいくつ並んでも重ならないように、すべて report-（口コミの id）で始める。
 $modalId = 'report-' . $reviewIdText;
 $formId = $modalId . '-form';
@@ -144,6 +153,9 @@ $errorText = fn(array $messages): string => implode('<br>', array_map('h', $mess
             <?= $this->Form->radio('reason', $reasonOptions, [
                 'value' => $reasonValue !== '' ? $reasonValue : null,
                 'required' => true,
+                'aria-invalid' => $fieldErrors['reason'] !== [] ? 'true' : null,
+                // すべての選択肢に付くが、ブラウザーは最初の 1 つにフォーカスを移す
+                'autofocus' => $firstErrorField === 'reason' ? true : null,
             ]) ?>
             <p class="report-form__error" id="<?= h($reasonErrorId) ?>"><?= $errorText($fieldErrors['reason']) ?></p>
         </fieldset>
@@ -160,6 +172,7 @@ $errorText = fn(array $messages): string => implode('<br>', array_map('h', $mess
                 'maxlength' => $commentMaxLength,
                 'aria-describedby' => $commentHintId . ' ' . $commentErrorId,
                 'aria-invalid' => $fieldErrors['comment'] !== [] ? 'true' : null,
+                'autofocus' => $firstErrorField === 'comment' ? true : null,
                 // 「その他」のときは補足が必須（案）。E チームの JavaScript が、この値の理由を選んだら required を付ける
                 'data-required-reason' => 'other',
             ]) ?>
@@ -200,5 +213,7 @@ $this->reset('reviewReportModalBody');
     ]),
     'kind' => 'input',
     // 普通のフォームで送り、エラーで同じ画面に戻ったときは、開いた状態にして入力とエラーを見せる（MODAL-006「失敗時」）
-    'autoOpen' => $formMessage !== '' || $fieldErrors['reason'] !== [] || $fieldErrors['comment'] !== [],
+    'autoOpen' => $formMessage !== '' || $firstErrorField !== null,
+    // 項目のエラーがあれば、その項目（autofocus）へ。なければ見出しへ（MODAL-007「初期フォーカス」）
+    'initialFocus' => $firstErrorField !== null ? 'first' : 'title',
 ]) ?>

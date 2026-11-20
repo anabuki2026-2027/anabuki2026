@@ -25,6 +25,10 @@
  *   - confirm（確認用。例：削除の確認）：背景を押しても閉じない。Escape キー・キャンセルで閉じる
  *   - input（入力用。例：通報、資格審査）：未入力なら view と同じ。入力があれば、背景を押しても閉じず、
  *     Escape キー・キャンセルでは「入力内容を破棄しますか」の確認を出す
+ * @var string|null $initialFocus 開いたときにフォーカスを移す場所（MODAL-007「初期フォーカス」）
+ *   - title：見出し。上から内容を確認できるようにする。view・input で省略したときはこれ
+ *   - first：最初の操作。confirm で省略したときはこれ（最初の操作はキャンセルなので、危険操作をうっかり押さない）。
+ *     中身（body）に autofocus を付けた入力欄があれば、そこへ移る（入力エラーの項目に移すときに使う）
  */
 
 /*
@@ -78,6 +82,10 @@ $kind = $kind ?? 'confirm';
 if (!in_array($kind, ['view', 'confirm', 'input'], true)) {
     throw new InvalidArgumentException('モーダルの種類（kind）は、view・confirm・input のどれかにしてください。');
 }
+$initialFocus = $initialFocus ?? ($kind === 'confirm' ? 'first' : 'title');
+if (!in_array($initialFocus, ['title', 'first'], true)) {
+    throw new InvalidArgumentException('モーダルの初期フォーカス（initialFocus）は、title か first にしてください。');
+}
 
 // 見出しと説明の id。<dialog> の aria-labelledby・aria-describedby で結び付け、
 // 読み上げソフトが「何のダイアログか」を伝えられるようにする（MODAL-007）。
@@ -121,6 +129,22 @@ $discardTitleId = $id . '-discard-title';
  *       「破棄して閉じる」（data-modal-discard-confirm）：フォームを reset() して、元の表示にもどしてから閉じる
  *   ・送信が成功したことを確かめてから閉じる。失敗したときは閉じずに、入力を残す（MODAL-006「成功時」「失敗時」）。
  *     普通のフォームで送る画面では、失敗すると同じ画面が autoOpen で開くので、閉じる処理は要らない。
+ *
+ * フォーカス・読み上げ（MODAL-007）：
+ *   ・初期フォーカスは HTML の autofocus で指定している。showModal() で開くと、ブラウザーが <dialog> の中の
+ *     autofocus の場所（なければ最初の操作）へフォーカスを移すので、開く処理で focus() を書かなくてよい。
+ *   ・見出しにフォーカスを移すときは、見出しに tabindex="-1" を付けている（Tab キーでは止まらず、
+ *     プログラムからだけフォーカスできる）。
+ *   ・Tab・Shift+Tab は <dialog> の中だけを回る。Enter・Space はボタン、矢印キーはラジオボタンの選択で、
+ *     どれもブラウザーの標準の動きなので、JavaScript で書きかえない。
+ *
+ * E チームにお願いすること（フォーカス・読み上げ）：
+ *   ・modal__title にフォーカスがあるときの見た目（フォーカスの枠を消さずに、目立ちすぎない形にする）
+ *   ・送信中・送信結果は、data-modal-status の中に文字を入れて読み上げさせる
+ *     （例：「送信中です」「送信できませんでした。入力内容を確認してください。」）。
+ *     この場所は role="status" で、画面には見せない（visually-hidden。class 名は E チームと決める）。
+ *     モーダルを閉じるとき・開くときは、中身を空にする
+ *   ・画面内通信のエラーを表示したら、最初のエラーの項目へフォーカスを移す（aria-invalid="true" の入力欄）
  */
 ?>
 <dialog
@@ -138,7 +162,11 @@ $discardTitleId = $id . '-discard-title';
             <?php if ($eyebrow !== '') : ?>
                 <p class="modal__eyebrow"><?= h($eyebrow) ?></p>
             <?php endif; ?>
-            <h2 class="modal__title" id="<?= h($titleId) ?>"><?= h($title) ?></h2>
+            <h2
+                class="modal__title"
+                id="<?= h($titleId) ?>"
+                <?= $initialFocus === 'title' ? 'tabindex="-1" autofocus' : '' ?>
+            ><?= h($title) ?></h2>
             <?php if ($description !== '') : ?>
                 <p class="modal__description" id="<?= h($descriptionId) ?>"><?= h($description) ?></p>
             <?php endif; ?>
@@ -178,4 +206,10 @@ $discardTitleId = $id . '-discard-title';
             </div>
         </div>
     <?php endif; ?>
+
+    <?php
+    // 送信中・送信結果を読み上げソフトに伝える場所（MODAL-007、MODAL-002「処理中」）。画面には見せない。
+    // 破棄の確認に切り替えたとき（modal__inner に hidden が付く）も読み上げられるように、modal__inner の外に置く。
+    ?>
+    <p class="modal__status visually-hidden" role="status" data-modal-status></p>
 </dialog>
