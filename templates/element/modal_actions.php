@@ -59,13 +59,13 @@
 $cancelLabel = isset($cancel) && is_string($cancel) && trim($cancel) !== '' ? $cancel : '閉じる';
 $buttonList = isset($buttons) && is_array($buttons) ? $buttons : [];
 
-// 種類ごとの並び順（小さいほど左）。閉じる・キャンセルは、この外で一番左に出す。
-$variantOrder = ['secondary' => 1, 'danger' => 2, 'primary' => 3];
-
-$normalized = [];
+// 種類ごとに振り分ける。同じ種類の中では、buttons に書いた順を保つ。
+// 閉じる・キャンセルは、この外で一番左に出す。
+$buttonsByVariant = ['secondary' => [], 'danger' => [], 'primary' => []];
 $primaryCount = 0;
-foreach (array_values($buttonList) as $index => $button) {
-    $number = $index + 1;
+$number = 0;
+foreach ($buttonList as $button) {
+    $number++;
     if (!is_array($button)) {
         throw new InvalidArgumentException("モーダルの操作ボタン {$number} 番目は、配列で指定してください。");
     }
@@ -76,7 +76,7 @@ foreach (array_values($buttonList) as $index => $button) {
     }
 
     $variant = $button['variant'] ?? 'secondary';
-    if (!is_string($variant) || !isset($variantOrder[$variant])) {
+    if (!is_string($variant) || !isset($buttonsByVariant[$variant])) {
         throw new InvalidArgumentException(
             "モーダルの操作ボタン「{$label}」の variant は、primary・secondary・danger のどれかにしてください。",
         );
@@ -104,9 +104,7 @@ foreach (array_values($buttonList) as $index => $button) {
     $processingLabel = isset($button['processingLabel']) && is_string($button['processingLabel'])
         && trim($button['processingLabel']) !== '' ? $button['processingLabel'] : '処理中…';
 
-    $normalized[] = [
-        'order' => $variantOrder[$variant],
-        'index' => $index,
+    $buttonsByVariant[$variant][] = [
         'label' => $label,
         'variant' => $variant,
         'type' => $type,
@@ -122,8 +120,12 @@ if ($primaryCount > 1) {
     throw new InvalidArgumentException('モーダルの主操作（variant が primary のボタン）は 1 つまでにしてください。');
 }
 
-// 種類の順に並べる。同じ種類の中では、書いた順のまま。
-usort($normalized, fn(array $a, array $b): int => [$a['order'], $a['index']] <=> [$b['order'], $b['index']]);
+$normalized = array_merge(
+    $buttonsByVariant['secondary'],
+    $buttonsByVariant['danger'],
+    $buttonsByVariant['primary'],
+);
+
 ?>
 <!--
     モーダルの操作ボタン（MODAL-002）。
