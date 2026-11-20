@@ -16,29 +16,29 @@
  * @var string|null $eyebrow 見出しの上の小さな文字（例：NOTICE・10/20〜10/27）。h() で囲んで表示する
  * @var string|null $description 見出しの下の説明。h() で囲んで表示する
  * @var string|null $body 中身の HTML。そのまま表示するので、値は呼び出す側で h() で囲んでおく
- * @var string|null $actions 操作ボタンの HTML。そのまま表示するので、値は呼び出す側で h() で囲んでおく
+ * @var string|null $actions 操作ボタンの HTML。templates/element/modal_actions.php で作ったものを渡す（MODAL-002）
  * @var string|null $class 外わくに足す class 名（例：幅の広いモーダル用の目印）。E チームと決めた名前だけを使う
  */
 
 /*
  * 使い方（各画面のファイル）：
- * 1. 中身と操作ボタンを、ビューブロック（名前を付けて HTML をためておく場所）に書く。
- * 2. この部品を modals ブロックに足す。modals ブロックは templates/layout/default.php が
+ * 1. 中身を、ビューブロック（名前を付けて HTML をためておく場所）に書く。
+ * 2. 操作ボタンは templates/element/modal_actions.php で作る（並び順・種類・処理中の目印をそろえるため）。
+ * 3. この部品を modals ブロックに足す。modals ブロックは templates/layout/default.php が
  *    </body> の直前にまとめて出すので、モーダルは <main> の外に置かれる。
  *
  *    <?php $this->start('noticeDetailBody'); ?>
  *        <p><?= h($notice->body) ?></p>
- *    <?php $this->end(); ?>
- *    <?php $this->start('noticeDetailActions'); ?>
- *        <form method="dialog"><button type="submit">閉じる</button></form>
  *    <?php $this->end(); ?>
  *    <?php $this->append('modals', $this->element('modal', [
  *        'id' => 'notice-detail',
  *        'eyebrow' => 'NOTICE',
  *        'title' => $notice->title,
  *        'body' => $this->fetch('noticeDetailBody'),
- *        'actions' => $this->fetch('noticeDetailActions'),
+ *        'actions' => $this->element('modal_actions'),
  *    ])); ?>
+ *
+ * フォームを送るモーダル（通報・確認など）の書き方は、templates/element/modal_actions.php の使い方を見る。
  *
  * 開くボタンは、各画面に次の形で置く（data-modal-open の値は、開くモーダルの id）。
  *
@@ -108,7 +108,7 @@ $descriptionId = $id . '-description';
         <?php endif; ?>
 
         <?php if ($actions !== '') : ?>
-            <!-- 操作ボタンの並び・種類（主・副・危険）・処理中の表示は MODAL-002 で決める -->
+            <!-- 操作ボタンの並び・種類（主・副・危険）・処理中の目印は templates/element/modal_actions.php（MODAL-002） -->
             <div class="modal__actions">
                 <?= $actions ?>
             </div>
