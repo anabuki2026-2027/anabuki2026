@@ -38,7 +38,7 @@
 
 まずは、もとから入っているチェックを動かしてみましょう。
 
-```bash
+```powershell
 composer test
 ```
 
@@ -50,7 +50,7 @@ composer test
 
 1 つのファイルだけチェックしたいときは、こう書きます。
 
-```bash
+```powershell
 vendor/bin/phpunit tests/TestCase/Controller/UsersControllerTest.php
 ```
 
@@ -63,7 +63,7 @@ vendor/bin/phpunit tests/TestCase/Controller/UsersControllerTest.php
 B チームが `bin/cake bake model` を使うと、テストのひな形も一緒に作られます。
 ないときは、自分で作ります。
 
-```bash
+```powershell
 bin/cake bake test Controller Users
 bin/cake bake test Table Users
 bin/cake bake fixture Users
@@ -130,7 +130,7 @@ public function testAddWithEmptyName(): void
 
 ### 4. 合格するまで確かめる
 
-```bash
+```powershell
 composer test
 ```
 

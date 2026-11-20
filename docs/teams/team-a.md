@@ -57,7 +57,7 @@ A チームのメンバー自身の作業も、ほかのチームと同じよう
 GitHub には今 `main` しかないので、下の図の「teamA」〜「teamG main」にあたる、7 チーム分の main を作ります。
 
 ![ブランチ構成](../images/branch-structure.png)
-Git Bash で次を実行します。
+git の操作なので、Git Bash で次を実行します。
 
 ```bash
 cd /c/xampp/htdocs/anabuki2026
@@ -180,10 +180,18 @@ F（表を作る）→ B（Model）→ D（Controller）→ C（View）・E（�
 
 1. 自分のパソコンで `teamA/main` を動かして、**全部の機能がつながって動くか**を確かめます。
 
+   Git Bash で、最新版をもらいます。
+
    ```bash
    git fetch
    git switch teamA/main
    git pull
+   ```
+
+   PowerShell で、部品・表をそろえて、テストとサーバーを動かします。
+
+   ```powershell
+   cd C:\xampp\htdocs\anabuki2026
    composer install
    bin/cake migrations migrate
    composer test

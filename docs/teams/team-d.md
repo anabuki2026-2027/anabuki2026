@@ -47,7 +47,7 @@ CakePHP では、URL の形がそのまま Controller と処理の名前にな�
 
 B チームの Table ができていれば、上の 5 つの処理を自動で作れます。
 
-```bash
+```powershell
 bin/cake bake controller Users
 ```
 
@@ -97,7 +97,7 @@ public function add()
 
 ### 4. 表示を確認する
 
-```bash
+```powershell
 bin/cake server
 ```
 
