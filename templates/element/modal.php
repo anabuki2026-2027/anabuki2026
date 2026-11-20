@@ -18,6 +18,8 @@
  * @var string|null $body 中身の HTML。そのまま表示するので、値は呼び出す側で h() で囲んでおく
  * @var string|null $actions 操作ボタンの HTML。templates/element/modal_actions.php で作ったものを渡す（MODAL-002）
  * @var string|null $class 外わくに足す class 名（例：幅の広いモーダル用の目印）。E チームと決めた名前だけを使う
+ * @var bool|null $autoOpen ページを開いたときに、このモーダルを開いた状態にするなら true。
+ *   フォームを送って入力エラーで同じ画面に戻ったとき、入力とエラーを見せるために使う（MODAL-005「エラー時」）
  */
 
 /*
@@ -65,6 +67,7 @@ $description = isset($description) && is_string($description) ? $description : '
 $body = isset($body) && is_string($body) ? $body : '';
 $actions = isset($actions) && is_string($actions) ? $actions : '';
 $extraClass = isset($class) && is_string($class) ? trim($class) : '';
+$isAutoOpen = isset($autoOpen) && $autoOpen === true;
 
 // 見出しと説明の id。<dialog> の aria-labelledby・aria-describedby で結び付け、
 // 読み上げソフトが「何のダイアログか」を伝えられるようにする（MODAL-007）。
@@ -82,6 +85,7 @@ $descriptionId = $id . '-description';
       ・すでに開いているモーダルがあるときは、別のモーダルを重ねて開かない処理（MODAL-001「重複表示」）
       ・背景（::backdrop）、幅・高さ・余白、画面幅ごとの表示
       ・画面に収まらないときに modal__body の中だけをスクロールさせる CSS
+      ・data-modal-autoopen が付いたモーダルを、ページを開いたときに showModal() で開く処理（1 ページに 1 つまで）
 -->
 <dialog
     class="modal<?= $extraClass !== '' ? ' ' . h($extraClass) : '' ?>"
@@ -89,6 +93,7 @@ $descriptionId = $id . '-description';
     aria-labelledby="<?= h($titleId) ?>"
     <?= $description !== '' ? 'aria-describedby="' . h($descriptionId) . '"' : '' ?>
     data-modal
+    <?= $isAutoOpen ? 'data-modal-autoopen' : '' ?>
 >
     <div class="modal__inner">
         <div class="modal__header">
