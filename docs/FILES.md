@@ -417,16 +417,16 @@ JavaScript（画面に動きをつけるプログラム）を入れるフォル�
 
 ## 10. bin フォルダ（コマンド）
 
-**ひとことで：Git Bash（黒い画面）で CakePHP に命令するためのファイル。**
+**ひとことで：PowerShell（黒い画面）で CakePHP に命令するためのファイル。**
 
 | ファイル | 何をするもの？ | 担当 |
 | --- | --- | --- |
-| `cake` | Git Bash で `bin/cake ○○` と打つと、CakePHP に命令できる。 | 🚫 |
-| `cake.bat` | `cake` の Windows のコマンドプロンプト版。 | 🚫 |
+| `cake` | Git Bash で `bin/cake ○○` と打ったときに動く入り口。このチームでは `bin/cake` は PowerShell で打つので、ふだんは使わない。 | 🚫 |
+| `cake.bat` | PowerShell で `bin/cake ○○` と打つと、これが動いて CakePHP に命令できる。 | 🚫 |
 | `cake.php` | `cake` と `cake.bat` が中で使っているファイル。 | 🚫 |
 | `bash_completion.sh` | コマンドを途中まで打って Tab キーを押すと、残りを自動で入力してくれる機能。 | 🚫 |
 
-よく使う命令の例：
+よく使う命令の例（どれも PowerShell で、`cd C:\xampp\htdocs\anabuki2026` をしてから打つ）：
 
 | 打つコマンド | 何が起きる？ | 使うチーム |
 | --- | --- | --- |

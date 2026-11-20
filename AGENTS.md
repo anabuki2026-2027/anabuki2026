@@ -52,7 +52,11 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 - チーム開発・Git・CakePHP に慣れていない人が多い。CakePHP や Git に特有の用語、エラーの原因は、省略せずに説明する。
 - CakePHP 5.4 / PHP 8.2（8.2.35 以上）/ MySQL（データベース名 `anabukiit_app`）。
 - 全員 Windows。XAMPP は `C:\xampp`、アプリは `C:\xampp\htdocs\anabuki2026` にある。
-- 人にコマンドを案内するときは、**Git Bash で動く書き方**にする（README がすべて Git Bash 前提のため。例：`cd /c/xampp/htdocs/anabuki2026`）。
+- 人にコマンドを案内するときは、**git の操作だけ Git Bash、それ以外はすべて PowerShell** で動く書き方にする（README も同じ分け方）。
+  - **Git Bash**：`git` のコマンドと、git を使うスクリプト（`scripts/create_branches.sh`）だけ。パスは `/c/xampp/htdocs/anabuki2026` のように書く。
+  - **PowerShell**：`php`、`composer`、`bin/cake`、`mysql`、ファイルのコピーや削除など、git 以外のすべて。パスは `C:\xampp\htdocs\anabuki2026` のように書く。PowerShell では `bin/cake` と打つと `bin\cake.bat` が動く。
+  - 使っている人の PowerShell は Windows PowerShell 5.1。`&&` と `||` は使えないので、続けて実行するときは `;`、前が成功したときだけ実行するときは `if ($?) { ... }` を使う。
+  - git のコマンドと、それ以外のコマンドを 1 つのコードブロックにまぜない。ブロックごとに、どちらで実行するかを書く。
 
 ## チームと担当
 
