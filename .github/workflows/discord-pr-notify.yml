@@ -1,6 +1,7 @@
 # チームごとのDiscordチャンネルへPR通知を送るワークフロー
 #
-# 通知するもの: マージ / マージせずにクローズ / 修正依頼（Request changes）
+# 通知するもの: PR作成 / マージ / マージせずにクローズ / 修正依頼（Request changes）
+#   ※下書き（Draft）PRは作成時ではなく「Ready for review」にした時点で通知
 #
 # 振り分けルール:
 #   teamA のチャンネル      → すべてのPRを通知（統括用）
@@ -14,7 +15,7 @@ name: Discord PR通知
 
 on:
   pull_request:
-    types: [closed]
+    types: [opened, reopened, ready_for_review, closed]
   pull_request_review:
     types: [submitted]
 
@@ -23,10 +24,12 @@ permissions: {}
 jobs:
   route:
     runs-on: ubuntu-latest
-    # レビューは「修正依頼」だけを通知する
+    # レビューは「修正依頼」だけを通知する。下書きPRの作成は通知しない
     if: >-
-      github.event_name == 'pull_request' ||
-      github.event.review.state == 'changes_requested'
+      (github.event_name == 'pull_request' &&
+        !(github.event.action == 'opened' && github.event.pull_request.draft)) ||
+      (github.event_name == 'pull_request_review' &&
+        github.event.review.state == 'changes_requested')
     outputs:
       teams: ${{ steps.route.outputs.teams }}
     steps:
@@ -62,6 +65,7 @@ jobs:
           TEAM: ${{ matrix.team }}
           WEBHOOK: ${{ secrets[format('DISCORD_WEBHOOK_{0}', matrix.team)] }}
           EVENT: ${{ github.event_name }}
+          ACTION: ${{ github.event.action }}
           MERGED: ${{ github.event.pull_request.merged }}
           REVIEWER: ${{ github.event.review.user.login }}
           SENDER: ${{ github.event.sender.login }}
@@ -80,6 +84,10 @@ jobs:
 
           if [[ "$EVENT" == "pull_request_review" ]]; then
             label="🔧 修正依頼が来ました（${REVIEWER}）"; color=15158332
+          elif [[ "$ACTION" == "opened" || "$ACTION" == "ready_for_review" ]]; then
+            label="🆕 PRが作成されました（${AUTHOR}）";    color=3447003
+          elif [[ "$ACTION" == "reopened" ]]; then
+            label="🔁 PRが再オープンされました（${SENDER}）"; color=3447003
           elif [[ "$MERGED" == "true" ]]; then
             label="✅ マージされました（${SENDER}）";     color=10181046
           else
