@@ -19,7 +19,9 @@ return [
 
     'Datasources' => [
         'default' => [
-            'host' => 'localhost',
+            // localhost ではなく 127.0.0.1 にする（MySQL を 127.0.0.1 だけで待ち受けているため。
+            // localhost だと、先に ::1 へつなごうとして、毎回 2 秒ほど遅くなる）
+            'host' => '127.0.0.1',
 
             'username' => 'my_app',
             'password' => 'secret',
@@ -30,7 +32,7 @@ return [
         ],
 
         'test' => [
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'username' => 'my_app',
             'password' => 'secret',
             'database' => 'test_myapp',

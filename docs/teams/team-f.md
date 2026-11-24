@@ -59,7 +59,7 @@ A チームと相談して、表の名前と項目を決め、B・D・C チー�
 
 ### 2. マイグレーションのファイルを作る
 
-```bash
+```powershell
 bin/cake bake migration CreateUsers name:string email:string:unique password:string created modified
 ```
 
@@ -72,7 +72,7 @@ bin/cake bake migration CreateUsers name:string email:string:unique password:str
 
 ### 3. 自分のパソコンで表を作る
 
-```bash
+```powershell
 bin/cake migrations migrate
 ```
 
@@ -96,7 +96,7 @@ phpMyAdmin を開いて、`users` の表ができていることを確認しま�
 
 かわりに、「変える」ための新しいファイルを作ります。
 
-```bash
+```powershell
 bin/cake bake migration AddAgeToUsers age:integer
 bin/cake migrations migrate
 ```
@@ -109,14 +109,14 @@ bin/cake migrations migrate
 
 画面を作るときに、データが 1 件もないと確認しづらいので、ためしのデータを用意します。
 
-```bash
+```powershell
 bin/cake bake seed Users
 ```
 
 `config/Seeds/UsersSeed.php` ができるので、入れたいデータを書きます。
 書いたら、次のコマンドでデータベースに入れます。
 
-```bash
+```powershell
 bin/cake seeds run
 ```
 

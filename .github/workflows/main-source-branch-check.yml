@@ -1,0 +1,60 @@
+# .github/workflows/main-source-branch-check.yml
+#
+# main 宛ての PR について、次のどちらかを満たしていればチェックを通す。
+#   1. 元ブランチが teamB/main 〜 teamG/main（同じリポジトリ内）
+#   2. PR の作成者が teamA のメンバー（元ブランチは問わない）
+# それ以外は失敗にする。
+# main のルールセットで、このジョブ（main-source-branch-check）を必須ステータスチェックにする。
+#
+# teamA のメンバーは Actions の変数 TEAM_A_MEMBERS にカンマ区切りで登録する。
+#   例: alice,bob,carol,dave,eve
+#   （Organization の Settings → Secrets and variables → Actions → Variables、
+#     またはリポジトリの同じ画面で登録。変更できるのは管理者だけ）
+#
+# pull_request_target は main 側に置いたワークフロー定義で動くため、
+# チームブランチ側でこのファイルを書き換えても判定は変わらない。
+# コードのチェックアウトはしないので、pull_request_target でも安全。
+
+name: main-source-branch-check
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize, edited]
+
+permissions: {}
+
+jobs:
+  main-source-branch-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check head branch / author
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          TEAM_A_MEMBERS: ${{ vars.TEAM_A_MEMBERS }}
+        run: |
+          if [[ "$HEAD_REPO" != "$BASE_REPO" ]]; then
+            echo "::error::フォークからの PR は main にマージできません（$HEAD_REPO）"
+            exit 1
+          fi
+
+          # teamA のメンバーが作成した PR は、どのブランチからでも OK
+          IFS=',' read -ra MEMBERS <<< "$TEAM_A_MEMBERS"
+          for m in "${MEMBERS[@]}"; do
+            m="$(echo "$m" | xargs)"   # 前後の空白を除去
+            if [[ -n "$m" && "${m,,}" == "${AUTHOR,,}" ]]; then
+              echo "OK: teamA メンバー（$AUTHOR）の PR: $HEAD_REF -> main"
+              exit 0
+            fi
+          done
+
+          # それ以外は teamB/main 〜 teamG/main からのみ OK
+          if [[ "$HEAD_REF" =~ ^team[B-G]/main$ ]]; then
+            echo "OK: $HEAD_REF -> main"
+          else
+            echo "::error::main へは teamB/main 〜 teamG/main からの PR、または teamA メンバーの PR のみマージできます（head: $HEAD_REF, author: $AUTHOR）"
+            exit 1
+          fi

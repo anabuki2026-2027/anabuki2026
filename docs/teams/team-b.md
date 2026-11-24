@@ -33,10 +33,18 @@ F チームが作ったデータベースの表を、アプリから読んだり
 F チームが作った表は、**main に入って、B のリーダーが `teamB/main` に取り込んだあと**に届きます。
 リーダーから「取り込んだよ」と連絡が来たら、最新版をもらって、自分のパソコンにも表を作ります。
 
+Git Bash で、最新版をもらいます。
+
 ```bash
 git fetch
 git switch teamB/main
 git pull
+```
+
+PowerShell で、表を作ります。
+
+```powershell
+cd C:\xampp\htdocs\anabuki2026
 bin/cake migrations migrate
 ```
 
@@ -44,7 +52,7 @@ bin/cake migrations migrate
 
 ### 2. Bake でファイルを自動で作る
 
-```bash
+```powershell
 bin/cake bake model Users
 ```
 

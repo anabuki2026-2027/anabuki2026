@@ -13,7 +13,7 @@
 
 1. [まず知っておくこと（Git ってなに？）](#1-まず知っておくことgit-ってなに)
 2. [使うソフト一覧](#2-使うソフト一覧)
-3. [Git Bash の使い方（黒い画面）](#3-git-bash-の使い方黒い画面)
+3. [黒い画面の使い方（Git Bash と PowerShell）](#3-黒い画面の使い方git-bash-と-powershell)
 4. [はじめての準備（最初の 1 回だけ）](#4-はじめての準備最初の-1-回だけ)
 5. [アプリを動かしてみる](#5-アプリを動かしてみる)
 6. [毎日の作業の流れ](#6-毎日の作業の流れ)
@@ -53,8 +53,12 @@
 | **main（メイン）** | 完成版を置く大事なブランチ。直接さわらない | 提出済みの清書 |
 | **チームの main** | `teamB/main` のように、チームごとにある「チームの完成版」 | チームで集めた下書き |
 
-このチームでは Git を **Git Bash（ギットバッシュ）** という黒い画面で、コマンド（命令文）を入力して操作します。
-コマンドはこのページからコピーして貼り付ければ大丈夫です。
+このチームでは、コマンド（命令文）を入力する黒い画面を **2 つ** 使い分けます。
+
+- **Git の操作** → **Git Bash（ギットバッシュ）**
+- **それ以外**（PHP・Composer・CakePHP・データベースなど）→ **PowerShell（パワーシェル）**
+
+コマンドはこのページからコピーして貼り付ければ大丈夫です。どちらで実行するかは、コマンドの前に書いてあります。
 
 ---
 
@@ -62,7 +66,8 @@
 
 | ソフト | 何に使う？ |
 |---|---|
-| **Git（Git Bash）** | Git を使う。コマンドを打つ黒い画面もこれ |
+| **Git（Git Bash）** | Git を使う。Git のコマンドを打つ黒い画面もこれ |
+| **PowerShell** | Git 以外のコマンドを打つ黒い画面。Windows に最初から入っている |
 | **XAMPP** | PHP（アプリを動かす言語）と MySQL（データベース）がまとめて入っている |
 | **Composer** | アプリに必要な部品（ライブラリ）をダウンロードする |
 | **VS Code** | ファイルを編集する |
@@ -80,35 +85,49 @@
 
 ---
 
-## 3. Git Bash の使い方（黒い画面）
+## 3. 黒い画面の使い方（Git Bash と PowerShell）
 
-Git を入れる（[4-1](#4-1-git-を入れるprogate-の手順どおり)）と使えるようになります。先に読んでおくと安心です。
+| 画面 | 何に使う？ | 開き方 |
+|---|---|---|
+| **Git Bash** | **Git の操作だけ**（`git` で始まるコマンド） | スタートメニューで **「Git Bash」** と検索。Git を入れる（[4-1](#4-1-git-を入れるprogate-の手順どおり)）と使えるようになります |
+| **PowerShell** | **Git 以外のすべて**（`php`、`composer`、`bin/cake` など） | スタートメニューで **「PowerShell」** と検索して、**「Windows PowerShell」** を開きます（管理者として実行する必要はありません） |
 
-### 開き方
+2 つは、フォルダの場所の書き方がちがうので注意してください。
 
-- スタートメニューで **「Git Bash」** と検索して開きます。
+| 画面 | `C:\xampp\htdocs\anabuki2026` の書き方 |
+|---|---|
+| Git Bash | **`/c/xampp/htdocs/anabuki2026`**（区切りは `/`、`C:` は `/c`） |
+| PowerShell | **`C:\xampp\htdocs\anabuki2026`**（エクスプローラーと同じ） |
 
 ### コマンドの貼り付け方（大事）
 
-Git Bash では **`Ctrl + V` で貼り付けできません。** 次のどちらかを使います。
+| 画面 | 貼り付け方 |
+|---|---|
+| Git Bash | **`Ctrl + V` では貼り付けできません。** **`Shift + Insert`** か、画面の上で **右クリック →「Paste」** |
+| PowerShell | **`Ctrl + V`** か、画面の上で **右クリック** |
 
-- **`Shift + Insert`**
-- 画面の上で **右クリック →「Paste」**
+どちらも、コピーは文字をマウスでなぞって選ぶだけでできます。`Ctrl + C` は「止める」という意味になるので注意してください。
 
-コピーは、文字をマウスでなぞって選ぶだけでできます（`Ctrl + C` は「止める」という意味になるので注意）。
-
-### 覚えておくと便利なコマンド
+### 覚えておくと便利なコマンド（どちらの画面でも使えます）
 
 | コマンド | 意味 |
 |---|---|
 | `pwd` | 今いるフォルダの場所を表示 |
 | `ls` | 今いるフォルダの中身を表示 |
 | `cd フォルダ名` | フォルダに移動 |
-| `cd /c/xampp/htdocs/anabuki2026` | このアプリのフォルダに移動（`C:\xampp\htdocs\anabuki2026` のこと） |
 | `Ctrl + C` | 動いているものを止める |
 
-> Git Bash では、フォルダの区切りは `\` ではなく **`/`** を使います。
-> `C:\xampp` は **`/c/xampp`** と書きます。
+このアプリのフォルダに移動するコマンドは、画面によってちがいます。
+
+```bash
+# Git Bash
+cd /c/xampp/htdocs/anabuki2026
+```
+
+```powershell
+# PowerShell
+cd C:\xampp\htdocs\anabuki2026
+```
 
 ---
 
@@ -157,10 +176,10 @@ git config --global user.email
 
 ### 4-5. ちゃんと入ったか確認する
 
-1. Git Bash を **一度閉じてから開き直します**（インストールしたものは、開き直さないと使えません）。
-2. 次のコマンドを貼り付けて `Enter` を押します。
+1. PowerShell を **一度閉じてから開き直します**（インストールしたものは、開き直さないと使えません）。
+2. PowerShell で、次のコマンドを貼り付けて `Enter` を押します。
 
-```bash
+```powershell
 php -v
 composer --version
 ```
@@ -174,7 +193,7 @@ PHP version 8.2.35 (C:\xampp\php\php.exe)
 ```
 
 > `8.2.12` と出たら、PHP の更新（[4-2](#4-2-xampp-を入れる) の 3）がまだです。
-> `8.2` 以外（`8.5` など）が出たり、`command not found` と出たら、管理チームに聞いてください。
+> `8.2` 以外（`8.5` など）が出たり、「`'php' の用語は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません`」と出たら、管理チームに聞いてください。
 > パソコンに別の PHP が入っている可能性があります。
 
 ### 4-6. VS Code を入れる
@@ -210,12 +229,17 @@ PHP version 8.2.35 (C:\xampp\php\php.exe)
 
 授業で、次の 4 つができているかを確認します。先に自分で確かめておいてください。
 
-まず Git Bash を開いて、次の 3 行をまとめて貼り付けて `Enter` を押します。
+まず PowerShell を開いて、次の 2 行をまとめて貼り付けて `Enter` を押します。
+
+```powershell
+php -v
+composer --version
+```
+
+次に Git Bash を開いて、次の 1 行を貼り付けて `Enter` を押します。
 
 ```bash
-php -v
 git --version
-composer --version
 ```
 
 | チェック | OK のしるし | ダメだったら |
@@ -225,7 +249,7 @@ composer --version
 | **Composer 導入** | `Composer version 2.` で始まる行と、`PHP version 8.2.35 (C:\xampp\php\php.exe)` が出る | [4-4](#4-4-composer-を入れる) をやる |
 | **Organization の参加** | ブラウザで <https://github.com/settings/organizations> を開くと、一覧に **`anabuki2026-2027`** がある | 上の 3 の招待を受ける。招待が来ていなければ管理チームに聞く |
 
-> `command not found` と出たときは、Git Bash を **一度閉じて開き直して** から、もう一度ためしてください。
+> 「認識されません」や `command not found` と出たときは、その画面を **一度閉じて開き直して** から、もう一度ためしてください。
 > それでもダメなら、画面のスクリーンショットを撮って管理チームに聞いてください。
 
 > ⚠️ このリポジトリは、Organization に入っていなくても **クローン（コピー）だけはできてしまいます**。
@@ -246,9 +270,10 @@ cd anabuki2026
 
 ### 4-9. アプリの部品をダウンロードする
 
-`anabuki2026` フォルダにいる状態で（`pwd` で確認できます）、次のコマンドを実行します。
+ここからは Git ではないので、**PowerShell** を使います。PowerShell で、次のコマンドを 1 行ずつ実行します。
 
-```bash
+```powershell
+cd C:\xampp\htdocs\anabuki2026
 composer install
 ```
 
@@ -258,10 +283,10 @@ composer install
 ### 4-10. データベースを作る
 
 1. **XAMPP Control Panel** を開き、**Apache** と **MySQL** の「Start」を押します（緑色になれば OK）。
-2. Git Bash で、次のコマンドを貼り付けて `Enter` を押します。
+2. PowerShell で、次のコマンドを貼り付けて `Enter` を押します。
 
-```bash
-/c/xampp/mysql/bin/mysql.exe -u root -e "CREATE DATABASE anabukiit_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```powershell
+C:\xampp\mysql\bin\mysql.exe -u root -e "CREATE DATABASE anabukiit_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
 何も表示されなければ成功です。
@@ -275,10 +300,13 @@ composer install
 3. `'Datasources'` → `'default'` の中を、次のように書きかえて保存します（`Ctrl + S`）。
 
 ```php
+'host' => '127.0.0.1',
 'username' => 'root',
 'password' => '',
 'database' => 'anabukiit_app',
 ```
+
+> `'host'` は `localhost` ではなく **`127.0.0.1`** にします。MySQL は自分のパソコン（`127.0.0.1`）からだけつながる設定にしているので、`localhost` のままだと画面を開くたびに 2 秒ほど遅くなります。
 
 > `config/app_local.php` は **自分のパソコン専用** の設定ファイルです。GitHub には送られません（そういう設定になっています）。
 
@@ -287,10 +315,10 @@ composer install
 ## 5. アプリを動かしてみる
 
 1. XAMPP Control Panel で **MySQL** が「Start」になっているか確認します。
-2. Git Bash で、アプリのフォルダに移動してサーバーを起動します。
+2. PowerShell で、アプリのフォルダに移動してサーバーを起動します。
 
-```bash
-cd /c/xampp/htdocs/anabuki2026
+```powershell
+cd C:\xampp\htdocs\anabuki2026
 bin/cake server
 ```
 
@@ -298,10 +326,10 @@ bin/cake server
 4. CakePHP の画面が出て、**緑のチェックがたくさん並んでいれば成功** です 🎉
    特に **「CakePHP is able to connect to the database.」** が緑ならデータベースもつながっています。
 
-止めるときは、Git Bash で **`Ctrl + C`** を押します。
+止めるときは、その PowerShell で **`Ctrl + C`** を押します。
 
-> サーバーを動かしている間、その Git Bash は使えません。
-> Git のコマンドを打つときは、**もう 1 つ Git Bash を開いて** ください。
+> サーバーを動かしている間、その PowerShell は使えません。
+> ほかのコマンドを打つときは、**もう 1 つ PowerShell を開いて** ください（Git のコマンドは Git Bash で）。
 
 ---
 
@@ -346,7 +374,7 @@ bin/cake server
  ① 最新版をもらう → ② ブランチを作る → ③ 作業する → ④ コミット → ⑤ プッシュ → ⑥ プルリクエスト
 ```
 
-まず、アプリのフォルダに移動しておきます。
+① 〜 ⑤ の `git` のコマンドは、すべて **Git Bash** で実行します。まず、Git Bash でアプリのフォルダに移動しておきます。
 
 ```bash
 cd /c/xampp/htdocs/anabuki2026
@@ -364,7 +392,7 @@ git pull
 
 **作業を始める前に必ずやります。** 他の人の変更を取り込んでおかないと、あとでぶつかります。
 
-> プルしたあとに、管理チーム（A チーム）やリーダーから「`composer install` してね」「`bin/cake migrations migrate` してね」と言われたら、そのコマンドも実行してください。
+> プルしたあとに、管理チーム（A チーム）やリーダーから「`composer install` してね」「`bin/cake migrations migrate` してね」と言われたら、そのコマンドも実行してください（Git ではないので、**PowerShell** で `cd C:\xampp\htdocs\anabuki2026` をしてから実行します）。
 
 ### ② ブランチを作る（自分専用の作業コース）
 
@@ -381,7 +409,7 @@ git switch -c teamB/tanaka-users-model
 ### ③ 作業する
 
 VS Code でファイルを編集して保存します。
-こまめに `bin/cake server` でブラウザ表示を確認しましょう。
+こまめに `bin/cake server`（PowerShell で実行）でブラウザ表示を確認しましょう。
 
 > VS Code のメニューの **「ターミナル」→「タスクの実行...」** から、よく使うコマンドを選んで実行できます。
 > プッシュする前に **「プルリクエストの前にまとめてチェック」** を選んで、エラーが出ないか確認しておくと安心です
@@ -450,6 +478,8 @@ git merge origin/teamB/main
 > `CONFLICT` と出たら、自分で直そうとせずに、リーダーか A チームに相談してください。
 
 ### コマンドまとめ（慣れてきたらこれだけ見ればOK）
+
+すべて **Git Bash** で実行します。
 
 ```bash
 cd /c/xampp/htdocs/anabuki2026
@@ -526,14 +556,14 @@ anabuki2026/
 
 | 出たメッセージ・起きたこと | 原因 | どうする？ |
 |---|---|---|
-| `Ctrl + V` で貼り付けできない | Git Bash ではそういう仕様 | `Shift + Insert` か 右クリック →「Paste」 |
-| `command not found` | インストール直後でまだ反映されていない | Git Bash を **全部閉じて** 開き直す。だめならパソコンを再起動 |
-| `The zip extension and unzip/7z commands are both missing` | zip が使えない | [4-3](#4-3-zip-を使えるようにする大事) をやり直して、Git Bash を開き直す |
+| Git Bash で `Ctrl + V` で貼り付けできない | Git Bash ではそういう仕様 | `Shift + Insert` か 右クリック →「Paste」 |
+| PowerShell で「〇〇 の用語は、コマンドレット、関数、…として認識されません」／ Git Bash で `command not found` | インストール直後でまだ反映されていない | その画面を **全部閉じて** 開き直す。だめならパソコンを再起動 |
+| `The zip extension and unzip/7z commands are both missing` | zip が使えない | [4-3](#4-3-zip-を使えるようにする大事) をやり直して、PowerShell を開き直す |
 | `php -v` で `8.2` 以外が出る | パソコンに別の PHP が入っている | 管理チームに相談 |
 | `Your Composer dependencies require a PHP version` | PHP のバージョンが合っていない | `php -v` を確認して管理チームに相談 |
 | `Repository not found` / `Permission denied` | GitHub のチームに入っていない / 別のアカウントでログインしている | [4-7](#4-7-github-のアカウントを作ってチームに入れてもらう) の招待を受けたか確認 |
 | `fatal: destination path 'anabuki2026' already exists` | もうクローン済み | `cd anabuki2026` で中に入れば OK |
-| `No such file or directory` | 今いるフォルダが違う | `cd /c/xampp/htdocs/anabuki2026` をしてからやり直す |
+| `No such file or directory` / 「パスが存在しないため検出できません」 | 今いるフォルダが違う | Git Bash なら `cd /c/xampp/htdocs/anabuki2026`、PowerShell なら `cd C:\xampp\htdocs\anabuki2026` をしてからやり直す |
 
 ### アプリを動かすとき
 
@@ -541,7 +571,7 @@ anabuki2026/
 |---|---|---|
 | 画面に **「CakePHP is NOT able to connect to the database」** | MySQL が止まっている / 設定ミス | XAMPP で MySQL を Start。[4-11](#4-11-データベースの接続設定をする) の設定を見直す |
 | `Unknown database 'anabukiit_app'` | データベースを作っていない | [4-10](#4-10-データベースを作る) をやる |
-| `bin/cake server` で「ポートが使われている」 | もう 1 つサーバーが動いている | 前の Git Bash で `Ctrl + C`。または `bin/cake server -p 8766` で起動して <http://localhost:8766> を開く |
+| `bin/cake server` で「ポートが使われている」 | もう 1 つサーバーが動いている | 前の PowerShell で `Ctrl + C`。または `bin/cake server -p 8766` で起動して <http://localhost:8766> を開く |
 | XAMPP の MySQL が Start できない | 他のアプリが同じポートを使っている | 管理チームに相談 |
 
 ### Git のとき

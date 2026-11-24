@@ -47,9 +47,9 @@ B チームが Bake で作った `tests/` のファイルは、一緒に出し�
 
 ## 4. 自動チェックを動かす
 
-これは git ではないので、AI が実行してよい。
+これは git ではないので、AI が実行してよい（PowerShell で動かす）。
 
-```bash
+```powershell
 composer check
 ```
 

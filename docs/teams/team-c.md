@@ -79,7 +79,7 @@ D チームから受け取ったデータを、フォームや一覧の形にし
 
 ### 3. 表示を確認する
 
-```bash
+```powershell
 bin/cake server
 ```
 
@@ -104,7 +104,7 @@ bin/cake server
 
 D チームの Controller と B チームの Table ができていれば、画面のひな形を自動で作れます。
 
-```bash
+```powershell
 bin/cake bake template Users
 ```
 
