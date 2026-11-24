@@ -46,6 +46,8 @@
  * 【処理状態と通知の共通の決まり（NOTICE-003）】
  * 共通の文言は src/View/NoticeMessages.php で管理し、下の <template data-notice-messages> に出している。
  * どの結果でどの文言を出すかの表も、NoticeMessages.php にある。
+ * 地図・現在地・QR コード・画像の読み込みなど、外部の機能の結果の通知は templates/element/external_feature.php を見る
+ * （NOTICE-005。文言は各画面で書く）。
  *
  * C が HTML に付ける目印：
  * | 目印                              | 付ける場所       | 意味                                                         |
