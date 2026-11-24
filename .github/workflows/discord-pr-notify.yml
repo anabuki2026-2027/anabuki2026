@@ -1,0 +1,111 @@
+# チームごとのDiscordチャンネルへPR通知を送るワークフロー
+#
+# 通知するもの: マージ / マージせずにクローズ / 修正依頼（Request changes）
+#
+# 振り分けルール:
+#   teamA のチャンネル      → すべてのPRを通知（統括用）
+#   teamX/main へのPR       → teamX のチャンネル
+#   main へのPR             → teamA のチャンネル。head が teamX/... なら teamX のチャンネルにも通知
+#
+# 必要な設定（Org Settings → Secrets and variables → Actions → Secrets）:
+#   DISCORD_WEBHOOK_TEAMA 〜 DISCORD_WEBHOOK_TEAMG（各チャンネルのWebhook URL）
+
+name: Discord PR通知
+
+on:
+  pull_request:
+    types: [closed]
+  pull_request_review:
+    types: [submitted]
+
+permissions: {}
+
+jobs:
+  route:
+    runs-on: ubuntu-latest
+    # レビューは「修正依頼」だけを通知する
+    if: >-
+      github.event_name == 'pull_request' ||
+      github.event.review.state == 'changes_requested'
+    outputs:
+      teams: ${{ steps.route.outputs.teams }}
+    steps:
+      - id: route
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          shopt -s nocasematch
+          team_of() { [[ "$1" =~ ^(team[a-g])/ ]] && echo "${BASH_REMATCH[1]^^}"; }
+
+          teams=("TEAMA")   # teamA（統括）はすべてのPRを見られるようにする
+          if [[ "$BASE_REF" == "main" ]]; then
+            t=$(team_of "$HEAD_REF") || true
+          else
+            t=$(team_of "$BASE_REF") || true
+          fi
+          if [[ -n "$t" && "$t" != "TEAMA" ]]; then teams+=("$t"); fi
+
+          json=$(printf '%s\n' "${teams[@]}" | jq -R . | jq -sc .)
+          echo "teams=$json" >> "$GITHUB_OUTPUT"
+          echo "通知先: $json"
+
+  notify:
+    needs: route
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        team: ${{ fromJSON(needs.route.outputs.teams) }}
+    steps:
+      - name: Discordへ送信
+        env:
+          TEAM: ${{ matrix.team }}
+          WEBHOOK: ${{ secrets[format('DISCORD_WEBHOOK_{0}', matrix.team)] }}
+          EVENT: ${{ github.event_name }}
+          MERGED: ${{ github.event.pull_request.merged }}
+          REVIEWER: ${{ github.event.review.user.login }}
+          SENDER: ${{ github.event.sender.login }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [[ -z "$WEBHOOK" ]]; then
+            echo "::warning::DISCORD_WEBHOOK_${TEAM} が未設定のためスキップしました"
+            exit 0
+          fi
+
+          if [[ "$EVENT" == "pull_request_review" ]]; then
+            label="🔧 修正依頼が来ました（${REVIEWER}）"; color=15158332
+          elif [[ "$MERGED" == "true" ]]; then
+            label="✅ マージされました（${SENDER}）";     color=10181046
+          else
+            label="🚫 マージせずにクローズされました（${SENDER}）"; color=9807270
+          fi
+
+          payload=$(jq -n \
+            --arg title "#${PR_NUMBER} ${PR_TITLE}" \
+            --arg url "$PR_URL" \
+            --arg label "$label" \
+            --argjson color "$color" \
+            --arg head "$HEAD_REF" --arg base "$BASE_REF" \
+            --arg repo "$REPO" --arg author "$AUTHOR" '
+            {
+              username: "GitHub",
+              allowed_mentions: { parse: [] },
+              embeds: [{
+                title: ($title | .[0:256]),
+                url: $url,
+                color: $color,
+                description: "\($label)\n`\($head)` → `\($base)`",
+                fields: [
+                  { name: "リポジトリ", value: $repo,   inline: true },
+                  { name: "作成者",     value: $author, inline: true }
+                ]
+              }]
+            }')
+
+          printf '%s' "$payload" | curl -fsS -X POST -H "Content-Type: application/json" --data-binary @- "$WEBHOOK"
