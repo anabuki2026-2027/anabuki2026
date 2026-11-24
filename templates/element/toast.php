@@ -20,6 +20,9 @@
  *   CakePHP の Flash の escape と同じ。利用者が入力した文字が入る文言では false にしない
  * @var string|null $target 入力エラーのとき、移動先にする入力欄の id（例：email）。warning・error だけで使える。
  *   指定すると、通知に「該当する項目へ移動」のリンクが付く（NOTICE-002「完成条件」：入力エラー箇所へ移動できる）
+ * @var array{label: string, url: string|array}|null $action 次に取る操作へのリンク。label は文字、url は行き先
+ *   （文字列か、CakePHP の URL の配列）。例：ログインが切れたときの ['label' => 'ログインする', 'url' => '/login']
+ *   （NOTICE-003「認証切れ」：ログイン画面へ誘導する）
  * @var bool|null $template true のとき、文言が空の「ひな形」を作る。templates/element/toast_region.php だけが使う。
  *   E チームの JavaScript がこのひな形を複製し、data-toast-message に文言を入れて表示する
  */
@@ -32,6 +35,11 @@
  *    $this->Flash->success('保存しました。');
  *    $this->Flash->warning('…');
  *    $this->Flash->error('入力内容を確認してください。', ['params' => ['target' => 'email']]);
+ *    $this->Flash->error(NoticeMessages::SESSION_EXPIRED, ['params' => ['action' => [
+ *        'label' => 'ログインする', 'url' => '/login',
+ *    ]]]);
+ *
+ * 通信の失敗やログイン切れなど、共通の場面の文言は src/View/NoticeMessages.php の定数を使う（C チーム決定事項 6）。
  *
  * target は、最初にエラーになった入力欄の id。FormHelper が作る id は、項目名の「.」と「_」を「-」にしたもの
  * （例：email → email、user.email → user-email）。入力欄の近くのエラーの文は、FormHelper が今までどおり表示する
@@ -80,6 +88,17 @@ if ($target !== '') {
         throw new InvalidArgumentException('移動先の入力欄（target）は、英字で始まり、英数字・-・_ だけの id にしてください。');
     }
 }
+$actionLabel = '';
+$actionUrl = '';
+if (isset($action)) {
+    $actionLabel = is_array($action) && isset($action['label']) && is_string($action['label'])
+        ? trim($action['label']) : '';
+    $rawActionUrl = is_array($action) ? ($action['url'] ?? null) : null;
+    if ($actionLabel === '' || (!is_string($rawActionUrl) && !is_array($rawActionUrl)) || $rawActionUrl === '') {
+        throw new InvalidArgumentException('通知の操作のリンク（action）には、label と url を指定してください。');
+    }
+    $actionUrl = $this->Url->build($rawActionUrl);
+}
 $setting = $toastTypes[$type];
 
 /*
@@ -102,6 +121,9 @@ $setting = $toastTypes[$type];
  *     通知は閉じない（エラーの内容を見ながら直せるようにする）
  *   ・画面内通信で入力エラーを受け取ったときは、ひな形の data-toast-target の hidden を外し、href に
  *     「#（最初の aria-invalid="true" の入力欄の id）」を入れる
+ *   ・操作のリンク（data-toast-action）は普通のリンクなので、JavaScript では何もしない。
+ *     画面内通信でログインが切れたとき（401）は、ひな形の data-toast-action の hidden を外し、文字を「ログインする」、
+ *     href を toast_region.php の data-login-url の値にする（URL は応答の中身から作らない。外部サイトへ飛ばされないように）
  */
 ?>
 <div
@@ -122,6 +144,15 @@ $setting = $toastTypes[$type];
             data-toast-target
             <?= $target === '' ? 'hidden' : '' ?>
         >該当する項目へ移動</a>
+    <?php endif; ?>
+    <?php if ($actionLabel !== '' || $isTemplate) : ?>
+        <?php // ひな形では、ログインが切れたときなどに JavaScript が文字と href を入れ、hidden を外して使う ?>
+        <a
+            class="toast__action"
+            href="<?= $actionUrl !== '' ? h($actionUrl) : '#' ?>"
+            data-toast-action
+            <?= $actionLabel === '' ? 'hidden' : '' ?>
+        ><?= h($actionLabel) ?></a>
     <?php endif; ?>
     <button type="button" class="toast__close" aria-label="この通知を閉じる" data-toast-close hidden>
         <span aria-hidden="true">×</span>

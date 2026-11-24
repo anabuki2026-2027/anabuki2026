@@ -138,11 +138,15 @@ $errorText = fn(array $messages): string => implode('<br>', array_map('h', $mess
         'valueSources' => ['context'],
         'class' => 'report-form',
         'data-report-form' => true,
+        // 画面内通信で送るフォームの共通の目印と、項目ごとのエラーの場所の id の先頭（NOTICE-003。toast_region.php を見る）
+        'data-async-form' => true,
+        'data-error-prefix' => $modalId,
     ]) ?>
         <?= $this->Form->hidden('review_id', ['value' => $reviewIdText]) ?>
 
         <!-- フォーム全体へのメッセージ。E チームの JavaScript が、送信できなかった理由をここに入れる -->
-        <p class="report-form__message" id="<?= h($messageId) ?>" role="alert"><?= h($formMessage) ?></p>
+        <p class="report-form__message" id="<?= h($messageId) ?>" role="alert"
+            data-form-message><?= h($formMessage) ?></p>
 
         <?php
         // エラー表示の場所は、空のときも出して aria-describedby で結び付けておく。

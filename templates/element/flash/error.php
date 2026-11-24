@@ -18,10 +18,16 @@
 // templates/layout/default.php が、このブロックを共通通知領域（templates/element/toast_region.php）の中に出す。
 // 文言は h() で囲んで出す。D チームが Flash に 'escape' => false を付けたときだけ、そのまま出す（今までと同じ）。
 // 入力エラーのときは、params の target に最初のエラーの入力欄の id を入れると、その項目へ移動するリンクが付く。
-//   例：$this->Flash->error('入力内容を確認してください。', ['params' => ['target' => 'email']]);
+//   例：$this->Flash->error(NoticeMessages::INVALID, ['params' => ['target' => 'email']]);
+// 次に取る操作へのリンクを付けるときは、params の action に label と url を入れる（templates/element/toast.php を見る）。
+//   例：$this->Flash->error(NoticeMessages::SESSION_EXPIRED, ['params' => ['action' => [
+//       'label' => 'ログインする', 'url' => '/login',
+//   ]]]);
+// 共通の場面の文言は、src/View/NoticeMessages.php の定数を使う（C チーム決定事項 6）。
 $this->append('toastAlert', $this->element('toast', [
     'type' => 'error',
     'message' => $message,
     'escape' => $params['escape'] ?? true,
     'target' => $params['target'] ?? null,
+    'action' => $params['action'] ?? null,
 ]));
