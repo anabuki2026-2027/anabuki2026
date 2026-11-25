@@ -37,7 +37,7 @@
 
     // 拡張機能「PHP Intelephense」の設定（このアプリと同じ PHP のバージョンで考えてもらう）
     "php.suggest.basic": false,
-    "intelephense.environment.phpVersion": "8.2.35",
+    "intelephense.environment.phpVersion": "8.4.28",
     "intelephense.environment.documentRoot": "webroot",
 
     // 検索（Ctrl + Shift + F）に、自動で作られるファイルを出さない

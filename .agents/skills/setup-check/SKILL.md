@@ -28,9 +28,9 @@ git config --global user.email
 
 | チェック | OK の条件 | ダメなときに案内する場所 |
 | --- | --- | --- |
-| PHP のバージョン | `PHP 8.2.35` 以上の `8.2.xx` | `8.2.12` なら README「4-2」の 3（PHP の更新）。`8.2` 以外なら、別の PHP が入っている可能性があるので管理チーム（A チーム）に相談 |
+| PHP のバージョン | `PHP 8.4.28` 以上の `8.4.xx` | `8.2` で始まる番号（`8.2.12`・`8.2.35` など）なら README「4-2」の 3（PHP の入れかえ）。`8.2`・`8.4` 以外なら、別の PHP が入っている可能性があるので管理チーム（A チーム）に相談 |
 | Git 導入 | `git version 2.` で始まる | README「4-1」 |
-| Composer 導入 | `Composer version 2.` で始まり、使っている PHP が `C:\xampp\php\php.exe` の 8.2.35 以上 | README「4-4」 |
+| Composer 導入 | `Composer version 2.` で始まり、使っている PHP が `C:\xampp\php\php.exe` の 8.4.28 以上 | README「4-4」 |
 
 `user.name` と `user.email` が空なら、README「4-1」の「ユーザー名・メールアドレスの設定」を案内する。
 
@@ -53,7 +53,7 @@ Organization の参加は、コマンドでは確かめにくい。使ってい�
 ```text
 | チェック | 結果 |
 | --- | --- |
-| PHP のバージョン | ✅ 8.2.35 |
+| PHP のバージョン | ✅ 8.4.28 |
 | Git 導入 | ✅ 2.xx.x |
 | Composer 導入 | ❌ 入っていません → README「4-4」をやってください |
 | Organization の参加 | （ブラウザで確認してください） |

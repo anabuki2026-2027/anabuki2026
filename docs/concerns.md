@@ -37,7 +37,7 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 状態 | 🟡 対応中 |
+| 状態 | 🟡 対応中（プロジェクトは 8.4 に切りかえずみ。授業のパソコンの入れかえ待ち） |
 | 重大度 | 高 |
 | 見つけた日 | 2026-11-19 |
 | 担当 | A |
@@ -49,7 +49,8 @@ PHP 8.2 は **2026/12/31 でサポートが終わり**、それ以降はセキ�
 
 - PHP 8.4 へ移行する。8.4 はセキュリティの修正が 2028/12/31 まで出る。Xserver では 8.3〜8.5 を選べるので、8.4 を選べる。
 - 2026-11-20 に PHP 8.4.28 で試し、テスト・書き方チェック・トップページの表示がすべて問題なく動くことを確認した。
-- 残っている作業：授業のパソコンの PHP の入れかえ、php.ini の `session.sid_length` と `session.sid_bits_per_character` を無効にする、phpMyAdmin の更新、`composer.json`・CI・README などの「8.2」の書きかえ。
+- 2026-11-25 に、`composer.json`（`require.php` と `config.platform.php`）・`composer.lock`・CI・`.vscode/settings.json`・README などの「8.2」を「8.4（8.4.28）」に書きかえた。開発チームには PHP 8.4.28 への入れかえを呼びかけている。
+- 残っている作業：授業のパソコンの PHP の入れかえ、php.ini の `session.sid_length` と `session.sid_bits_per_character` を無効にする、phpMyAdmin の更新。
 
 **先方へ伝えること**
 公開サーバーの PHP は 8.4 を選ぶこと。8.4 のサポートは 2028/12/31 で終わること。

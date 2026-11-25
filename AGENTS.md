@@ -50,7 +50,7 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 - 専門学校の 1・2 年生（18〜22 歳くらい）、約 40 人が 7 チーム（A〜G）に分かれて作る Web アプリ。
 - 答えは日本語で、その年代の人を相手にした普通の丁寧語（です・ます）で書く。言葉づかいを子ども向けにくだく必要はない。
 - チーム開発・Git・CakePHP に慣れていない人が多い。CakePHP や Git に特有の用語、エラーの原因は、省略せずに説明する。
-- CakePHP 5.4 / PHP 8.2（8.2.35 以上）/ MySQL（データベース名 `anabukiit_app`）。
+- CakePHP 5.4 / PHP 8.4（8.4.28 以上）/ MySQL（データベース名 `anabukiit_app`）。
 - 全員 Windows。XAMPP は `C:\xampp`、アプリは `C:\xampp\htdocs\anabuki2026` にある。
 - 人にコマンドを案内するときは、**git の操作だけ Git Bash、それ以外はすべて PowerShell** で動く書き方にする（README も同じ分け方）。
   - **Git Bash**：`git` のコマンドと、git を使うスクリプト（`scripts/create_branches.sh`）だけ。パスは `/c/xampp/htdocs/anabuki2026` のように書く。

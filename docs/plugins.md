@@ -109,7 +109,7 @@ Composer で入れる部品だけでなく、CSS・フォント・パソコン�
 | Git（Git Bash） | 2.x | Git の操作。Git のコマンドを打つ黒い画面もこれ。 |
 | PowerShell（Windows PowerShell 5.1） | Windows に最初から入っている | Git 以外のコマンドを打つ黒い画面。 |
 | XAMPP | — | PHP と MySQL と Apache がまとめて入っている。`C:\xampp` に入れる。 |
-| PHP | **8.2.35 以上の 8.2** | アプリを動かす言語。XAMPP に入っている 8.2.12 は古いので更新する。 |
+| PHP | **8.4.28 以上の 8.4** | アプリを動かす言語。XAMPP に入っている 8.2.12 は古いので、8.4 に入れかえる。 |
 | MySQL | XAMPP に入っているもの | データベース（データベース名 `anabukiit_app`）。 |
 | phpMyAdmin | XAMPP に入っているもの | ブラウザでデータベースの中身を見る（<http://localhost/phpmyadmin>）。 |
 | Composer | 2.x | 1 の部品をダウンロードする。 |
@@ -166,7 +166,7 @@ GitHub Actions の中で使っている、他の人が作った部品（アク�
 | アクション・道具 | バージョン | 何をするもの？ | 使っている場所 |
 | --- | --- | --- | --- |
 | `actions/checkout` | v7 | リポジトリのファイルを取ってくる。 | `ci.yml` |
-| `shivammathur/setup-php` | v2 | 決まったバージョンの PHP を用意する（8.2 と 8.5 で試す）。 | `ci.yml` |
+| `shivammathur/setup-php` | v2 | 決まったバージョンの PHP を用意する（8.4 と 8.5 で試す）。 | `ci.yml` |
 | `ramsey/composer-install` | v4 | `composer install` を実行する。 | `ci.yml` |
 | `actions/stale` | v10 | 長いあいだ動きのない Issue・プルリクエストに印を付けて、自動で閉じる。 | `stale.yml` |
 | PHPStan | 2.1 | プログラムのミスを、動かす前に見つける（レベル 8）。`setup-php` で入れている。 | `ci.yml`（設定は `phpstan.neon`） |
