@@ -170,6 +170,7 @@ A チームから「main を更新したよ」と連絡が来たら、ほかの�
 
 3. **「Create pull request」** → **「Merge pull request」** を押します。
 4. チームのメンバーに「チームの main を更新したので `git pull` してね」と連絡します。
-   `composer.lock` や `config/Migrations/` が変わっていたら、`composer install` や `bin/cake migrations migrate` もお願いします。
+   `composer.lock` や `config/Migrations/` が変わっていたら、`docker compose exec web composer install` や `docker compose exec web bin/cake migrations migrate` もお願いします。
+   `compose.yml`・`Dockerfile`・`docker/` が変わっていたら、`docker compose up -d --build` もお願いします。
 
 > `This branch has conflicts` と出てマージできないときは、自分で直そうとせずに A チームに相談してください。

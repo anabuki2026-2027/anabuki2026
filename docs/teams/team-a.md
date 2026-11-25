@@ -188,15 +188,17 @@ F（表を作る）→ B（Model）→ D（Controller）→ C（View）・E（�
    git pull
    ```
 
-   PowerShell で、部品・表をそろえて、テストとサーバーを動かします。
+   PowerShell で、箱を起動して、部品・表をそろえて、テストを動かします。
 
    ```powershell
    cd C:\xampp\htdocs\anabuki2026
-   composer install
-   bin/cake migrations migrate
-   composer test
-   bin/cake server
+   docker compose up -d
+   docker compose exec web composer install
+   docker compose exec web bin/cake migrations migrate
+   docker compose exec web composer check
    ```
+
+   最後に、ブラウザで <http://localhost:8765> を開いて、画面を確かめます。
 
 2. GitHub で **「Pull requests」→「New pull request」** を押して、次のように選びます。
 
@@ -215,9 +217,11 @@ main を更新したら、**全チームのリーダー・副リーダーに**�
 
 | 入っていたファイル | 全員にやってもらうこと |
 | --- | --- |
-| `composer.lock` | `composer install` |
-| `config/Migrations/` の中のファイル | `bin/cake migrations migrate` |
-| `config/Seeds/` の中のファイル | `bin/cake seeds run` |
+| `composer.lock` | `docker compose exec web composer install` |
+| `config/Migrations/` の中のファイル | `docker compose exec web bin/cake migrations migrate` |
+| `config/Seeds/` の中のファイル | `docker compose exec web bin/cake seeds run` |
+| `compose.yml`・`Dockerfile`・`docker/` | `docker compose up -d --build`（箱を作り直す） |
+| `.env.example` | 自分の `.env` に、増えた項目を足す（中身は AI に見せない） |
 
 `teamA/main` も、main を更新したあとは main と同じ中身になっているので、取り込みは不要です。
 
@@ -227,15 +231,42 @@ main を更新したら、**全チームのリーダー・副リーダーに**�
 
 | コマンド | 何が起きる？ |
 | --- | --- |
-| `composer install` | `composer.lock` のとおりに部品をそろえる |
-| `composer require ○○` | 新しい部品を追加する（`composer.json` と `composer.lock` が変わる） |
-| `composer cs-check` | コードの書き方がルールどおりかチェックする |
-| `composer cs-fix` | 書き方のまちがいを自動で直す |
-| `composer test` | 自動チェック（テスト）を実行する |
-| `composer check` | 上の `test` と `cs-check` をまとめて実行する |
+どれも PowerShell で、`cd C:\xampp\htdocs\anabuki2026` をしてから実行します。
+
+| コマンド | 何が起きる？ |
+| --- | --- |
+| `docker compose exec web composer install` | `composer.lock` のとおりに部品をそろえる |
+| `docker compose exec web composer require ○○` | 新しい部品を追加する（`composer.json` と `composer.lock` が変わる） |
+| `docker compose exec web composer cs-check` | コードの書き方がルールどおりかチェックする |
+| `docker compose exec web composer cs-fix` | 書き方のまちがいを自動で直す |
+| `docker compose exec web composer test` | 自動チェック（テスト）を実行する |
+| `docker compose exec web composer check` | 上の `test` と `cs-check` をまとめて実行する |
+| `docker compose up -d --build` | `compose.yml`・`Dockerfile` を変えたあとに、箱を作り直す |
 
 > ⚠️ `composer update` は、すべての部品のバージョンを変えてしまいます。
 > 実行するときは、必ず全員に連絡してからにしてください。
+
+> 部品を変えたら、自分の Windows 側の `vendor/`（VS Code の候補表示用）も、
+> `docker compose cp web:/var/www/html/vendor/. vendor` で更新しておくと、候補が新しくなります。
+
+---
+
+## 開発環境（Docker）の管理
+
+開発環境は、`compose.yml`・`Dockerfile`・`docker/` で、全員分をまとめて決めています。
+ここを変えると全員の環境が変わるので、A チームが管理します。
+
+| 変えたいこと | 直す場所 | いっしょに直す場所 |
+| --- | --- | --- |
+| PHP の版 | `Dockerfile` の `FROM php:8.4.28-apache` | `composer.json` の `require.php` と `config.platform.php`、`.vscode/settings.json`、README・`docs/plugins.md` |
+| DB（MariaDB）の版 | `compose.yml` の `image: mariadb:10.11` | Xserver の版と同じにする（`docs/concerns.md` の C-02） |
+| PHP の設定 | `docker/php/php.ini` | — |
+| DB のパスワードなどの項目 | `compose.yml` と `.env.example` | 全員に、自分の `.env` を直してもらう |
+
+- 版はいつも **最後の番号まで** 書いて固定します（`8.4` ではなく `8.4.28`）。人によって版がずれるのを防ぐためです。
+- 変えたら、全員に「`docker compose up -d --build` してね」と連絡します。
+- **Docker を使うのは開発だけです。** 公開サーバー（Xserver）では Docker は使わず、Xserver の PHP と MariaDB で動かします。
+- 12/9（水）の授業のあとに、README から XAMPP の説明（「XAMPP で作業するとき」）を消します。
 
 ---
 

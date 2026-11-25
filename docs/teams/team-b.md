@@ -45,7 +45,7 @@ PowerShell で、表を作ります。
 
 ```powershell
 cd C:\xampp\htdocs\anabuki2026
-bin/cake migrations migrate
+docker compose exec web bin/cake migrations migrate
 ```
 
 > 表の名前と項目は先に決まっているので、表が届くまでの間に、入力チェックの内容などを考えておくとスムーズです。
@@ -53,7 +53,7 @@ bin/cake migrations migrate
 ### 2. Bake でファイルを自動で作る
 
 ```powershell
-bin/cake bake model Users
+docker compose exec web bin/cake bake model Users
 ```
 
 次のファイルが自動で作られます。
@@ -132,11 +132,13 @@ protected array $_hidden = [
 
 ## よく使うコマンド
 
+どれも PowerShell で、`cd C:\xampp\htdocs\anabuki2026` をしてから実行します（Docker の箱の中で動きます）。
+
 | コマンド | 何が起きる？ |
 | --- | --- |
-| `bin/cake bake model Users` | `UsersTable.php` と `User.php` を自動で作る |
-| `bin/cake migrations migrate` | 自分のパソコンのデータベースを最新にする |
-| `composer test` | 自動チェックを実行して、こわれていないか確かめる |
+| `docker compose exec web bin/cake bake model Users` | `UsersTable.php` と `User.php` を自動で作る |
+| `docker compose exec web bin/cake migrations migrate` | 自分のパソコンのデータベースを最新にする |
+| `docker compose exec web composer test` | 自動チェックを実行して、こわれていないか確かめる |
 
 ---
 

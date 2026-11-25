@@ -7,6 +7,8 @@
 
 /config/app_local.php
 /config/.env
+# Docker の設定（compose.yml）が使う、自分のパソコン専用の値。見本の .env.example は送る
+/.env
 /logs/*
 /tmp/*
 /vendor/*

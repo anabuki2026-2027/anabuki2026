@@ -7,6 +7,11 @@
 > 上から順番に、1 つずつ進めれば大丈夫です。
 > わからないところや、エラー（赤い文字や `error` という文字）が出たところで止まったら、**画面のスクリーンショットを撮って** 管理チームに聞いてください。
 
+> **XAMPP で準備ずみの人へ（2026 年 11 月から）**
+> 開発環境を XAMPP から **Docker** に移しました（理由と日程は `docker-migration-plan.pdf`）。
+> [4-2](#4-2-docker-desktop-を入れる)・[4-6](#4-6-env-を作る)・[4-7](#4-7-アプリの箱を作って起動する)・[4-8](#4-8-vs-code-の候補表示の準備をする) だけをやってください。クローンし直す必要はありません。
+> Docker が動かないときは、12/9（水）の授業までは XAMPP で作業できます（[9 章](#xampp-で作業するとき129-まで)）。
+
 ---
 
 ## もくじ
@@ -53,10 +58,20 @@
 | **main（メイン）** | 完成版を置く大事なブランチ。直接さわらない | 提出済みの清書 |
 | **チームの main** | `teamB/main` のように、チームごとにある「チームの完成版」 | チームで集めた下書き |
 
+アプリを動かすのには **Docker（ドッカー）** を使います。
+
+| 言葉 | 意味 | たとえると |
+|---|---|---|
+| **コンテナ（箱）** | アプリを動かすのに必要なもの（PHP・Apache・データベース）を、まとめて入れた箱。全員がまったく同じ箱を使う | 中身が決まった「お弁当箱」 |
+| **Docker Desktop** | 箱を動かすソフト | お弁当箱を温める電子レンジ |
+
+全員が同じ箱を使うので、「あの人のパソコンでは動くのに」が起きにくくなります。
+PHP やデータベースを自分のパソコンに入れる必要もありません。
+
 このチームでは、コマンド（命令文）を入力する黒い画面を **2 つ** 使い分けます。
 
 - **Git の操作** → **Git Bash（ギットバッシュ）**
-- **それ以外**（PHP・Composer・CakePHP・データベースなど）→ **PowerShell（パワーシェル）**
+- **それ以外**（Docker・CakePHP・Composer など）→ **PowerShell（パワーシェル）**
 
 コマンドはこのページからコピーして貼り付ければ大丈夫です。どちらで実行するかは、コマンドの前に書いてあります。
 
@@ -68,8 +83,7 @@
 |---|---|
 | **Git（Git Bash）** | Git を使う。Git のコマンドを打つ黒い画面もこれ |
 | **PowerShell** | Git 以外のコマンドを打つ黒い画面。Windows に最初から入っている |
-| **XAMPP** | PHP（アプリを動かす言語）と MySQL（データベース）がまとめて入っている |
-| **Composer** | アプリに必要な部品（ライブラリ）をダウンロードする |
+| **Docker Desktop** | アプリの箱（PHP・Apache・データベース）を動かす |
 | **VS Code** | ファイルを編集する |
 | **GitHub のアカウント** | 共有場所に入るため |
 
@@ -77,11 +91,14 @@
 
 ### このアプリのバージョン
 
-| もの | バージョン |
-|---|---|
-| CakePHP（このアプリの土台） | 5.4 |
-| PHP | **8.4.28 以上の 8.4**（XAMPP に入っているものを入れかえて使う） |
-| データベース | MySQL（XAMPP に入っているもの） |
+| もの | バージョン | どこにある？ |
+|---|---|---|
+| CakePHP（このアプリの土台） | 5.4 | `vendor/`（`composer install` で入る） |
+| PHP | **8.4.28** | Docker の箱の中（自分のパソコンに入れなくてよい） |
+| データベース | **MariaDB 10.11** | Docker の箱の中（公開する Xserver と同じ） |
+
+> **Docker を使うのは、開発（自分のパソコン）だけです。**
+> 公開するときは、Xserver のレンタルサーバーで、PHP と MariaDB で動かします。公開サーバーでは Docker は使いません。
 
 ---
 
@@ -90,7 +107,7 @@
 | 画面 | 何に使う？ | 開き方 |
 |---|---|---|
 | **Git Bash** | **Git の操作だけ**（`git` で始まるコマンド） | スタートメニューで **「Git Bash」** と検索。Git を入れる（[4-1](#4-1-git-を入れるprogate-の手順どおり)）と使えるようになります |
-| **PowerShell** | **Git 以外のすべて**（`php`、`composer`、`bin/cake` など） | スタートメニューで **「PowerShell」** と検索して、**「Windows PowerShell」** を開きます（管理者として実行する必要はありません） |
+| **PowerShell** | **Git 以外のすべて**（`docker` など） | スタートメニューで **「PowerShell」** と検索して、**「Windows PowerShell」** を開きます（管理者として実行する必要はありません） |
 
 2 つは、フォルダの場所の書き方がちがうので注意してください。
 
@@ -98,6 +115,8 @@
 |---|---|
 | Git Bash | **`/c/xampp/htdocs/anabuki2026`**（区切りは `/`、`C:` は `/c`） |
 | PowerShell | **`C:\xampp\htdocs\anabuki2026`**（エクスプローラーと同じ） |
+
+> XAMPP は使いませんが、フォルダの場所は今までどおり `C:\xampp\htdocs\anabuki2026` にそろえています。
 
 ### コマンドの貼り付け方（大事）
 
@@ -153,54 +172,28 @@ git config --global user.email
 
 > メールアドレスは、**GitHub に登録したもの** と同じにしておくと、GitHub で自分の作業だとわかるようになります。
 
-### 4-2. XAMPP を入れる
+### 4-2. Docker Desktop を入れる
 
-1. <https://www.apachefriends.org/jp/index.html> から **Windows 向け XAMPP** をダウンロードしてインストールします。
-2. インストール先はそのまま **`C:\xampp`** にしてください（変えないでください）。
-3. **XAMPP に入っている PHP（8.2.12）は古く、重大な脆弱性があります。** 管理チームの手順で **PHP 8.4.28 以上の 8.4** に入れかえてください。入れかえが終わるまで、Apache は起動しないでください。
+Docker Desktop には、**メモリ 8GB 以上** と、**仮想化（パソコンの設定）が有効になっていること** が必要です。
 
-### 4-3. zip を使えるようにする（大事）
+1. <https://docs.docker.com/desktop/setup/install/windows-install/> を開き、**「Docker Desktop for Windows - x86_64」** をダウンロードします。
+2. ダウンロードしたファイルを実行します。途中の **「Use WSL 2 instead of Hyper-V」** にはチェックを入れたままにします。
+3. インストールが終わったら、**パソコンを再起動** します。
+4. スタートメニューから **Docker Desktop** を開き、利用規約に **「Accept」** を押します。
+   サインイン（ログイン）の画面は **「Skip」** で飛ばしてかまいません。
+5. 左下に **「Engine running」**（緑色）と出れば準備完了です。
 
-これをやらないと、あとで **「The zip extension ... missing」** というエラーになります。
+> 「WSL needs updating」と出たら、PowerShell で `wsl --update` を実行してから、Docker Desktop を開き直してください。
+> 「Virtualization support not detected」と出たら、パソコンの設定（BIOS）で仮想化を有効にする必要があります。自分でさわらずに、管理チームに相談してください。
 
-1. エクスプローラーで `C:\xampp\php\php.ini` を開きます（右クリック →「プログラムから開く」→ メモ帳 や VS Code）。
-2. `Ctrl + F` で **`;extension=zip`** を探します。
-3. 先頭の **`;`（セミコロン）を消して** `extension=zip` にします。
-4. 保存して閉じます。
+> **Docker Desktop は、作業するときに起動しておく必要があります。** タスクバーの右下にクジラのアイコンがあれば動いています。
+> パソコンを再起動すると止まっていることがあるので、`docker` のコマンドが失敗したら、まずここを確かめてください。
 
-### 4-4. Composer を入れる
-
-1. <https://getcomposer.org/Composer-Setup.exe> をダウンロードして実行します。
-2. 途中で **PHP の場所** を聞かれたら、**`C:\xampp\php\php.exe`** を選びます。
-3. あとは「Next」で進めて完了です。
-
-### 4-5. ちゃんと入ったか確認する
-
-1. PowerShell を **一度閉じてから開き直します**（インストールしたものは、開き直さないと使えません）。
-2. PowerShell で、次のコマンドを貼り付けて `Enter` を押します。
-
-```powershell
-php -v
-composer --version
-```
-
-3. **どちらにも `8.4.28`（またはそれより大きい `8.4.xx`）と出ていれば OK** です。
-
-```
-PHP 8.4.28 (cli) ...
-Composer version 2.x.x ...
-PHP version 8.4.28 (C:\xampp\php\php.exe)
-```
-
-> `8.2.12` や `8.2.35` のように `8.2` で始まる番号が出たら、PHP の入れかえ（[4-2](#4-2-xampp-を入れる) の 3）がまだです。
-> `8.2`・`8.4` 以外（`8.5` など）が出たり、「`'php' の用語は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません`」と出たら、管理チームに聞いてください。
-> パソコンに別の PHP が入っている可能性があります。
-
-### 4-6. VS Code を入れる
+### 4-3. VS Code を入れる
 
 <https://code.visualstudio.com/> からダウンロードしてインストールします。
 
-> 拡張機能（VS Code に足す便利な道具）は、[4-8](#4-8-リポジトリをクローンする自分のパソコンにコピー) のあとに入れます。
+> 拡張機能（VS Code に足す便利な道具）は、[4-5](#4-5-リポジトリをクローンする自分のパソコンにコピー) のあとに入れます。
 > `anabuki2026` フォルダを VS Code で開くと、右下に **「このリポジトリ用のおすすめ拡張機能をインストールしますか？」** と出るので、**「インストール」** を押してください。
 > そのあと、次の 1 つだけ設定します（PHP の候補が 2 つずつ出るのを防ぎます）。
 >
@@ -217,7 +210,7 @@ PHP version 8.4.28 (C:\xampp\php\php.exe)
 > Claude Code・Codex でこのフォルダを初めて開くと、**「このフォルダを信頼しますか？（trust）」** と聞かれます。**信頼する** を選んでください。
 > 特に Codex は、信頼しないと上のルールを守らせる設定が効きません。
 
-### 4-7. GitHub のアカウントを作って、チームに入れてもらう
+### 4-4. GitHub のアカウントを作って、チームに入れてもらう
 
 1. <https://github.com/> でアカウントを作ります（4-1 で設定したメールアドレスで）。
 2. 作った **ユーザー名** を管理チームに伝えます。
@@ -227,13 +220,13 @@ PHP version 8.4.28 (C:\xampp\php\php.exe)
 
 ### ✅ ここまでできたかチェック（授業で確認します）
 
-授業で、次の 4 つができているかを確認します。先に自分で確かめておいてください。
+授業で、次の 3 つができているかを確認します。先に自分で確かめておいてください。
 
-まず PowerShell を開いて、次の 2 行をまとめて貼り付けて `Enter` を押します。
+まず Docker Desktop を起動してから、PowerShell を開いて、次の 2 行をまとめて貼り付けて `Enter` を押します。
 
 ```powershell
-php -v
-composer --version
+docker --version
+docker compose version
 ```
 
 次に Git Bash を開いて、次の 1 行を貼り付けて `Enter` を押します。
@@ -244,9 +237,8 @@ git --version
 
 | チェック | OK のしるし | ダメだったら |
 | --- | --- | --- |
-| **PHP のバージョン** | `PHP 8.4.28`（またはそれより大きい `8.4.xx`）と出る | `8.2` で始まる番号なら [4-2](#4-2-xampp-を入れる) の 3 をやる |
+| **Docker 導入** | `Docker version` で始まる行と、`Docker Compose version` で始まる行が出る | [4-2](#4-2-docker-desktop-を入れる) をやる |
 | **Git 導入** | `git version 2.` で始まる行が出る | [4-1](#4-1-git-を入れるprogate-の手順どおり) をやる |
-| **Composer 導入** | `Composer version 2.` で始まる行と、`PHP version 8.4.28 (C:\xampp\php\php.exe)` が出る | [4-4](#4-4-composer-を入れる) をやる |
 | **Organization の参加** | ブラウザで <https://github.com/settings/organizations> を開くと、一覧に **`anabuki2026-2027`** がある | 上の 3 の招待を受ける。招待が来ていなければ管理チームに聞く |
 
 > 「認識されません」や `command not found` と出たときは、その画面を **一度閉じて開き直して** から、もう一度ためしてください。
@@ -255,9 +247,15 @@ git --version
 > ⚠️ このリポジトリは、Organization に入っていなくても **クローン（コピー）だけはできてしまいます**。
 > でも、入っていないと **プッシュ（GitHub に送る）ができません**。クローンできたから大丈夫、と思わずに、必ず確認してください。
 
-### 4-8. リポジトリをクローンする（自分のパソコンにコピー）
+### 4-5. リポジトリをクローンする（自分のパソコンにコピー）
 
-Git Bash で、次のコマンドを **1 行ずつ** 貼り付けて `Enter` を押します。
+まず PowerShell で、置き場所のフォルダを作ります（すでにあれば、何も起きません）。
+
+```powershell
+New-Item -ItemType Directory -Force C:\xampp\htdocs | Out-Null
+```
+
+次に Git Bash で、次のコマンドを **1 行ずつ** 貼り付けて `Enter` を押します。
 
 ```bash
 cd /c/xampp/htdocs
@@ -268,68 +266,80 @@ cd anabuki2026
 - はじめての時は、**GitHub のログイン画面** が出ます。「Sign in with your browser」を押して、ブラウザでログインしてください。
 - 終わると `C:\xampp\htdocs\anabuki2026` フォルダができています。`ls` で中身が見えれば OK です。
 
-### 4-9. アプリの部品をダウンロードする
+### 4-6. `.env` を作る
 
-ここからは Git ではないので、**PowerShell** を使います。PowerShell で、次のコマンドを 1 行ずつ実行します。
+`.env` は、データベースのパスワードなど、**自分のパソコン専用の値** を書くファイルです。GitHub には送られません。
+見本の `.env.example` をコピーして作ります。ここからは Git ではないので、**PowerShell** を使います。
 
 ```powershell
 cd C:\xampp\htdocs\anabuki2026
-composer install
+Copy-Item .env.example .env
 ```
 
-しばらく待って、最後のほうにエラーが出ていなければ OK です。
-`config/app_local.php` というファイルが自動で作られます。
+**中身は書きかえなくて大丈夫です。** コピーしたままの値で動きます。
 
-### 4-10. データベースを作る
+> `.env` は AI（Claude Code・Codex）に見せないルールです。`.env` のことで困ったら、管理チームに相談してください。
 
-1. **XAMPP Control Panel** を開き、**Apache** と **MySQL** の「Start」を押します（緑色になれば OK）。
-2. PowerShell で、次のコマンドを貼り付けて `Enter` を押します。
+### 4-7. アプリの箱を作って起動する
+
+Docker Desktop が起動していることを確かめてから、PowerShell で、次のコマンドを 1 行ずつ実行します。
 
 ```powershell
-C:\xampp\mysql\bin\mysql.exe -u root -e "CREATE DATABASE anabukiit_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+cd C:\xampp\htdocs\anabuki2026
+docker compose up -d --build
+docker compose exec web composer install
 ```
 
-何も表示されなければ成功です。
+- 1 つ目のコマンドで、箱を作って起動します。**初めてのときは、部品のダウンロードで 3〜5 分** かかります。2 回目からは数秒です。
+- 2 つ目のコマンドで、アプリの部品（CakePHP など）を箱の中に入れます。
+  `config/app_local.php`（自分のパソコン専用の設定）も、このとき自動で作られます。
 
-> ブラウザで <http://localhost/phpmyadmin> を開き、左の一覧に `anabukiit_app` があれば作れています。
+最後のほうにエラーが出ていなければ OK です。
 
-### 4-11. データベースの接続設定をする
+> データベース（`anabukiit_app`）は、箱を初めて起動したときに自動で作られます。自分で作る必要はありません。
+> `config/app_local.php` のデータベースの設定も、書きかえる必要はありません（Docker 側から渡しています）。
 
-1. VS Code を開き、メニューの **「ファイル」→「フォルダーを開く」** で `C:\xampp\htdocs\anabuki2026` を開きます。
-2. **`config/app_local.php`** を開きます。
-3. `'Datasources'` → `'default'` の中を、次のように書きかえて保存します（`Ctrl + S`）。
+### 4-8. VS Code の候補表示の準備をする
 
-```php
-'host' => '127.0.0.1',
-'username' => 'root',
-'password' => '',
-'database' => 'anabukiit_app',
+VS Code で CakePHP の関数の候補を出すために、箱の中の部品を、自分のパソコンにもコピーします（1 分くらいかかります）。
+
+```powershell
+cd C:\xampp\htdocs\anabuki2026
+docker compose cp web:/var/www/html/vendor/. vendor
 ```
 
-> `'host'` は `localhost` ではなく **`127.0.0.1`** にします。MySQL は自分のパソコン（`127.0.0.1`）からだけつながる設定にしているので、`localhost` のままだと画面を開くたびに 2 秒ほど遅くなります。
-
-> `config/app_local.php` は **自分のパソコン専用** の設定ファイルです。GitHub には送られません（そういう設定になっています）。
+> アプリは箱の中の部品で動くので、このコピーは VS Code のためだけのものです。
+> XAMPP で準備ずみの人は、もう `vendor/` があるので、やらなくても大丈夫です。
 
 ---
 
 ## 5. アプリを動かしてみる
 
-1. XAMPP Control Panel で **MySQL** が「Start」になっているか確認します。
-2. PowerShell で、アプリのフォルダに移動してサーバーを起動します。
-
-```powershell
-cd C:\xampp\htdocs\anabuki2026
-bin/cake server
-```
-
-3. ブラウザで **<http://localhost:8765>** を開きます。
-4. CakePHP の画面が出て、**緑のチェックがたくさん並んでいれば成功** です 🎉
+1. ブラウザで **<http://localhost:8765>** を開きます。
+2. CakePHP の画面が出て、**緑のチェックがたくさん並んでいれば成功** です 🎉
    特に **「CakePHP is able to connect to the database.」** が緑ならデータベースもつながっています。
+3. データベースの中身は、**<http://localhost:8081>**（phpMyAdmin）で見られます。
 
-止めるときは、その PowerShell で **`Ctrl + C`** を押します。
+> 箱は、一度起動すれば **ずっと動いています**（パソコンを再起動しても、Docker Desktop を開けば自動で起動します）。
+> 今までの `bin/cake server` のように、PowerShell を開きっぱなしにする必要はありません。
 
-> サーバーを動かしている間、その PowerShell は使えません。
-> ほかのコマンドを打つときは、**もう 1 つ PowerShell を開いて** ください（Git のコマンドは Git Bash で）。
+### Docker のよく使うコマンド
+
+どれも **PowerShell** で、`cd C:\xampp\htdocs\anabuki2026` をしてから実行します。
+
+| やりたいこと | コマンド |
+|---|---|
+| 箱を起動する | `docker compose up -d` |
+| 箱を止める | `docker compose down` |
+| 箱が動いているか見る | `docker compose ps` |
+| アプリのログ（エラーの内容）を見る | `docker compose logs -f web`（`Ctrl + C` で終わる） |
+| `bin/cake` のコマンドを動かす | `docker compose exec web bin/cake ○○`（例：`docker compose exec web bin/cake migrations migrate`） |
+| 部品をそろえる | `docker compose exec web composer install` |
+| プルリクエストの前にまとめてチェック | `docker compose exec web composer check` |
+| 箱の中に入って作業する | `docker compose exec web bash`（`exit` で出る） |
+
+> `bin/cake` と `composer` のコマンドは、**頭に `docker compose exec web` を付けて** 箱の中で動かします。
+> チーム別ガイドなどに出てくるコマンドも、すべてこの形で書いてあります。
 
 ---
 
@@ -392,7 +402,13 @@ git pull
 
 **作業を始める前に必ずやります。** 他の人の変更を取り込んでおかないと、あとでぶつかります。
 
-> プルしたあとに、管理チーム（A チーム）やリーダーから「`composer install` してね」「`bin/cake migrations migrate` してね」と言われたら、そのコマンドも実行してください（Git ではないので、**PowerShell** で `cd C:\xampp\htdocs\anabuki2026` をしてから実行します）。
+> プルしたあとに、管理チーム（A チーム）やリーダーから「`composer install` してね」「`bin/cake migrations migrate` してね」と言われたら、そのコマンドも実行してください。
+> Git ではないので **PowerShell** で、`cd C:\xampp\htdocs\anabuki2026` をしてから、頭に `docker compose exec web` を付けて実行します。
+>
+> ```powershell
+> docker compose exec web composer install
+> docker compose exec web bin/cake migrations migrate
+> ```
 
 ### ② ブランチを作る（自分専用の作業コース）
 
@@ -409,7 +425,7 @@ git switch -c teamB/tanaka-users-model
 ### ③ 作業する
 
 VS Code でファイルを編集して保存します。
-こまめに `bin/cake server`（PowerShell で実行）でブラウザ表示を確認しましょう。
+保存したら、ブラウザ（<http://localhost:8765>）を再読み込みするだけで、すぐに反映されます。
 
 > VS Code のメニューの **「ターミナル」→「タスクの実行...」** から、よく使うコマンドを選んで実行できます。
 > プッシュする前に **「プルリクエストの前にまとめてチェック」** を選んで、エラーが出ないか確認しておくと安心です
@@ -423,6 +439,7 @@ git status
 
 まず `git status` で **変更したファイルの一覧** を確認します（赤い文字で出ます）。
 自分が触っていないファイルが出ていたら、コミットせずに管理チームに聞いてください。
+**`.env` が出ていたら、絶対にコミットしないでください**（ふつうは出ない設定になっています）。
 
 問題なければ、次の 2 つを実行します。
 
@@ -511,13 +528,17 @@ anabuki2026/
 │   └── Model/        ← データベースのやりとり（B チーム）
 ├── config/           ← 設定（基本は A チームだけ）
 ├── vendor/           ← 自動でダウンロードされた部品（触らない）
+├── docker/           ← Docker の箱の中の設定（A チームだけ）
+├── compose.yml       ← Docker の箱をまとめて動かす設定（A チームだけ）
+├── Dockerfile        ← Docker の箱の作り方（A チームだけ）
+├── .env              ← 自分のパソコン専用の値（GitHub に送らない）
 ├── composer.json     ← 部品のリスト（管理チームだけ）
 └── README.md         ← このファイル
 ```
 
 | チーム | 担当 | 主に触るところ |
 |---|---|---|
-| A | 全体の統括・管理（管理チーム） | `config/`、`composer.json`、`composer.lock`、`.github/` |
+| A | 全体の統括・管理（管理チーム） | `config/`、`composer.json`、`composer.lock`、`.github/`、`compose.yml`、`Dockerfile`、`docker/` |
 | B | Model | `src/Model/` |
 | C | View | `templates/`、`src/View/` |
 | D | Controller | `src/Controller/` |
@@ -543,8 +564,9 @@ anabuki2026/
 | ❌ `git push --force` を使う | 他の人の作業が消えることがあります |
 | ❌ `vendor/` の中を編集する | `composer install` のたびに元に戻ります |
 | ❌ `composer update` を勝手に実行する | 部品のバージョンが変わり、みんなの環境がこわれます（管理チームだけが実行） |
-| ❌ パスワードなどを GitHub に送る | インターネット上に残ってしまいます |
-| ❌ PHP のバージョンを勝手に変える | このアプリは PHP 8.4 にそろえています |
+| ❌ パスワードなどを GitHub に送る（`.env` をコミットする など） | インターネット上に残ってしまいます |
+| ❌ `compose.yml`・`Dockerfile`・`docker/` を勝手に変える | 全員の環境がそろわなくなります。PHP や MariaDB の版もここで決めています（管理チームだけが変える） |
+| ❌ `docker compose down -v` を勝手に実行する | 自分のパソコンのデータベースの中身が、全部消えます（管理チームに言われたときだけ） |
 
 > ネットで調べて出てきたコマンドを、意味がわからないまま実行するのはやめましょう。まず管理チームに聞いてください。
 
@@ -552,16 +574,23 @@ anabuki2026/
 
 ## 9. 困ったとき（よくあるエラー）
 
+人に聞くときは、次の 3 つをセットで伝えてください。そろっていれば、誰でも助けられます。
+
+1. 何をしようとしたか
+2. エラーの画面（スクリーンショット）
+3. PowerShell で `docker compose logs web --tail 20` を実行した結果
+
 ### セットアップのとき
 
 | 出たメッセージ・起きたこと | 原因 | どうする？ |
 |---|---|---|
 | Git Bash で `Ctrl + V` で貼り付けできない | Git Bash ではそういう仕様 | `Shift + Insert` か 右クリック →「Paste」 |
 | PowerShell で「〇〇 の用語は、コマンドレット、関数、…として認識されません」／ Git Bash で `command not found` | インストール直後でまだ反映されていない | その画面を **全部閉じて** 開き直す。だめならパソコンを再起動 |
-| `The zip extension and unzip/7z commands are both missing` | zip が使えない | [4-3](#4-3-zip-を使えるようにする大事) をやり直して、PowerShell を開き直す |
-| `php -v` で `8.4` 以外が出る | PHP の入れかえがまだ（`8.2` のとき）か、パソコンに別の PHP が入っている | `8.2` なら [4-2](#4-2-xampp-を入れる) の 3 をやる。それ以外は管理チームに相談 |
-| `Your Composer dependencies require a PHP version` | PHP のバージョンが合っていない | `php -v` を確認して管理チームに相談 |
-| `Repository not found` / `Permission denied` | GitHub のチームに入っていない / 別のアカウントでログインしている | [4-7](#4-7-github-のアカウントを作ってチームに入れてもらう) の招待を受けたか確認 |
+| `docker` で `error during connect` / `cannot find the file specified` / `Is the docker daemon running?` | Docker Desktop が起動していない | Docker Desktop を開いて、「Engine running」になってからやり直す |
+| Docker Desktop で `WSL needs updating` | WSL（Docker が使う Windows の機能）が古い | PowerShell で `wsl --update` を実行して、Docker Desktop を開き直す |
+| Docker Desktop で `Virtualization support not detected` | パソコンの仮想化が無効になっている | 管理チームに相談（BIOS の設定が必要） |
+| `.env がありません。.env.example をコピーして .env を作ってください` | `.env` を作っていない | [4-6](#4-6-env-を作る) をやる |
+| `Repository not found` / `Permission denied` | GitHub のチームに入っていない / 別のアカウントでログインしている | [4-4](#4-4-github-のアカウントを作ってチームに入れてもらう) の招待を受けたか確認 |
 | `fatal: destination path 'anabuki2026' already exists` | もうクローン済み | `cd anabuki2026` で中に入れば OK |
 | `No such file or directory` / 「パスが存在しないため検出できません」 | 今いるフォルダが違う | Git Bash なら `cd /c/xampp/htdocs/anabuki2026`、PowerShell なら `cd C:\xampp\htdocs\anabuki2026` をしてからやり直す |
 
@@ -569,10 +598,13 @@ anabuki2026/
 
 | 出たメッセージ・起きたこと | 原因 | どうする？ |
 |---|---|---|
-| 画面に **「CakePHP is NOT able to connect to the database」** | MySQL が止まっている / 設定ミス | XAMPP で MySQL を Start。[4-11](#4-11-データベースの接続設定をする) の設定を見直す |
-| `Unknown database 'anabukiit_app'` | データベースを作っていない | [4-10](#4-10-データベースを作る) をやる |
-| `bin/cake server` で「ポートが使われている」 | もう 1 つサーバーが動いている | 前の PowerShell で `Ctrl + C`。または `bin/cake server -p 8766` で起動して <http://localhost:8766> を開く |
-| XAMPP の MySQL が Start できない | 他のアプリが同じポートを使っている | 管理チームに相談 |
+| <http://localhost:8765> が開けない | 箱が止まっている | `docker compose ps` で `web` と `db` が `Up` か見る。なければ `docker compose up -d` |
+| 画面に **「CakePHP is NOT able to connect to the database」** | データベースの箱がまだ起動中 | 30 秒待ってから再読み込み。直らなければ `docker compose ps` で `db` が `healthy` か見る |
+| `Class "○○" not found` / `vendor/autoload.php` がない | 箱の中の部品が足りない・古い | `docker compose exec web composer install` |
+| `port is already allocated` / `ports are not available` | 8765・8081・3307 番を、ほかのもの（`bin/cake server` など）が使っている | 前の `bin/cake server` を `Ctrl + C` で止める。わからなければ管理チームに相談 |
+| `service "web" is not running` | 箱が止まっている | `docker compose up -d` をしてから、もう一度実行する |
+| 保存したのに画面が変わらない | ブラウザが前の画面を覚えている（キャッシュ） | `Ctrl + Shift + R` で読み直す |
+| VS Code で CakePHP の候補が出ない | 自分のパソコンに `vendor/` がない | [4-8](#4-8-vs-code-の候補表示の準備をする) をやる |
 
 ### Git のとき
 
@@ -585,10 +617,27 @@ anabuki2026/
 | `CONFLICT`（コンフリクト／競合） | 他の人と同じ場所を編集した | **自分で直そうとせず**、そのまま管理チームに相談 |
 | `rejected` / `failed to push` | GitHub の方が新しくなっている | 管理チームに相談 |
 
+### XAMPP で作業するとき（12/9 まで）
+
+Docker がどうしても動かない人は、**12/9（水）の授業まで** は、今までの XAMPP で作業できます。
+
+1. PowerShell で `docker compose down` を実行して、箱を止めます（Docker が動いていなければ不要）。
+2. XAMPP Control Panel で **MySQL** を「Start」にします。
+3. PowerShell で、次を実行して、<http://localhost:8765> を開きます。
+
+```powershell
+cd C:\xampp\htdocs\anabuki2026
+bin/cake server
+```
+
+> XAMPP のデータベースは MySQL で、公開する Xserver（MariaDB）とはちがいます。できるだけ早く Docker に移ってください。
+> 12/9 のあとは、XAMPP での作業はできなくなります。
+
 ---
 
 ## 参考リンク
 
 - Progate「【Windows】Gitの環境構築をしよう！」：<https://prog-8.com/docs/git-env-win>
+- Docker Desktop を Windows に入れる（英語）：<https://docs.docker.com/desktop/setup/install/windows-install/>
 - CakePHP 5 公式ドキュメント（日本語）：<https://book.cakephp.org/5/ja/index.html>
 - CakePHP のインストール方法：<https://book.cakephp.org/5/ja/installation.html>

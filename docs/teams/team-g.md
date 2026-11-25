@@ -37,21 +37,22 @@
 ## 自動チェックを動かしてみる
 
 まずは、もとから入っているチェックを動かしてみましょう。
+PowerShell で、`cd C:\xampp\htdocs\anabuki2026` をしてから実行します（Docker の箱の中で動きます）。
 
 ```powershell
-composer test
+docker compose exec web composer test
 ```
 
 最後に **`OK`** と緑色で出れば、全部のチェックに合格です。
 **`FAILURES!`** や **`ERRORS!`** と赤色で出たら、どこかがこわれています。
 
-> チェック用のデータベースは自動で用意される（`tmp/tests.sqlite`）ので、準備はいりません。
-> ふだん使っているデータベースのデータが消えることもありません。
+> チェック用のデータベース（SQLite）は、箱の中に自動で用意されるので、準備はいりません。
+> ふだん使っているデータベース（MariaDB）のデータが消えることもありません。
 
 1 つのファイルだけチェックしたいときは、こう書きます。
 
 ```powershell
-vendor/bin/phpunit tests/TestCase/Controller/UsersControllerTest.php
+docker compose exec web vendor/bin/phpunit tests/TestCase/Controller/UsersControllerTest.php
 ```
 
 ---
@@ -64,9 +65,9 @@ B チームが `bin/cake bake model` を使うと、テストのひな形も一�
 ないときは、自分で作ります。
 
 ```powershell
-bin/cake bake test Controller Users
-bin/cake bake test Table Users
-bin/cake bake fixture Users
+docker compose exec web bin/cake bake test Controller Users
+docker compose exec web bin/cake bake test Table Users
+docker compose exec web bin/cake bake fixture Users
 ```
 
 ### 2. ためしのデータを書く
@@ -131,7 +132,7 @@ public function testAddWithEmptyName(): void
 ### 4. 合格するまで確かめる
 
 ```powershell
-composer test
+docker compose exec web composer test
 ```
 
 ---
