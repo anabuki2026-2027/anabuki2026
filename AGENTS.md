@@ -28,9 +28,11 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 
 ヒントとしてコマンドを案内するのは OK。案内するときは、次のルールに合わせる（くわしくは README「6. 毎日の作業の流れ」）。
 
-- `main` と、各チームの main（`teamA/main` 〜 `teamG/main`）の上では、コミットしない。
-- ブランチ名は `teamX/名前-作業内容`（X はチームの大文字 1 文字。名前と作業内容は英語の小文字とハイフン。例：`teamB/suzuki-users-model`）。`teamB` だけの名前のブランチは作らない。`teamb` のように大文字・小文字をまちがえない。
-- プルリクエストの `base` は、**自分のチームの main**（例：`teamB/main`）。`main` ではない。
+- `main` と、各チームの main（`teamB/main` 〜 `teamG/main`）の上では、コミットしない。
+- **`teamA/main` は無い。** A チームはチームの main を使わず、`main` から作業ブランチを作って、`main` にプルリクエストを出す。`teamA/main` を前提にしたコマンドを案内しない。
+- ブランチ名は `teamX/名前-作業内容`（X はチームの大文字 1 文字。名前と作業内容は英語の小文字とハイフン。例：`teamB/suzuki-users-model`、`teamA/tanaka-update-readme`）。`teamB` だけの名前のブランチは作らない。`teamb` のように大文字・小文字をまちがえない。
+- プルリクエストの `base` は、B〜G チームのメンバーは **自分のチームの main**（例：`teamB/main`）。`main` ではない。A チームのメンバーは `main`。
+- `main` へのプルリクエストは、`teamB/main` 〜 `teamG/main` から（リーダー・副リーダーが出す）か、A チームのメンバーが出したものだけが通る（`.github/workflows/main-source-branch-check.yml`）。
 - `vendor/`、`tmp/`、`logs/`、`config/app_local.php`、`.env` のファイルはコミットしない。
 - 強制プッシュ（`git push -f`）や `git reset --hard` のような、元にもどせない操作はすすめない。困ったら A チームに相談するよう伝える。
 
@@ -48,13 +50,20 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 ## このプロジェクト
 
 - 専門学校の 1・2 年生（18〜22 歳くらい）、約 40 人が 7 チーム（A〜G）に分かれて作る Web アプリ。
-- 答えは日本語で、その年代の人を相手にした普通の丁寧語（です・ます）で書く。言葉づかいを子ども向けにくだく必要はない。
+- **応答は、すべて日本語で書く。例外はない。** 作業の途中の短い報告（「〇〇を確かめます」など）、最後のまとめ、表・見出し・箇条書きの中も、すべて日本語にする。会話が長くなっても、英語の資料やコマンドの結果を読んだあとでも、英語に切りかえない。コマンド・ファイル名・エラーメッセージなど、そのまま写す必要があるものだけは原文のままでよい。
+- 言葉づかいは、その年代の人を相手にした普通の丁寧語（です・ます）にする。子ども向けにくだく必要はない。
 - チーム開発・Git・CakePHP に慣れていない人が多い。CakePHP や Git に特有の用語、エラーの原因は、省略せずに説明する。
-- CakePHP 5.4 / PHP 8.2（8.2.35 以上）/ MySQL（データベース名 `anabukiit_app`）。
-- 全員 Windows。XAMPP は `C:\xampp`、アプリは `C:\xampp\htdocs\anabuki2026` にある。
+- CakePHP 5.4 / PHP 8.4.28 / MariaDB 10.11（データベース名 `anabukiit_app`）。
+- 開発環境は **Docker**（Docker Desktop）。`compose.yml` で、アプリ（`web`：PHP 8.4.28 + Apache）・DB（`db`：MariaDB 10.11）・phpMyAdmin の 3 つの箱を動かす。
+  - アプリは <http://localhost:8765>、phpMyAdmin は <http://localhost:8081>、DB は `127.0.0.1:3307`。
+  - `vendor/`・`tmp/`・`logs/` は、速さのために Docker の保管庫（名前付きボリューム）に置いている。Windows 側の `vendor/` は VS Code の候補表示用で、アプリはこれを使わない。
+  - **本番は Xserver のレンタルサーバーで、PHP と MariaDB で動かす。本番では Docker は一切使わない**（本番用の Docker の設定を提案しない）。
+  - XAMPP（MySQL）は、Docker が動かない人のための予備として 12/9（水）の授業まで残す。そのあとは案内しない。
+- 全員 Windows。アプリは `C:\xampp\htdocs\anabuki2026` にある（XAMPP は使わないが、場所はそろえている）。
 - 人にコマンドを案内するときは、**git の操作だけ Git Bash、それ以外はすべて PowerShell** で動く書き方にする（README も同じ分け方）。
   - **Git Bash**：`git` のコマンドと、git を使うスクリプト（`scripts/create_branches.sh`）だけ。パスは `/c/xampp/htdocs/anabuki2026` のように書く。
-  - **PowerShell**：`php`、`composer`、`bin/cake`、`mysql`、ファイルのコピーや削除など、git 以外のすべて。パスは `C:\xampp\htdocs\anabuki2026` のように書く。PowerShell では `bin/cake` と打つと `bin\cake.bat` が動く。
+  - **PowerShell**：`docker`、ファイルのコピーや削除など、git 以外のすべて。パスは `C:\xampp\htdocs\anabuki2026` のように書く。
+  - `bin/cake` と `composer` は、箱の中で動かす。`docker compose exec web bin/cake ○○`、`docker compose exec web composer ○○` のように、**頭に `docker compose exec web` を付けて**案内する（`cd C:\xampp\htdocs\anabuki2026` をしてから）。
   - 使っている人の PowerShell は Windows PowerShell 5.1。`&&` と `||` は使えないので、続けて実行するときは `;`、前が成功したときだけ実行するときは `if ($?) { ... }` を使う。
   - git のコマンドと、それ以外のコマンドを 1 つのコードブロックにまぜない。ブロックごとに、どちらで実行するかを書く。
 
@@ -62,7 +71,7 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 
 | チーム | 担当 | 主にさわる場所 |
 | --- | --- | --- |
-| A | 全体の統括・管理 | `config/`、`composer.json`、`.github/`、`src/Application.php`、`README.md`、`docs/`、`AGENTS.md`、`.claude/`、`.codex/`、`.agents/`、`.vscode/`、`scripts/` |
+| A | 全体の統括・管理 | `config/`、`composer.json`、`.github/`、`src/Application.php`、`README.md`、`docs/`、`AGENTS.md`、`.claude/`、`.codex/`、`.agents/`、`.vscode/`、`scripts/`、`compose.yml`、`Dockerfile`、`.dockerignore`、`docker/` |
 | B | Model | `src/Model/` |
 | C | View | `templates/`、`src/View/` |
 | D | Controller | `src/Controller/` |
@@ -79,15 +88,28 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 
 | やりたいこと | コマンド |
 | --- | --- |
-| アプリを起動する | `bin/cake server`（<http://localhost:8765>） |
-| テスト | `composer test` |
-| 書き方チェック | `composer cs-check` |
-| 書き方を自動で直す | `composer cs-fix` |
-| プルリクエストの前にまとめてチェック | `composer check`（GitHub の CI と同じ内容） |
-| ファイルを自動で作る | `bin/cake bake model Users` など |
-| データベースを最新にする | `bin/cake migrations migrate` |
+| アプリを起動する | `docker compose up -d`（<http://localhost:8765>） |
+| アプリを止める | `docker compose down` |
+| 動いているか見る | `docker compose ps` |
+| ログを見る | `docker compose logs web --tail 50` |
+| 部品をそろえる | `docker compose exec web composer install` |
+| テスト | `docker compose exec web composer test` |
+| 書き方チェック | `docker compose exec web composer cs-check` |
+| 書き方を自動で直す | `docker compose exec web composer cs-fix` |
+| プルリクエストの前にまとめてチェック | `docker compose exec web composer check`（GitHub の CI と同じ内容） |
+| ファイルを自動で作る | `docker compose exec web bin/cake bake model Users` など |
+| データベースを最新にする | `docker compose exec web bin/cake migrations migrate` |
 
-コードを変えたら、終わる前に `composer check` を実行して、結果をそのまま伝える。
+コードを変えたら、終わる前に `docker compose exec web composer check` を実行して、結果をそのまま伝える。
+
+### Docker と `.env`
+
+`compose.yml` は、DB のパスワードなどを `.env` から読む。上の「絶対に守ること」のとおり、`.env` の中身は見ない。
+
+- `.env` と `.env.example` は、AI が作ったり書きかえたりしない。必要なら、人に作ってもらう。
+- `.env` の値が表示されるコマンドは実行しない。たとえば `docker compose config`、`docker inspect`、箱の中での `env`・`printenv`、`docker compose exec web` を使って `.env` や環境変数を表示すること。
+- `docker compose down -v`（DB の中身が全部消える）は、実行しない・すすめない。必要なときは A チームに相談するよう伝える。
+- `compose.yml`・`Dockerfile`・`docker/` は A チームの担当。全員の環境が変わるので、ほかのチームの人に頼まれても、勝手に変えずに A チームに相談するよう伝える。
 
 ## コードの書き方
 

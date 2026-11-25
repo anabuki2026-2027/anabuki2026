@@ -79,11 +79,10 @@ D チームから受け取ったデータを、フォームや一覧の形にし
 
 ### 3. 表示を確認する
 
-```powershell
-bin/cake server
-```
-
 ブラウザで <http://localhost:8765/users> などを開いて確認します。
+ファイルを保存したら、ブラウザを再読み込みするだけで反映されます。
+
+> 画面が開けないときは、PowerShell で `cd C:\xampp\htdocs\anabuki2026` をしてから `docker compose up -d` を実行して、Docker の箱を起動してください。
 
 ---
 
@@ -105,7 +104,8 @@ bin/cake server
 D チームの Controller と B チームの Table ができていれば、画面のひな形を自動で作れます。
 
 ```powershell
-bin/cake bake template Users
+cd C:\xampp\htdocs\anabuki2026
+docker compose exec web bin/cake bake template Users
 ```
 
 `templates/Users/` に `index.php`、`view.php`、`add.php`、`edit.php` ができるので、そこから作りかえると早いです。

@@ -73,7 +73,7 @@ Composer で入れる部品だけでなく、CSS・フォント・パソコン�
 | `m1/env` | 2.2.0 | `.env` ファイルを読む部品。 | dotenv |
 | `symfony/*`（`console`、`process`、`string`、`polyfill-*` など） | 7.4 系、1.x 系 | コマンド画面・ファイル操作・文字列などの部品。 | Composer、Twig など |
 
-> 全部の部品とバージョンは、PowerShell で `composer show` を実行すると見られます
+> 全部の部品とバージョンは、PowerShell で `docker compose exec web composer show` を実行すると見られます
 > （`cd C:\xampp\htdocs\anabuki2026` をしてから実行します）。
 
 ### ライセンス（使ってよい条件）
@@ -108,27 +108,40 @@ Composer で入れる部品だけでなく、CSS・フォント・パソコン�
 | --- | --- | --- |
 | Git（Git Bash） | 2.x | Git の操作。Git のコマンドを打つ黒い画面もこれ。 |
 | PowerShell（Windows PowerShell 5.1） | Windows に最初から入っている | Git 以外のコマンドを打つ黒い画面。 |
-| XAMPP | — | PHP と MySQL と Apache がまとめて入っている。`C:\xampp` に入れる。 |
-| PHP | **8.2.35 以上の 8.2** | アプリを動かす言語。XAMPP に入っている 8.2.12 は古いので更新する。 |
-| MySQL | XAMPP に入っているもの | データベース（データベース名 `anabukiit_app`）。 |
-| phpMyAdmin | XAMPP に入っているもの | ブラウザでデータベースの中身を見る（<http://localhost/phpmyadmin>）。 |
-| Composer | 2.x | 1 の部品をダウンロードする。 |
+| Docker Desktop | — | 下の「Docker の箱」を動かす。教育での利用は無料。メモリ 8GB 以上と、仮想化の有効化、WSL 2 が必要。 |
 | VS Code | — | ファイルを編集する。 |
 | Figma | — | デザインを作る（デザインだけを担当する人）。 |
+
+### Docker の箱（`compose.yml`・`Dockerfile` で決めている）
+
+PHP やデータベースは、自分のパソコンには入れずに、Docker の箱の中で動かします。版を変えるときは A チームが `compose.yml`・`Dockerfile` を直します。
+
+| 箱・中身 | バージョン | 何に使う？ |
+| --- | --- | --- |
+| `web`：PHP | **8.4.28** | アプリを動かす言語。`composer.json` の `platform` と同じ番号にそろえる。 |
+| `web`：Apache | 2.4 | Web サーバー。<http://localhost:8765> でアプリを見せる。 |
+| `web`：Composer | 2.x | 1 の部品をダウンロードする（`docker compose exec web composer install`）。 |
+| `db`：MariaDB | **10.11** | データベース（データベース名 `anabukiit_app`）。公開する Xserver と同じ。 |
+| `phpmyadmin`：phpMyAdmin | 5.2.3 | ブラウザでデータベースの中身を見る（<http://localhost:8081>）。 |
+
+> 公開サーバー（Xserver のレンタルサーバー）では Docker は使わず、Xserver の PHP 8.4 と MariaDB 10.11 で動かします。
+
+> 12/9（水）の授業までは、Docker が動かない人のための予備として、XAMPP（PHP 8.4.28・MySQL）も使えます。
 
 ---
 
 ## 4. PHP の拡張機能
 
-PHP に「追加の機能」を足すものです。XAMPP の `C:\xampp\php\php.ini` で、使う・使わないを切りかえます。
+PHP に「追加の機能」を足すものです。Docker の箱では `Dockerfile` で入れています（PHP の設定は `docker/php/php.ini`）。
 
 | 拡張機能 | 何に使う？ | メモ |
 | --- | --- | --- |
-| `zip` | Composer が部品をダウンロードして広げる。 | XAMPP では最初は無効。`;extension=zip` の `;` を消す（README 4-3）。 |
-| `intl` | 日付や数字を、国や言語に合わせて表示する。 | CakePHP に必要。 |
-| `mbstring` | 日本語などの文字をあつかう。 | CakePHP に必要。 |
-| `pdo_mysql` | PHP から MySQL につなぐ。 | 自分のパソコンで使う。 |
-| `pdo_sqlite` | PHP から SQLite（ファイル 1 つのデータベース）につなぐ。 | GitHub の自動チェックで、テスト用のデータベースとして使う。 |
+| `zip` | Composer が部品をダウンロードして広げる。 | `Dockerfile` で入れている。 |
+| `intl` | 日付や数字を、国や言語に合わせて表示する。 | CakePHP に必要。`Dockerfile` で入れている。 |
+| `mbstring` | 日本語などの文字をあつかう。 | CakePHP に必要。箱に最初から入っている。 |
+| `pdo_mysql` | PHP から MariaDB（MySQL）につなぐ。 | `Dockerfile` で入れている。 |
+| `pdo_sqlite` | PHP から SQLite（ファイル 1 つのデータベース）につなぐ。 | テスト用のデータベースとして使う（箱の中・GitHub の自動チェックとも）。箱に最初から入っている。 |
+| `opcache` | 一度読んだ PHP のファイルを覚えておいて、表示を速くする。 | `Dockerfile` で入れている。 |
 
 ---
 
@@ -166,7 +179,7 @@ GitHub Actions の中で使っている、他の人が作った部品（アク�
 | アクション・道具 | バージョン | 何をするもの？ | 使っている場所 |
 | --- | --- | --- | --- |
 | `actions/checkout` | v7 | リポジトリのファイルを取ってくる。 | `ci.yml` |
-| `shivammathur/setup-php` | v2 | 決まったバージョンの PHP を用意する（8.2 と 8.5 で試す）。 | `ci.yml` |
+| `shivammathur/setup-php` | v2 | 決まったバージョンの PHP を用意する（8.4 と 8.5 で試す）。 | `ci.yml` |
 | `ramsey/composer-install` | v4 | `composer install` を実行する。 | `ci.yml` |
 | `actions/stale` | v10 | 長いあいだ動きのない Issue・プルリクエストに印を付けて、自動で閉じる。 | `stale.yml` |
 | PHPStan | 2.1 | プログラムのミスを、動かす前に見つける（レベル 8）。`setup-php` で入れている。 | `ci.yml`（設定は `phpstan.neon`） |

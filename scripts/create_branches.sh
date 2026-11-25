@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # 【このファイルは？】
-# 各チームの main（teamA/main 〜 teamG/main）を、GitHub にまとめて作るスクリプト。
+# 各チームの main（teamB/main 〜 teamG/main）を、GitHub にまとめて作るスクリプト。
+# A チームは main を直接使うので、teamA/main は作らない。
 # 最初に 1 回だけ、A チームが使う。すでにあるブランチは飛ばすので、2 回実行しても大丈夫。
 # 使い方：リポジトリのフォルダ（/c/xampp/htdocs/anabuki2026）で  bash scripts/create_branches.sh
 #
@@ -9,7 +10,7 @@
 set -euo pipefail
 
 # ---- 設定（必要に応じて変更） --------------------------------
-TEAMS=(teamA teamB teamC teamD teamE teamF teamG)
+TEAMS=(teamB teamC teamD teamE teamF teamG)
 BASE="main"     # 作成元のブランチ
 REMOTE="origin"
 # -------------------------------------------------------------

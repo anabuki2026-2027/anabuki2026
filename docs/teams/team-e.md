@@ -92,11 +92,9 @@ CSS の中で画像を使うときは、`css` フォルダから見た場所を�
 
 ### 5. 表示を確認する
 
-```powershell
-bin/cake server
-```
-
 ブラウザで <http://localhost:8765> を開いて確認します。
+
+> 画面が開けないときは、PowerShell で `cd C:\xampp\htdocs\anabuki2026` をしてから `docker compose up -d` を実行して、Docker の箱を起動してください。
 
 > CSS を変えたのに画面が変わらないときは、ブラウザが古い CSS を覚えたままになっています。
 > **`Ctrl + F5`** を押すと、最新の CSS で表示しなおせます。

@@ -1,0 +1,169 @@
+# 【このファイルは？】
+# 開発環境（アプリ・DB・phpMyAdmin）をまとめて動かすための段取り表。`docker compose up -d` で起動する。
+# アプリ http://localhost:8765 / phpMyAdmin http://localhost:8081 / DB 127.0.0.1:3307
+#
+# 【担当】A チーム
+# 【くわしく】docs/FILES.md
+
+# =============================================================================
+#   Dockerfile = 箱 1 つの作り方
+#   compose.yml = 箱をいくつかまとめて動かす段取り（＋どうつなぐか）
+#
+#   ▼ 使うコマンドは、ほとんどこれだけ（PowerShell で、このフォルダで実行する）
+#       docker compose up -d                     起動する（裏で動かす）
+#       docker compose down                      止める
+#       docker compose logs -f web               アプリのログを見る（Ctrl + C で終わる）
+#       docker compose exec web bin/cake ...     bin/cake のコマンドを箱の中で動かす
+#       docker compose exec web composer check   テストと書き方チェック
+#
+#   ★ポート番号（「自分のパソコン側:箱の中側」の、左の番号）
+#     XAMPP と同時に動かしてもぶつからないように、XAMPP とはちがう番号にしてある。
+#         アプリ       … 8765（今までの bin/cake server と同じ）
+#         phpMyAdmin   … 8081（XAMPP の phpMyAdmin は 80 番）
+#         DB           … 3307（XAMPP の MySQL は 3306 番）
+#     どれも 127.0.0.1 を付けて、自分のパソコンからしか開けないようにしてある。
+#
+#   ★Docker を使うのは開発（自分のパソコン）だけ。
+#     本番は Xserver のレンタルサーバーで、PHP と MariaDB で動かす。本番では Docker は一切使わない。
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # web = アプリ（PHP 8.4 + Apache + CakePHP）
+  # ===========================================================================
+  web:
+    build:
+      # 自分たちのアプリなので、借り物ではなく Dockerfile から作る。
+      context: .
+      # ★Dockerfile には箱が 2 つ書いてあるので、どれを使うかを指定する。
+      target: dev
+
+    # パソコンがスリープから戻ったときなどに、止まっていたら自動で起動しなおす。
+    restart: unless-stopped
+
+    # ★Apache も、docker compose exec web ... で動かすコマンドも、同じ www-data という人で動かす。
+    #   別の人（root）で bin/cake を動かすと、tmp/ に Apache が書きかえられないファイルができて、
+    #   画面がエラーになるため。
+    user: www-data
+    # www-data でも 80 番で待ち受けられるようにする（公式の PHP の箱で案内されている方法）。
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
+
+    environment:
+      # composer がダウンロードした部品を一時的に置く場所（www-data が書きこめる場所にする）
+      COMPOSER_HOME: /tmp/composer
+      # ★config/app_local.php の DB の設定を、ここで上書きする。
+      #   app_local.php の 'url' => env('DATABASE_URL', null) がこの値を読む。
+      #   なので、みんなの app_local.php は書きかえなくてよい。
+      #   「@db」の db は、下の db の箱の名前。Docker が名前で呼べるようにしてくれる。
+      #   ${...} は .env の値を差しこむ指定（下の db の箱と同じ値を使う）。
+      DATABASE_URL: "mysql://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}"
+      # テストは GitHub の自動チェック（CI）と同じく SQLite で動かす。
+      DATABASE_TEST_URL: "sqlite://127.0.0.1/tmp/tests.sqlite"
+      TZ: Asia/Tokyo
+
+    ports:
+      # http://localhost:8765 でアプリが見える。
+      - "127.0.0.1:8765:80"
+
+    volumes:
+      # ★開発でいちばん大事な 1 行
+      #   自分のパソコンのフォルダと、箱の中を直結させる。
+      #   保存 → ブラウザを再読みこみ → すぐ反映、になる。
+      #   VS Code・Git Bash は、今までどおり C:\xampp\htdocs\anabuki2026 を使う。
+      - .:/var/www/html
+
+      # ★下の 3 つは「速さのための保管庫」
+      #   箱の中から Windows のフォルダのファイルを読むのは、とても遅い（1 つあたり約 500 倍）。
+      #   vendor/（composer でダウンロードした部品。4,600 以上のファイル）を毎回読むと、
+      #   1 ページに 4 秒以上かかった。なので、部品は箱の外の保管庫に置く。
+      #   tmp/（キャッシュ・DebugKit の記録）と logs/ も、アプリが毎回たくさん書きこむので同じようにする。
+      #   3 つとも GitHub に送らないフォルダなので、困ることはない。
+      #   ・部品を入れる/更新する … docker compose exec web composer install
+      #   ・ログを見る           … docker compose exec web cat logs/error.log
+      #   ※Windows 側の vendor/ は、VS Code の候補表示（Intelephense）のためにそのまま残しておく。
+      - app-vendor:/var/www/html/vendor
+      - app-tmp:/var/www/html/tmp
+      - app-logs:/var/www/html/logs
+
+    depends_on:
+      db:
+        # ★service_started（起動しただけ）ではなく
+        #   service_healthy（本当に使える状態）を待つ。
+        #   これがないと、最初の起動で「DB につながらない」エラーになりやすい。
+        condition: service_healthy
+
+  # ===========================================================================
+  # db = MariaDB 10.11（公開する Xserver と同じ DB）
+  # ===========================================================================
+  db:
+    # 公式の完成品を借りる。
+    # ★latest にすると勝手に新しい版になって壊れるので、番号で固定する。
+    #   Xserver の版が変わったら、ここも合わせる（docs/concerns.md の C-02）。
+    image: mariadb:10.11
+
+    restart: unless-stopped
+
+    environment:
+      # ★左の 4 つは MariaDB の箱が理解する決まった名前（自由には変えられない）。
+      #   初めて起動したときに、この名前の DB とユーザーが自動で作られる。
+      # ★${...} は .env の値を差しこむ指定。パスワードをこのファイルに直接書かないので、
+      #   GitHub に送っても安全。.env がないときは、起動する前にエラーで止まる（:? の部分）。
+      #   .env は .env.example をコピーして作る。公開サーバー（Xserver）のパスワードは書かない。
+      # ★値を変えたら docker compose down -v で DB を作り直す（DB の中身は消える）。
+      #   DB は最初に起動したときの値で作られるので、あとから .env を変えてもつながらない。
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?.env がありません。.env.example をコピーして .env を作ってください}
+      MARIADB_DATABASE: ${DB_NAME:?.env がありません。.env.example をコピーして .env を作ってください}
+      MARIADB_USER: ${DB_USER:?.env がありません。.env.example をコピーして .env を作ってください}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?.env がありません。.env.example をコピーして .env を作ってください}
+      TZ: Asia/Tokyo # これがないと、保存した時刻が 9 時間ずれる
+
+    # 日本語や絵文字が文字化けしないように、文字コードを utf8mb4 にする（Xserver と同じ）。
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+    ports:
+      # 自分のパソコンから DB を直接見たいとき（A5:SQL Mk-2 など）は、127.0.0.1 の 3307 番につなぐ。
+      # アプリが DB につなぐのには、この設定はいらない（上の DATABASE_URL を参照）。
+      - "127.0.0.1:3307:3306"
+
+    volumes:
+      # 箱の中身は、箱を捨てると消える。DB のデータを箱の外の保管庫に置くことで、
+      # docker compose down しても、データが残る。
+      - db-data:/var/lib/mysql
+
+    healthcheck:
+      # ★これがないと、ほぼ必ずつまずく
+      #   MariaDB は、起動してから本当に使えるようになるまで 10〜30 秒かかる。
+      #   本当に使える状態になったかを確かめるのがこれ。
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 40s # 最初の 40 秒は、失敗しても数えない（起動中なので）
+
+  # ===========================================================================
+  # phpmyadmin = DB の中身をブラウザで見る道具（http://localhost:8081）
+  # ===========================================================================
+  phpmyadmin:
+    image: phpmyadmin:5.2.3
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db # 上の db の箱につなぐ
+    ports:
+      - "127.0.0.1:8081:80"
+    depends_on:
+      db:
+        condition: service_healthy
+
+# =============================================================================
+# 箱の外に置く保管庫。
+#   docker compose down -v で、保管庫ごと消える（＝DB のデータが全部消える）。
+#   DB の調子がおかしいときの、最後の手段。
+# =============================================================================
+volumes:
+  db-data:
+  app-vendor:
+  app-tmp:
+  app-logs:

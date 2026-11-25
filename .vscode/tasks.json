@@ -1,6 +1,6 @@
 // 【このファイルは？】
 // よく使うコマンドを、VS Code のメニューから実行できるようにするファイル。
-// メニューの「ターミナル」→「タスクの実行...」から選ぶ。
+// メニューの「ターミナル」→「タスクの実行...」から選ぶ。どれも Docker の箱の中で動く。
 //
 // 【担当】A チーム
 // 【くわしく】docs/FILES.md
@@ -8,22 +8,27 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "アプリを起動する（bin/cake server）",
+            "label": "アプリを起動する（docker compose up -d）",
             "type": "shell",
-            "command": "php bin/cake.php server",
-            "isBackground": true,
+            "command": "docker compose up -d",
+            "problemMatcher": []
+        },
+        {
+            "label": "アプリを止める（docker compose down）",
+            "type": "shell",
+            "command": "docker compose down",
             "problemMatcher": []
         },
         {
             "label": "プルリクエストの前にまとめてチェック（composer check）",
             "type": "shell",
-            "command": "composer check",
+            "command": "docker compose exec web composer check",
             "problemMatcher": []
         },
         {
             "label": "テストする（composer test）",
             "type": "shell",
-            "command": "composer test",
+            "command": "docker compose exec web composer test",
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -33,13 +38,13 @@
         {
             "label": "書き方をチェックする（composer cs-check）",
             "type": "shell",
-            "command": "composer cs-check",
+            "command": "docker compose exec web composer cs-check",
             "problemMatcher": []
         },
         {
             "label": "書き方を自動で直す（composer cs-fix）",
             "type": "shell",
-            "command": "composer cs-fix",
+            "command": "docker compose exec web composer cs-fix",
             "problemMatcher": []
         }
     ]

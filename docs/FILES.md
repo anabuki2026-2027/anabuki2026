@@ -58,7 +58,8 @@
 | **Model（モデル）** | データベースとやりとりする係。データを出し入れする。 |
 | **View（ビュー）** | 画面の係。ブラウザに表示される見た目を作る。 |
 | **Controller（コントローラー）** | まとめ役。「どのデータを使って、どの画面を出すか」を決める。 |
-| **URL** | ブラウザの上に表示されるアドレス。例：`http://localhost/anabuki2026/users` |
+| **URL** | ブラウザの上に表示されるアドレス。例：`http://localhost:8765/users` |
+| **Docker（ドッカー）** | アプリを動かすのに必要なもの（PHP・Apache・データベース）を、**コンテナ（箱）** にまとめて動かす道具。全員が同じ箱を使うので、パソコンごとのちがいが出にくい。開発のときだけ使う（公開サーバーでは使わない）。 |
 | **ライブラリ（部品）** | 他の人（世界のどこかにいるエンジニア）が作ってくれた、便利なプログラムのかたまり。 |
 | **ログ** | アプリの「日記」。エラーが起きたときの記録が残る。 |
 | **キャッシュ** | 速く動かすために、一時的にとっておくデータ。 |
@@ -79,7 +80,7 @@ Model・View・Controller の 3 つの関係は、レストランにたとえる
 
 | チーム | 担当 | 主にさわる場所 |
 | --- | --- | --- |
-| **A** | 全体の統括・管理 | `config/`、`composer.json`、`.github/`、`src/Application.php` |
+| **A** | 全体の統括・管理 | `config/`、`composer.json`、`.github/`、`src/Application.php`、`compose.yml`・`Dockerfile`・`docker/`（開発環境） |
 | **B** | Model | `src/Model/` |
 | **C** | View | `templates/`、`src/View/` |
 | **D** | Controller | `src/Controller/` |
@@ -158,7 +159,7 @@ A チームは、この流れ全体を見守り、設定やルールを管理し
 | --- | --- | --- |
 | `README.md` | アプリの説明書。準備のしかたや、毎日の作業の流れが書いてある。 | A |
 | `index.php` | まちがって一番上の場所が開かれたときに、本当の玄関（`webroot/index.php`）へ案内するファイル。 | 🚫 |
-| `.htaccess` | XAMPP（Apache）への指示書。「来た人を全員 `webroot` フォルダへ案内して」と書いてある。 | 🚫 |
+| `.htaccess` | Apache への指示書。「来た人を全員 `webroot` フォルダへ案内して」と書いてある。Docker では最初から `webroot` を公開しているので、XAMPP で作業するとき（12/9 まで）や、公開サーバー（Xserver）で使う。 | 🚫 |
 | `composer.json` | このアプリが使う部品（ライブラリ）の「買い物リスト」。 | A |
 | `composer.lock` | 実際に使っている部品の「レシート」。バージョンまで正確に記録されているので、全員が同じ部品を使える。手で書きかえない（A がコマンドで更新する）。 | 🚫 |
 | `.editorconfig` | VS Code などのエディタに「字下げはスペース 4 つ」などのルールを教えるファイル。 | 🚫 |
@@ -181,7 +182,15 @@ A チームは、この流れ全体を見守り、設定やルールを管理し
 | `phpstan.neon` | 「プログラムにミスがないか」を、動かす前にチェックする道具の設定。 | A |
 | `psalm.xml` | `phpstan.neon` と同じ種類の、ミスを探す道具の設定。 | A |
 | `phpunit.xml.dist` | 自動チェック（テスト）の設定。 | G |
-| `scripts/create_branches.sh` | 各チームの main（`teamA/main` 〜 `teamG/main`）を、GitHub にまとめて作るスクリプト。最初に 1 回だけ A チームが使う。 | A |
+| `compose.yml` | 開発環境（アプリ・DB・phpMyAdmin）をまとめて動かすための段取り表。`docker compose up -d` で起動する。アプリは <http://localhost:8765>、phpMyAdmin は <http://localhost:8081>、DB は `127.0.0.1:3307`。 | A |
+| `Dockerfile` | アプリを動かす箱（コンテナ）の作り方。PHP 8.4 + Apache に、CakePHP に必要な部品を足す。 | A |
+| `.dockerignore` | Docker の箱を作るときに、箱へ渡さないファイルのリスト。パスワードが入ったファイルを箱に入れないようにする。 | A |
+| `.env.example` | `.env` の見本。DB の名前・ユーザー・パスワード（自分のパソコンの中だけで使う開発用の値）の項目が書いてある。これをコピーして `.env` を作る。 | A |
+| `.env` | `compose.yml` が使う、自分のパソコン専用の値。`.env.example` をコピーして作る。GitHub には送らない。AI は中身を見ないので、困ったときは A チームに相談する。 | 全員 |
+| `docker/php/php.ini` | 箱の中の PHP の設定（時刻・エラーの表示・速くするための設定など）。 | A |
+| `docker/apache/000-default.conf` | 箱の中の Apache の設定。`webroot/` を公開する場所にして、`.htaccess` を使えるようにする。 | A |
+| `docker-migration-plan.pdf` | 開発環境を XAMPP から Docker に移す計画。日程（12/2 の授業から Docker で作業する）、続けるかやめるかを決める日（11/27）、リスクと対策、決めたことがまとめてある。 | A |
+| `scripts/create_branches.sh` | 各チームの main（`teamB/main` 〜 `teamG/main`）を、GitHub にまとめて作るスクリプト。最初に 1 回だけ A チームが使う。A チームは `main` を直接使うので、`teamA/main` は作らない。 | A |
 
 ---
 
@@ -353,7 +362,7 @@ A チームは、この流れ全体を見守り、設定やルールを管理し
 | ファイル | 何をするもの？ | 担当 |
 | --- | --- | --- |
 | `index.php` | **アプリの本当の「玄関」**。どのページを開いても、まずここを通る。 | 🚫 |
-| `.htaccess` | XAMPP（Apache）への指示書。`/users/add` のような URL でも、ちゃんと玄関（`index.php`）に案内する。 | 🚫 |
+| `.htaccess` | Apache への指示書。`/users/add` のような URL でも、ちゃんと玄関（`index.php`）に案内する。Docker・公開サーバーのどちらでも使う。 | 🚫 |
 | `favicon.ico` | ブラウザのタブに出る小さなアイコン。自分たちのアイコンに変えてもよい。 | E |
 
 ### webroot/css フォルダ（見た目）
@@ -399,7 +408,7 @@ JavaScript（画面に動きをつけるプログラム）を入れるフォル�
 ## 9. tests フォルダ（自動チェック）
 
 **ひとことで：「アプリがちゃんと動くか」を、人の代わりに自動でチェックするプログラム。G チームの担当です。**
-`composer test` というコマンドで実行できます。
+PowerShell で `docker compose exec web composer test` を実行すると動きます（Docker の箱の中で動きます）。
 
 | ファイル | 何をするもの？ | 担当 |
 | --- | --- | --- |
@@ -417,12 +426,12 @@ JavaScript（画面に動きをつけるプログラム）を入れるフォル�
 
 ## 10. bin フォルダ（コマンド）
 
-**ひとことで：PowerShell（黒い画面）で CakePHP に命令するためのファイル。**
+**ひとことで：CakePHP に命令するためのファイル。Docker の箱の中で、`docker compose exec web bin/cake ○○` の形で使う。**
 
 | ファイル | 何をするもの？ | 担当 |
 | --- | --- | --- |
-| `cake` | Git Bash で `bin/cake ○○` と打ったときに動く入り口。このチームでは `bin/cake` は PowerShell で打つので、ふだんは使わない。 | 🚫 |
-| `cake.bat` | PowerShell で `bin/cake ○○` と打つと、これが動いて CakePHP に命令できる。 | 🚫 |
+| `cake` | `bin/cake ○○` と打ったときに動く入り口。箱の中（Linux）では、これが動く。 | 🚫 |
+| `cake.bat` | Windows の PowerShell で `bin/cake ○○` と打ったときに動く入り口。XAMPP で作業するとき（12/9 まで）だけ使う。 | 🚫 |
 | `cake.php` | `cake` と `cake.bat` が中で使っているファイル。 | 🚫 |
 | `bash_completion.sh` | コマンドを途中まで打って Tab キーを押すと、残りを自動で入力してくれる機能。 | 🚫 |
 
@@ -430,12 +439,14 @@ JavaScript（画面に動きをつけるプログラム）を入れるフォル�
 
 | 打つコマンド | 何が起きる？ | 使うチーム |
 | --- | --- | --- |
-| `bin/cake bake migration CreateUsers` | 「会員の表を作る」ためのファイルを自動で作る | F |
-| `bin/cake migrations migrate` | データベースの表を最新の状態にする | 全員 |
-| `bin/cake bake model Users` | `UsersTable.php` と `User.php` を自動で作る | B |
-| `bin/cake bake controller Users` | `UsersController.php` を自動で作る | D |
-| `bin/cake bake template Users` | `templates/Users/` の画面を自動で作る | C |
-| `composer test` | 自動チェック（テスト）を実行する | G |
+| `docker compose exec web bin/cake bake migration CreateUsers` | 「会員の表を作る」ためのファイルを自動で作る | F |
+| `docker compose exec web bin/cake migrations migrate` | データベースの表を最新の状態にする | 全員 |
+| `docker compose exec web bin/cake bake model Users` | `UsersTable.php` と `User.php` を自動で作る | B |
+| `docker compose exec web bin/cake bake controller Users` | `UsersController.php` を自動で作る | D |
+| `docker compose exec web bin/cake bake template Users` | `templates/Users/` の画面を自動で作る | C |
+| `docker compose exec web composer test` | 自動チェック（テスト）を実行する | G |
+
+> 箱の中で作られたファイルも、`C:\xampp\htdocs\anabuki2026` の中にそのまま出てきます（VS Code ですぐ開けます）。
 
 > `bin/cake migrations migrate` は、F チームが表を変えたあと、**全員が自分のパソコンで実行**します。
 > 実行しないと、自分のパソコンのデータベースだけ古いままになってしまいます。
@@ -464,9 +475,9 @@ JavaScript（画面に動きをつけるプログラム）を入れるフォル�
 
 | フォルダ | 何が入っている？ | 担当 |
 | --- | --- | --- |
-| `vendor/` | `composer install` でダウンロードした部品（CakePHP 本体など）。編集しても、次の `composer install` で元に戻ってしまう。 | 🚫 |
-| `tmp/` | 一時的なファイル（キャッシュなど）。アプリの動きがおかしいときは、`tmp/cache/` の中身を消すと直ることがある。 | 🚫 |
-| `logs/` | アプリの「日記」。エラーが起きたら `error.log` を見ると、原因のヒントが書いてある。 | 👀 |
+| `vendor/` | `composer install` でダウンロードした部品（CakePHP 本体など）。編集しても、次の `composer install` で元に戻ってしまう。**アプリが使うのは Docker の保管庫の中のもの**で、Windows 側の `vendor/` は VS Code の候補表示のためだけにある。 | 🚫 |
+| `tmp/` | 一時的なファイル（キャッシュなど）。Docker では保管庫の中にあるので、Windows 側の `tmp/` は使われない。アプリの動きがおかしいときは、`docker compose exec web bin/cake cache clear_all` でキャッシュを消すと直ることがある。 | 🚫 |
+| `logs/` | アプリの「日記」。Docker では保管庫の中にあるので、`docker compose exec web cat logs/error.log` で見る。エラーの原因のヒントが書いてある。 | 👀 |
 | `.phpunit.cache/` | 自動チェックを速くするための一時ファイル。 | 🚫 |
 
 ---
