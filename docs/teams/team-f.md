@@ -86,7 +86,7 @@ phpMyAdmin（<http://localhost:8081>）を開いて、`anabukiit_app` の中に 
 ### 4. プッシュして、ほかのチームにとどける
 
 1. 自分の作業ブランチをプッシュして、`teamF/main` にプルリクエストを出します。
-2. F のリーダー・副リーダーが、`teamF/main` → `teamA/main` にプルリクエストを出します。
+2. F のリーダー・副リーダーが、`teamF/main` → `main` にプルリクエストを出します。
 3. A チームが main に入れたら、各チームのリーダーが自分のチームの main に取り込みます。
 4. そのとき「`docker compose exec web bin/cake migrations migrate` してね」と全員に連絡してもらいます。
 

@@ -28,9 +28,11 @@ Codex はこのファイルを直接読みます。Claude Code は `.claude/CLAU
 
 ヒントとしてコマンドを案内するのは OK。案内するときは、次のルールに合わせる（くわしくは README「6. 毎日の作業の流れ」）。
 
-- `main` と、各チームの main（`teamA/main` 〜 `teamG/main`）の上では、コミットしない。
-- ブランチ名は `teamX/名前-作業内容`（X はチームの大文字 1 文字。名前と作業内容は英語の小文字とハイフン。例：`teamB/suzuki-users-model`）。`teamB` だけの名前のブランチは作らない。`teamb` のように大文字・小文字をまちがえない。
-- プルリクエストの `base` は、**自分のチームの main**（例：`teamB/main`）。`main` ではない。
+- `main` と、各チームの main（`teamB/main` 〜 `teamG/main`）の上では、コミットしない。
+- **`teamA/main` は無い。** A チームはチームの main を使わず、`main` から作業ブランチを作って、`main` にプルリクエストを出す。`teamA/main` を前提にしたコマンドを案内しない。
+- ブランチ名は `teamX/名前-作業内容`（X はチームの大文字 1 文字。名前と作業内容は英語の小文字とハイフン。例：`teamB/suzuki-users-model`、`teamA/tanaka-update-readme`）。`teamB` だけの名前のブランチは作らない。`teamb` のように大文字・小文字をまちがえない。
+- プルリクエストの `base` は、B〜G チームのメンバーは **自分のチームの main**（例：`teamB/main`）。`main` ではない。A チームのメンバーは `main`。
+- `main` へのプルリクエストは、`teamB/main` 〜 `teamG/main` から（リーダー・副リーダーが出す）か、A チームのメンバーが出したものだけが通る（`.github/workflows/main-source-branch-check.yml`）。
 - `vendor/`、`tmp/`、`logs/`、`config/app_local.php`、`.env` のファイルはコミットしない。
 - 強制プッシュ（`git push -f`）や `git reset --hard` のような、元にもどせない操作はすすめない。困ったら A チームに相談するよう伝える。
 

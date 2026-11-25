@@ -190,7 +190,7 @@ A チームは、この流れ全体を見守り、設定やルールを管理し
 | `docker/php/php.ini` | 箱の中の PHP の設定（時刻・エラーの表示・速くするための設定など）。 | A |
 | `docker/apache/000-default.conf` | 箱の中の Apache の設定。`webroot/` を公開する場所にして、`.htaccess` を使えるようにする。 | A |
 | `docker-migration-plan.pdf` | 開発環境を XAMPP から Docker に移す計画。日程（12/2 の授業から Docker で作業する）、続けるかやめるかを決める日（11/27）、リスクと対策、決めたことがまとめてある。 | A |
-| `scripts/create_branches.sh` | 各チームの main（`teamA/main` 〜 `teamG/main`）を、GitHub にまとめて作るスクリプト。最初に 1 回だけ A チームが使う。 | A |
+| `scripts/create_branches.sh` | 各チームの main（`teamB/main` 〜 `teamG/main`）を、GitHub にまとめて作るスクリプト。最初に 1 回だけ A チームが使う。A チームは `main` を直接使うので、`teamA/main` は作らない。 | A |
 
 ---
 

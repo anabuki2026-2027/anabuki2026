@@ -355,8 +355,8 @@ docker compose cp web:/var/www/html/vendor/. vendor
 
 | 図の名前 | 実際のブランチ名 | 何のブランチ？ |
 | --- | --- | --- |
-| main | `main` | 完成版（A チームだけがマージする） |
-| teamA | `teamA/main` | A チームが全チームの作業を集めてチェックする場所 |
+| main | `main` | 完成版（A チームがチェックしてマージする） |
+| teamA | **（ブランチはない）** | A チームは、チームの main を使わずに `main` で作業する（下の「A チームの人へ」） |
 | teamB main 〜 teamG main | `teamB/main` 〜 `teamG/main` | 各チームの完成版（そのチームのリーダー・副リーダーがマージする） |
 | member-1、member-2 … | `teamB/tanaka-users-model` など | メンバー 1 人 1 人の作業ブランチ |
 
@@ -365,15 +365,21 @@ docker compose cp web:/var/www/html/vendor/. vendor
 ```text
 ① メンバー     ：自分の作業ブランチ → チームの main にプルリクエスト
                     （チームのリーダー・副リーダーがチェックしてマージ）
-② リーダー     ：1 つの機能ができたら、チームの main → teamA/main にプルリクエスト
+② リーダー     ：1 つの機能ができたら、チームの main → main にプルリクエスト
                     （A チームがチェックしてマージ）
-③ A チーム     ：teamA/main → main にマージ
-④ リーダー     ：main に入った最新版を、チームの main に取り込む（→ 他のチームの作業がもらえる）
+③ リーダー     ：main に入った最新版を、チームの main に取り込む（→ 他のチームの作業がもらえる）
 ```
 
-このページの `teamB` の部分は、**自分のチーム**（`teamA` 〜 `teamG`。**チームの文字は大文字**）に読みかえてください。
+> `main` へのプルリクエストは、`teamB/main` 〜 `teamG/main` から出したものか、A チームのメンバーが出したものだけが通ります（GitHub が自動でチェックします）。
+> メンバーの作業ブランチから、`main` に直接出すことはできません。
 
-> リーダー・副リーダーの作業（②・④）は、[チーム別ガイド](docs/teams/README.md#リーダー副リーダーの仕事) を見てください。
+このページの `teamB` の部分は、**自分のチーム**（`teamB` 〜 `teamG`。**チームの文字は大文字**）に読みかえてください。
+
+> **A チームの人へ**：A チームには、チームの main（`teamA/main`）はありません。
+> このページの「チームの main」（`teamB/main`）は、すべて **`main`** に読みかえてください。
+> 作業ブランチの名前は、ほかのチームと同じく `teamA/名前-作業内容` です。
+
+> リーダー・副リーダーの作業（②・③）は、[チーム別ガイド](docs/teams/README.md#リーダー副リーダーの仕事) を見てください。
 > ここから下は、**メンバー全員**の毎日の作業です。
 
 ---
@@ -392,7 +398,7 @@ cd /c/xampp/htdocs/anabuki2026
 
 ### ① 最新版をもらう（プル）
 
-**自分のチームの main** に移動して、最新版をもらいます。
+**自分のチームの main** に移動して、最新版をもらいます（A チームは `git switch main`）。
 
 ```bash
 git fetch
@@ -464,7 +470,7 @@ git push -u origin teamB/tanaka-users-model
 
 1. ブラウザで GitHub のリポジトリを開きます。
 2. 黄色い帯の **「Compare & pull request」** を押します。
-3. **【いちばん大事】画面の上にある `base: main` を押して、自分のチームの main（例：`teamB/main`）に変えます。**
+3. **【いちばん大事】画面の上にある `base: main` を押して、自分のチームの main（例：`teamB/main`）に変えます。**（A チームの人は `main` のままで OK）
 
    ```text
    base: teamB/main  ←  compare: teamB/tanaka-users-model
@@ -511,6 +517,8 @@ git commit -m "何をしたか"
 git push -u origin teamX/名前-作業内容
 # → GitHub でプルリクエスト（base を teamX/main にする！ X は自分のチームの大文字）
 ```
+
+> A チームの人は、`teamX/main` を `main` に読みかえます（プルリクエストの base も `main`）。
 
 ---
 

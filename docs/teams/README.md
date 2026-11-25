@@ -81,13 +81,16 @@ CakePHP は「名前の付け方」でファイル同士をつなげています
 ![ブランチ構成](../images/branch-structure.png)
 
 矢印は「ブランチを作る向き」です。作業をまとめるとき（マージ）は、反対に**下から上へ**プルリクエストを出します。
-図の「teamA」は `teamA/main`、「teamB main」は `teamB/main`、「member-1」はメンバーの作業ブランチ（例：`teamB/tanaka-users-model`）のことです。
+図の「teamB main」は `teamB/main`、「member-1」はメンバーの作業ブランチ（例：`teamB/tanaka-users-model`）のことです。
+図の「teamA」にあたるブランチは**ありません**。A チームは `main` を直接使います。
 
 | ブランチ | だれがマージする？ | どこからプルリクエストが来る？ |
 | --- | --- | --- |
-| `main` | A チーム | `teamA/main` |
-| `teamA/main` | A チーム | 各チームの main（リーダー・副リーダーが出す）と、A チームのメンバーの作業ブランチ |
+| `main` | A チーム | 各チームの main（`teamB/main` 〜 `teamG/main`。リーダー・副リーダーが出す）と、A チームのメンバーの作業ブランチ |
 | `teamB/main` 〜 `teamG/main` | そのチームのリーダー・副リーダー | そのチームのメンバーの作業ブランチ |
+
+> `main` へのプルリクエストは、GitHub が自動でチェックしています（`.github/workflows/main-source-branch-check.yml`）。
+> `teamB/main` 〜 `teamG/main` から出したものか、A チームのメンバーが出したもの以外は、マージできません。
 
 ### ブランチ名の決まり
 
@@ -95,7 +98,7 @@ CakePHP は「名前の付け方」でファイル同士をつなげています
 
 | チーム | チームの main | メンバーの作業ブランチの例 |
 | --- | --- | --- |
-| A | `teamA/main` | `teamA/tanaka-update-readme` |
+| A | なし（`main` を使う） | `teamA/tanaka-update-readme` |
 | B | `teamB/main` | `teamB/suzuki-users-model` |
 | C | `teamC/main` | `teamC/sato-users-add-page` |
 | D | `teamD/main` | `teamD/takahashi-users-controller` |
@@ -114,7 +117,7 @@ CakePHP は「名前の付け方」でファイル同士をつなげています
 他のチームの作業は、**main に入ってから**届きます。
 
 ```text
-F チームの作業 → teamF/main → teamA/main → main → teamB/main → B チームのメンバー
+F チームの作業 → teamF/main → main → teamB/main → B チームのメンバー
 ```
 
 たとえば B チームは、F チームの表が main に入って、B のリーダーが teamB/main に取り込んだあとで使えるようになります。
@@ -148,11 +151,11 @@ GitHub でプルリクエストを開いて、次を確認します。
 2. 次のように選びます。
 
    ```text
-   base: teamA/main  ←  compare: teamB/main
+   base: main  ←  compare: teamB/main
    ```
 
 3. タイトルに「何の機能か」、説明に「何ができるようになったか」「ほかのチームに伝えたいこと」を書いて、**「Create pull request」** を押します。
-4. A チームがチェックして、OK なら teamA/main にマージされます。
+4. A チームがチェックして、OK なら main にマージされます。
 
 > ⚠️ チームの main そのもの（`teamB/main`）は、マージしたあとも**消さないで**ください。
 > GitHub に「Delete branch」ボタンが出ても押さないでください（メンバーの作業ブランチは消してOK）。

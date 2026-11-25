@@ -5,7 +5,7 @@
 ## ひとことで
 
 **プロジェクト全体の「司令塔」です。**
-どの機能を作るかを決め、チームどうしの名前やルールをそろえ、各チームから届いた作業を `teamA/main` に集めてチェックし、main に入れます。
+どの機能を作るかを決め、チームどうしの名前やルールをそろえ、各チームから `main` に届いた作業をチェックして、main に入れます。
 アプリ全体の設定ファイルも A チームが管理します。
 
 ---
@@ -14,13 +14,24 @@
 
 1. **作る機能を決めて、各チームに割りふる**
 2. **名前の一覧を作って共有する**（表の名前・URL・画面の名前など。[名前の決まり](README.md#全チーム共通名前の決まり)を参照）
-3. **各チームのリーダー・副リーダーから届いたプルリクエストをチェックして、`teamA/main` にマージする**
-4. **`teamA/main` で全体がちゃんと動くか確かめて、main にマージする**
-5. **リーダー・副リーダーに連絡する**（「main を更新したので取り込んでね」「`bin/cake migrations migrate` してね」など）
-6. **設定ファイルを管理する**
-7. **困っている人を助ける**（わからないことは最終的に A チームに集まります）
+3. **各チームのリーダー・副リーダーから `main` に届いたプルリクエストを、自分のパソコンで動かして確かめてから、main にマージする**
+4. **リーダー・副リーダーに連絡する**（「main を更新したので取り込んでね」「`bin/cake migrations migrate` してね」など）
+5. **設定ファイルを管理する**
+6. **困っている人を助ける**（わからないことは最終的に A チームに集まります）
 
-A チームのメンバー自身の作業も、ほかのチームと同じように `teamA/○○` のブランチを作って、`teamA/main` にプルリクエストを出します。
+A チームには、チームの main（`teamA/main`）は**ありません**。
+A チームのメンバー自身の作業は、`main` から `teamA/名前-作業内容` のブランチを作って、**`main` にプルリクエストを出します**。
+
+```bash
+cd /c/xampp/htdocs/anabuki2026
+git fetch
+git switch main
+git pull
+git switch -c teamA/tanaka-update-readme
+```
+
+> A チームのメンバーが出したプルリクエストは、どのブランチからでも `main` に出せます（`.github/workflows/main-source-branch-check.yml` で、Actions の変数 `TEAM_A_MEMBERS` に登録した人）。
+> A チームに人が増えたり減ったりしたら、管理者が `TEAM_A_MEMBERS` を直してください。
 
 ---
 
@@ -54,7 +65,8 @@ A チームのメンバー自身の作業も、ほかのチームと同じよう
 
 ### 最初に 1 回だけ：チームの main を作る
 
-GitHub には今 `main` しかないので、下の図の「teamA」〜「teamG main」にあたる、7 チーム分の main を作ります。
+下の図の「teamB main」〜「teamG main」にあたる、6 チーム分の main を作ります（作ってあれば不要）。
+図の「teamA」にあたるブランチは作りません（A チームは `main` を使います）。
 
 ![ブランチ構成](../images/branch-structure.png)
 git の操作なので、Git Bash で次を実行します。
@@ -66,13 +78,12 @@ git pull
 bash scripts/create_branches.sh
 ```
 
-「作成予定」に 7 つ並んでいることを確認してから、`y` を押します。
+「作成予定」に並んだブランチを確認してから、`y` を押します。
 すでにあるブランチは飛ばすので、もう一度実行しても大丈夫です。
 
 スクリプトを使わずに、1 つずつ作ることもできます。
 
 ```bash
-git push origin main:teamA/main
 git push origin main:teamB/main
 git push origin main:teamC/main
 git push origin main:teamD/main
@@ -82,7 +93,7 @@ git push origin main:teamG/main
 ```
 
 `git push origin main:teamB/main` は、「今の main と同じ中身で、GitHub に `teamB/main` を作る」という意味です。
-GitHub の「branches」の画面で、7 つできていることを確認してください。
+GitHub の「branches」の画面で、`teamB/main` 〜 `teamG/main` の 6 つがあることを確認してください。
 
 ### ブランチを守る設定（Rules）
 
@@ -99,14 +110,14 @@ GitHub の **Settings → Rules → Rulesets** で、ブランチに「しては
 | Restrict deletions | ✅ |
 | Require a pull request before merging | ✅（Required approvals は `0`、マージの方法は **Merge だけ**） |
 | Block force pushes | ✅ |
-| Require status checks to pass | 最初のプルリクエストで CI が動いたあとに足す（`testsuite` と `Coding Standard & Static Analysis`） |
+| Require status checks to pass | 最初のプルリクエストで CI が動いたあとに足す（`testsuite` と `Coding Standard & Static Analysis`）。`main` に出せるブランチを決める `main-source-branch-check` も必須にする |
 | Bypass list | **Organization admin**（＝ Organization の Owner。A チームのメンバー） |
 
 #### チームの main を守るルールセット
 
 | 項目 | 設定 |
 | --- | --- |
-| 対象（Target branches） | `team*/main`（`teamA/main` 〜 `teamG/main`） |
+| 対象（Target branches） | `team*/main`（`teamB/main` 〜 `teamG/main`） |
 | Restrict updates | ❌（オンにすると、各チームのリーダーがマージできなくなる） |
 | Restrict deletions | ✅ |
 | Require a pull request before merging | ✅（マージの方法は **Merge だけ**） |
@@ -117,7 +128,7 @@ GitHub の **Settings → Rules → Rulesets** で、ブランチに「しては
 
 | 項目 | 理由 |
 | --- | --- |
-| Require linear history | マージコミットが禁止になり、「チームの main → teamA/main → main」の流れが使えなくなる |
+| Require linear history | マージコミットが禁止になり、「チームの main → main → チームの main」の流れが使えなくなる |
 | マージの方法の Squash・Rebase | 同じ変更が別のコミットになり、main をチームの main に取り込みなおすたびに、コンフリクトが起きやすくなる |
 | Require signed commits | 全員がコミットの署名の設定をしないといけなくなる |
 
@@ -151,40 +162,25 @@ GitHub の **Settings → Rules → Rulesets** で、ブランチに「しては
 
 ### 各チームからのプルリクエストをチェックするとき
 
-各チームのリーダー・副リーダーから、`teamA/main` あてにプルリクエストが届きます（`base: teamA/main ← compare: teamB/main` の形）。
-GitHub でプルリクエストを開いて、次を確認します。
+各チームのリーダー・副リーダーから、`main` あてにプルリクエストが届きます（`base: main ← compare: teamB/main` の形）。
+`main` は完成版なので、**マージする前に、自分のパソコンで動かして確かめます。**
 
-- [ ] `base` が `teamA/main` になっている（`main` になっていたら、右上の「Edit」で直す）
-- [ ] 画面下の自動チェック（CI）が **緑のチェック** になっている
-- [ ] 「Files changed」に、**そのチームの担当ではないファイル**が入っていない
-- [ ] `vendor/`、`tmp/`、`logs/`、`config/app_local.php` が入っていない
-- [ ] パスワードなどの秘密の情報が書かれていない
-- [ ] 自分のパソコンでそのブランチを動かして、画面がこわれていない
+1. GitHub でプルリクエストを開いて、次を確認します。
 
-問題なければ **「Merge pull request」** を押します。
-直してほしいところがあれば、そのファイルの行にコメントを書いて返します。
+   - [ ] `compare` が `teamB/main` 〜 `teamG/main` のどれかになっている（メンバーの作業ブランチから直接来ていたら、`main-source-branch-check` が赤になる）
+   - [ ] 画面下の自動チェック（CI と `main-source-branch-check`）が **緑のチェック** になっている
+   - [ ] 「Files changed」に、**そのチームの担当ではないファイル**が入っていない
+   - [ ] `vendor/`、`tmp/`、`logs/`、`config/app_local.php`、`.env` が入っていない
+   - [ ] パスワードなどの秘密の情報が書かれていない
 
-> ⚠️ マージしたあとに「Delete branch」ボタンが出ても、**チームの main（`teamB/main` など）は消さないで**ください。
+2. 自分のパソコンで、そのチームの main を動かして、**全部の機能がつながって動くか**を確かめます。
 
-### マージする順番
-
-チームどうしはつながっているので、基本は次の順番で `teamA/main` にマージします。
-
-```text
-F（表を作る）→ B（Model）→ D（Controller）→ C（View）・E（デザイン）→ G（テスト）
-```
-
-### teamA/main を main に入れるとき
-
-ある程度の機能がそろったら、`teamA/main` を main に入れます。
-
-1. 自分のパソコンで `teamA/main` を動かして、**全部の機能がつながって動くか**を確かめます。
-
-   Git Bash で、最新版をもらいます。
+   Git Bash で、そのチームの main をもらいます（例は B チーム）。**ここではコミットしないでください。**
 
    ```bash
+   cd /c/xampp/htdocs/anabuki2026
    git fetch
-   git switch teamA/main
+   git switch teamB/main
    git pull
    ```
 
@@ -199,14 +195,20 @@ F（表を作る）→ B（Model）→ D（Controller）→ C（View）・E（�
    ```
 
    最後に、ブラウザで <http://localhost:8765> を開いて、画面を確かめます。
+   確かめ終わったら、Git Bash で `git switch main` をして、自分の作業にもどります。
 
-2. GitHub で **「Pull requests」→「New pull request」** を押して、次のように選びます。
+3. 問題なければ **「Merge pull request」** を押します。
+   直してほしいところがあれば、そのファイルの行にコメントを書いて返します。
 
-   ```text
-   base: main  ←  compare: teamA/main
-   ```
+> ⚠️ マージしたあとに「Delete branch」ボタンが出ても、**チームの main（`teamB/main` など）は消さないで**ください。
 
-3. **「Create pull request」** → 自動チェック（CI）が緑になったら **「Merge pull request」** を押します。
+### マージする順番
+
+チームどうしはつながっているので、基本は次の順番で `main` にマージします。
+
+```text
+F（表を作る）→ B（Model）→ D（Controller）→ C（View）・E（デザイン）→ G（テスト）
+```
 
 ### main を更新したあとの連絡
 
@@ -223,7 +225,7 @@ main を更新したら、**全チームのリーダー・副リーダーに**�
 | `compose.yml`・`Dockerfile`・`docker/` | `docker compose up -d --build`（箱を作り直す） |
 | `.env.example` | 自分の `.env` に、増えた項目を足す（中身は AI に見せない） |
 
-`teamA/main` も、main を更新したあとは main と同じ中身になっているので、取り込みは不要です。
+A チームのメンバーは、`git switch main` → `git pull` で最新版をもらいます（チームの main がないので、取り込みの作業は不要です）。
 
 ---
 
