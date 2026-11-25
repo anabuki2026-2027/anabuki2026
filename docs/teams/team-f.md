@@ -20,7 +20,10 @@ F チームが表を作らないと、B・D・C チームは作業を進めら�
 | --- | --- |
 | `config/Migrations/` | **表を作る・変えるためのファイル**を入れる。今はまだないが、下のコマンドで自動で作られる。 |
 | `config/Seeds/` | 最初から入れておくデータ（ためしの会員など）を書くファイルを入れる。これも自動で作られる。 |
-| `config/app_local.php` | 自分のパソコンのデータベースにつなぐための設定（自分のぶんだけ）。 |
+| `config/app_local.php` | 自分のパソコン専用の設定。Docker では、データベースのつなぎ先を Docker 側（`compose.yml` と `.env`）から渡しているので、書きかえなくてよい。 |
+
+> データベースは **MariaDB 10.11**（Docker の箱の中）です。公開する Xserver と同じなので、手元で動けば公開サーバーでも動きます。
+> MySQL だけにある書き方や機能は使わないでください。迷ったら A チームに相談してください。
 
 ---
 
@@ -35,10 +38,10 @@ phpMyAdmin で表を作ると、**自分のパソコンにしか表ができま�
 ```text
 F チーム：表の作り方をファイルに書く → GitHub にプッシュ
                                           ↓
-全員   ：git pull → bin/cake migrations migrate → 自分のパソコンにも同じ表ができる
+全員   ：git pull → docker compose exec web bin/cake migrations migrate → 自分のパソコンにも同じ表ができる
 ```
 
-> phpMyAdmin は、**表がちゃんとできたかを見る**ためだけに使ってください。
+> phpMyAdmin（<http://localhost:8081>）は、**表がちゃんとできたかを見る**ためだけに使ってください。
 
 ---
 
@@ -59,8 +62,10 @@ A チームと相談して、表の名前と項目を決め、B・D・C チー�
 
 ### 2. マイグレーションのファイルを作る
 
+PowerShell で、`cd C:\xampp\htdocs\anabuki2026` をしてから実行します（Docker の箱の中で動きます）。
+
 ```powershell
-bin/cake bake migration CreateUsers name:string email:string:unique password:string created modified
+docker compose exec web bin/cake bake migration CreateUsers name:string email:string:unique password:string created modified
 ```
 
 - `CreateUsers` は「users の表を作る」という意味の名前です。
@@ -73,17 +78,17 @@ bin/cake bake migration CreateUsers name:string email:string:unique password:str
 ### 3. 自分のパソコンで表を作る
 
 ```powershell
-bin/cake migrations migrate
+docker compose exec web bin/cake migrations migrate
 ```
 
-phpMyAdmin を開いて、`users` の表ができていることを確認します。
+phpMyAdmin（<http://localhost:8081>）を開いて、`anabukiit_app` の中に `users` の表ができていることを確認します。
 
 ### 4. プッシュして、ほかのチームにとどける
 
 1. 自分の作業ブランチをプッシュして、`teamF/main` にプルリクエストを出します。
-2. F のリーダー・副リーダーが、`teamF/main` → `teamA/main` にプルリクエストを出します。
+2. F のリーダー・副リーダーが、`teamF/main` → `main` にプルリクエストを出します。
 3. A チームが main に入れたら、各チームのリーダーが自分のチームの main に取り込みます。
-4. そのとき「`bin/cake migrations migrate` してね」と全員に連絡してもらいます。
+4. そのとき「`docker compose exec web bin/cake migrations migrate` してね」と全員に連絡してもらいます。
 
 > ほかのチームは F チームの表を待っています。表ができたら、**なるべく早く A チームに出して**ください。
 
@@ -97,8 +102,8 @@ phpMyAdmin を開いて、`users` の表ができていることを確認しま�
 かわりに、「変える」ための新しいファイルを作ります。
 
 ```powershell
-bin/cake bake migration AddAgeToUsers age:integer
-bin/cake migrations migrate
+docker compose exec web bin/cake bake migration AddAgeToUsers age:integer
+docker compose exec web bin/cake migrations migrate
 ```
 
 `AddAgeToUsers` は「users の表に age（年齢）を足す」という意味の名前です。
@@ -110,29 +115,34 @@ bin/cake migrations migrate
 画面を作るときに、データが 1 件もないと確認しづらいので、ためしのデータを用意します。
 
 ```powershell
-bin/cake bake seed Users
+docker compose exec web bin/cake bake seed Users
 ```
 
 `config/Seeds/UsersSeed.php` ができるので、入れたいデータを書きます。
 書いたら、次のコマンドでデータベースに入れます。
 
 ```powershell
-bin/cake seeds run
+docker compose exec web bin/cake seeds run
 ```
 
 ---
 
 ## よく使うコマンド
 
+どれも PowerShell で、`cd C:\xampp\htdocs\anabuki2026` をしてから実行します（Docker の箱の中で動きます）。
+
 | コマンド | 何が起きる？ |
 | --- | --- |
-| `bin/cake bake migration CreateUsers ○○` | 表を作るファイルを自動で作る |
-| `bin/cake bake migration AddAgeToUsers ○○` | 表に項目を足すファイルを自動で作る |
-| `bin/cake migrations migrate` | まだ実行していないファイルを実行して、表を最新にする |
-| `bin/cake migrations status` | どのファイルが実行ずみかを見る |
-| `bin/cake migrations rollback` | 最後に実行したファイルを取り消す（**まだプッシュしていないとき**だけ使う） |
-| `bin/cake bake seed Users` | ためしのデータを書くファイルを作る |
-| `bin/cake seeds run` | ためしのデータをデータベースに入れる |
+| `docker compose exec web bin/cake bake migration CreateUsers ○○` | 表を作るファイルを自動で作る |
+| `docker compose exec web bin/cake bake migration AddAgeToUsers ○○` | 表に項目を足すファイルを自動で作る |
+| `docker compose exec web bin/cake migrations migrate` | まだ実行していないファイルを実行して、表を最新にする |
+| `docker compose exec web bin/cake migrations status` | どのファイルが実行ずみかを見る |
+| `docker compose exec web bin/cake migrations rollback` | 最後に実行したファイルを取り消す（**まだプッシュしていないとき**だけ使う） |
+| `docker compose exec web bin/cake bake seed Users` | ためしのデータを書くファイルを作る |
+| `docker compose exec web bin/cake seeds run` | ためしのデータをデータベースに入れる |
+
+> `docker compose down -v` を実行すると、自分のパソコンのデータベースが空っぽになります（表もデータも消えます）。
+> そのあとは `docker compose up -d` → `docker compose exec web bin/cake migrations migrate` で、表を作り直せます。
 
 項目の種類の書き方：
 

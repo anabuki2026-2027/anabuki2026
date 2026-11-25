@@ -47,14 +47,18 @@ B チームが Bake で作った `tests/` のファイルは、一緒に出し�
 
 ## 4. 自動チェックを動かす
 
-これは git ではないので、AI が実行してよい（PowerShell で動かす）。
+これは git ではないので、AI が実行してよい（PowerShell で動かす。Docker の箱の中で動く）。
 
 ```powershell
-composer check
+cd C:\xampp\htdocs\anabuki2026
+docker compose exec web composer check
 ```
 
 GitHub の CI と同じ内容。エラーが出たら、どのファイルの何行目で、何がダメなのかを日本語で説明する。
-書き方のエラーだけなら、`composer cs-fix` で自動で直せることを伝える（実行する前に聞く）。
+書き方のエラーだけなら、`docker compose exec web composer cs-fix` で自動で直せることを伝える（実行する前に聞く）。
+
+`service "web" is not running` と出たら、`docker compose up -d` を実行してよいか聞いてから、もう一度動かす。
+`.env がありません` と出たら、README「4-6」を案内する（`.env` は AI が作らない）。
 
 ## 5. 結果を伝える
 

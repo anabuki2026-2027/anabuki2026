@@ -48,7 +48,8 @@ CakePHP では、URL の形がそのまま Controller と処理の名前にな�
 B チームの Table ができていれば、上の 5 つの処理を自動で作れます。
 
 ```powershell
-bin/cake bake controller Users
+cd C:\xampp\htdocs\anabuki2026
+docker compose exec web bin/cake bake controller Users
 ```
 
 ### 3. 処理を書く
@@ -97,22 +98,21 @@ public function add()
 
 ### 4. 表示を確認する
 
-```powershell
-bin/cake server
-```
-
 ブラウザで <http://localhost:8765/users> などを開いて確認します。
+ファイルを保存したら、ブラウザを再読み込みするだけで反映されます。
 C チームの画面がまだなくても、「`Users/index.php` がありません」というエラーが出れば、Controller までは動いています。
 
 ---
 
 ## よく使うコマンド
 
+どれも PowerShell で、`cd C:\xampp\htdocs\anabuki2026` をしてから実行します（Docker の箱の中で動きます）。
+
 | コマンド | 何が起きる？ |
 | --- | --- |
-| `bin/cake bake controller Users` | `UsersController.php` を自動で作る |
-| `bin/cake routes` | 今使える URL の一覧を見る |
-| `composer test` | 自動チェックを実行して、こわれていないか確かめる |
+| `docker compose exec web bin/cake bake controller Users` | `UsersController.php` を自動で作る |
+| `docker compose exec web bin/cake routes` | 今使える URL の一覧を見る |
+| `docker compose exec web composer test` | 自動チェックを実行して、こわれていないか確かめる |
 
 ---
 
