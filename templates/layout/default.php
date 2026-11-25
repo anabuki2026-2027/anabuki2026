@@ -24,6 +24,12 @@
  */
 
 $cakeDescription = 'CakePHP: the rapid development php framework';
+
+// Flash（画面が移動したあとに 1 回だけ出すメッセージ）を、ここで先に作っておく。
+// 成功・警告・エラーの通知（flash/success.php・warning.php・error.php）は、作るときに toastStatus・toastAlert
+// ブロックへ足されるので、下の共通通知領域（toast_region）より先に作っておかないと、通知領域が空のまま出てしまう。
+// それ以外のメッセージ（flash/info.php・default.php）は、今までどおり <main> の中に出す。
+$flashMessages = $this->Flash->render();
 ?>
 <!DOCTYPE html>
 <html>
@@ -44,9 +50,11 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 </head>
 <body>
     <?= $this->element('header') ?>
+    <?php // 共通通知領域（NOTICE-001・002）。成功・警告・エラーの通知を出す。位置と見た目は E チームが CSS で決める。 ?>
+    <?= $this->element('toast_region') ?>
     <main class="main" id="main-content" tabindex="-1">
         <div class="container">
-            <?= $this->Flash->render() ?>
+            <?= $flashMessages ?>
             <?= $this->fetch('content') ?>
         </div>
     </main>
